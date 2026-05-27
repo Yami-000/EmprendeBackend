@@ -1,0 +1,103 @@
+Proyecto: LookFin / Krrete - Visión general
+
+Descripción general
+Este repositorio contiene dos carpetas principales: el backend (Node.js, GraphQL y agentes de IA) y el frontend (Vite + React). El propósito es ofrecer una aplicación de chat integrada con funcionalidades de autenticación (Firebase), almacenamiento (Supabase/Postgres) y agentes conversacionales que usan modelos locales o remotos.
+
+Estructura general
+- `credentials/`: Credenciales para servicios (Firebase Admin, etc.). NO subir a repositorio público.
+- `markdown/`: Prompts y documentos usados por los agentes de conocimiento (system prompts, guías temáticas).
+- `src/` (backend): Código fuente principal del servidor y agentes.
+- `config/`: Helpers y configuración de conexiones (DB, Firebase, Supabase).
+- `graphql/`: Schemas y resolvers GraphQL.
+- `models/`: Definiciones de modelos (Sequelize) y lógica de datos.
+- `validations/`: Validaciones (Joi) para entradas de API.
+
+Backend (ruta: `EmprendeBackend`)
+
+- Tecnologías principales: Node.js (ES modules), Express v5, Apollo Server, Sequelize (Postgres), Firebase Admin, Supabase JS, LangChain (parcial).
+- Entrada principal: `src/index.js` (levanta el servidor). `src/server.js` puede contener lógica de arranque y middlewares.
+- Scripts útiles (ver `package.json`):
+  - `npm run start` — Ejecuta `node src/index.js` (producción).
+  - `npm run dev` — Ejecuta `nodemon src/index.js` (desarrollo).
+  - `npm run agent:cli` — Ejecuta `node src/agent/cli.js` para usar el CLI de agentes.
+
+Carpetas clave del backend
+- `src/agent/`: Implementación de agentes conversacionales y de integración.
+  - `cli.js`: Interfaz de línea de comandos para probar agentes.
+  - `knowledgeBase.js`: Manejo de la base de conocimiento (indexación, búsqueda).
+  - `ollamaClient.js`: Cliente para conectar con Ollama (modelo local) si está disponible.
+  - `orchestrator.js`, `responseAgent.js`, `securityAgent.js`, `specializedAgents.js`: Lógica de orquestación, generación de respuestas y agentes especializados.
+  - `documents/`: Documentos organizados por tema (MiPrimerAhorro, MiPrimeraInversión, etc.) usados como fuente de conocimiento.
+
+- `config/`:
+  - `db.js`: Configuración de Sequelize y conexión a Postgres (Supabase).
+  - `firebaseAdmin.js`: Inicialización del SDK Admin de Firebase (usa `credentials/`).
+  - `firebaseAuth.js`: Helpers para verificar tokens y administrar usuarios.
+  - `firestoreHelpers.js`, `firestoreMensajes.js`: Integración con Firestore si se utiliza.
+  - `supabase.js`: Cliente Supabase para operaciones adicionales.
+
+- `graphql/`:
+  - `schemas.js`: Definición del esquema GraphQL.
+  - `resolvers.js`: Implementación de resolvers que usan `models/` y `config/`.
+
+- `models/`:
+  - `index.js`: Inicializa modelos Sequelize.
+  - `chat.js`, `mensaje.js`, `usuario.js`: Modelos y relaciones.
+
+- `validations/`: Validaciones con Joi para las entradas de GraphQL/HTTP.
+
+Variables de entorno importantes (archivo `.env`):
+- `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` — Conexión Postgres/Supabase.
+- `NODE_ENV` — Entorno.
+- `OLLAMA_HOST`, `OLLAMA_MODEL` — Si se usa Ollama para modelos locales.
+- `FIREBASE_SERVICE_ACCOUNT_PATH` o `FIREBASE_SERVICE_ACCOUNT_JSON` — Credenciales para Firebase Admin.
+
+Cómo ejecutar el backend (resumen):
+1. Copiar credenciales a `credentials/` (archivo JSON de Firebase Admin).
+2. Crear y ajustar `.env` con las variables necesarias.
+3. Instalar dependencias: `npm install`.
+4. Ejecutar en desarrollo: `npm run dev`.
+
+Frontend (ruta: `EmprendeFrontend`)
+
+- Tecnologías principales: Vite, React 19, TailwindCSS, Apollo Client, Firebase Web SDK, Supabase JS.
+- Entrada principal: `src/main.jsx` y `src/App.jsx`.
+- Scripts (ver `package.json` del frontend):
+  - `npm run dev` — Levanta servidor de desarrollo Vite.
+  - `npm run build` — Construye para producción.
+  - `npm run preview` — Preview local del build.
+
+Carpetas clave del frontend
+- `src/components/`:
+  - `Chat.jsx`: Componente principal del chat.
+  - `Sidebar.jsx`, `Header.jsx`, `ProfileModal.jsx`: UI y navegación.
+- `src/lib/`:
+  - `firebase.js`: Inicializa Firebase y helpers de autenticación.
+  - `apollo.js`: Cliente Apollo para GraphQL (si se usa con backend).
+  - `supabase.js`: Cliente Supabase para llamadas directas a DB si es necesario.
+- `src/views/`:
+  - `Login.tsx`: Pantalla de login que usa Firebase Auth.
+
+Variables de entorno del frontend (Vite):
+- Las variables comienzan con `VITE_` y se configuran en `.env` o en el CI. Ejemplos: `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_PROJECT_ID`, etc.
+
+Cómo ejecutar el frontend (resumen):
+1. Instalar dependencias: `npm install` dentro de `EmprendeFrontend`.
+2. Ejecutar desarrollo: `npm run dev`.
+3. Construir producción: `npm run build`.
+
+Integración y flujo de datos
+- Autenticación: El frontend usa Firebase Auth; obtiene el token que luego puede enviarse al backend (validado por `firebaseAdmin.js`).
+- Persistencia: Chats y mensajes pueden almacenarse en Postgres (accesible vía Sequelize/Supabase) y/o Firestore.
+- Agentes: El backend contiene módulos para indexar documentos y generar respuestas usando modelos locales (Ollama) o servicios externos según la configuración.
+
+Sugerencias y próximos pasos
+- Asegurar que las credenciales sensibles no estén en el repositorio público. Usar variables de entorno/secret manager.
+- Documentar el contrato GraphQL (tipos, queries, mutations) en `graphql/schemas.js` para facilitar consumo.
+- Añadir scripts de Docker o `docker-compose` si se desea reproducibilidad local (Postgres/Ollama).
+
+Contacto y autoría
+Revisar `package.json` del backend para autor: Amaro Alvial.
+
+---
+Archivo generado automáticamente: documentación de alto nivel para el proyecto.

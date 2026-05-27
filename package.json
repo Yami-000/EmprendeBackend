@@ -36,13 +36,15 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "firebase-admin": "^13.6.1",
+    "firebase": "^12.13.0",
+    "firebase-admin": "^13.10.0",
     "graphql": "^16.12.0",
     "graphql-tag": "^2.12.6",
     "joi": "^18.0.2",
     "mammoth": "^1.8.0",
     "pg": "^8.17.2",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.8",
+    "uuid": "^14.0.0"
   }
 }

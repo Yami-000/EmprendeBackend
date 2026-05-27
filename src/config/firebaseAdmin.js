@@ -1,14 +1,14 @@
 import admin from 'firebase-admin';
 import { existsSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { dirname, isAbsolute, join } from 'path';
+import { dirname, isAbsolute, join, resolve } from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const defaultServiceAccountPath = join(__dirname, '..', '..', 'credentials', 'lookfin-app-firebase-adminsdk-fbsvc-b6a46859b2.json');
+const defaultServiceAccountPath = join(__dirname, '..', '..', 'credentials', 'emprende-73e05-firebase-adminsdk-fbsvc-dc2b367ca8.json');
 
 const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
 const serviceAccountPathFromEnv = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
@@ -26,21 +26,26 @@ const buildAdminOptions = () => {
     if (serviceAccountPathFromEnv) {
         const serviceAccountPath = isAbsolute(serviceAccountPathFromEnv)
             ? serviceAccountPathFromEnv
-            : join(__dirname, '..', '..', serviceAccountPathFromEnv);
+            : resolve(__dirname, serviceAccountPathFromEnv);
         if (!existsSync(serviceAccountPath)) {
-            console.warn(`No se encontró el service account en ${serviceAccountPath}. Se intentará usar la credencial por defecto del repositorio.`);
-        } else {
-            const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
-
-            return {
-                credential: admin.credential.cert(serviceAccount),
-                storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${serviceAccount.project_id}.appspot.com`,
-            };
+            throw new Error(
+                `La ruta FIREBASE_SERVICE_ACCOUNT_PATH está configurada, pero el archivo no existe: ${serviceAccountPath}. ` +
+                'Coloca el JSON de Firebase Admin correcto en esa ubicación o ajusta la ruta en .env.'
+            );
         }
+
+        const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
+        console.log(`Firebase Admin cargado desde ${serviceAccountPath} (proyecto: ${serviceAccount.project_id})`);
+
+        return {
+            credential: admin.credential.cert(serviceAccount),
+            storageBucket: process.env.FIREBASE_STORAGE_BUCKET || `${serviceAccount.project_id}.appspot.com`,
+        };
     }
 
     if (existsSync(defaultServiceAccountPath)) {
         const serviceAccount = JSON.parse(readFileSync(defaultServiceAccountPath, 'utf8'));
+        console.log(`Firebase Admin cargado desde ${defaultServiceAccountPath} (proyecto: ${serviceAccount.project_id})`);
 
         return {
             credential: admin.credential.cert(serviceAccount),
