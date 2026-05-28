@@ -6,8 +6,8 @@ import { createAgentOrchestrator } from './orchestrator.js';
 
 dotenv.config();
 
-const host = process.env.OLLAMA_HOST ?? 'http://127.0.0.1:11434';
-const model = process.env.OLLAMA_MODEL ?? 'llama3.1';
+const host = process.env.OLLAMA_HOST;
+const model = process.env.OLLAMA_MODEL;
 
 const formatHelp = () => `
 Comandos disponibles:
