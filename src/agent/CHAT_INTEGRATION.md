@@ -97,7 +97,7 @@ const handleSendMessage = async (chatID, texto) => {
   <Message
     key={msg.id}
     texto={msg.texto}
-    autor={msg.usuario?.nombre || 'LookFin IA'} // null si es IA
+    autor={msg.usuario?.nombre || 'Ecia'} // null si es IA
     esUsuario={msg.usuario !== null}
   />
 ))}
