@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: lookfin-backend
+    name: EmprendeBackend
     env: node
     plan: free
     rootDir: .

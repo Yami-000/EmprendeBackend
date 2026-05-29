@@ -1,103 +1,268 @@
-Proyecto: LookFin / Krrete - Visión general
+Proyecto: Emprende - Visión general
 
-Descripción general
-Este repositorio contiene dos carpetas principales: el backend (Node.js, GraphQL y agentes de IA) y el frontend (Vite + React). El propósito es ofrecer una aplicación de chat integrada con funcionalidades de autenticación (Firebase), almacenamiento (Supabase/Postgres) y agentes conversacionales que usan modelos locales o remotos.
+# Visión general
 
-Estructura general
-- `credentials/`: Credenciales para servicios (Firebase Admin, etc.). NO subir a repositorio público.
-- `markdown/`: Prompts y documentos usados por los agentes de conocimiento (system prompts, guías temáticas).
-- `src/` (backend): Código fuente principal del servidor y agentes.
-- `config/`: Helpers y configuración de conexiones (DB, Firebase, Supabase).
-- `graphql/`: Schemas y resolvers GraphQL.
-- `models/`: Definiciones de modelos (Sequelize) y lógica de datos.
-- `validations/`: Validaciones (Joi) para entradas de API.
+Este repositorio está diseñado para un producto híbrido con dos capas principales:
 
-Backend (ruta: `EmprendeBackend`)
+- **Backend**: servidor Node.js con GraphQL, autenticación, persistencia y un conjunto de agentes de IA.
+- **Frontend**: aplicación Vite + React, con chat en tiempo real, login y comunicación con el backend.
 
-- Tecnologías principales: Node.js (ES modules), Express v5, Apollo Server, Sequelize (Postgres), Firebase Admin, Supabase JS, LangChain (parcial).
-- Entrada principal: `src/index.js` (levanta el servidor). `src/server.js` puede contener lógica de arranque y middlewares.
-- Scripts útiles (ver `package.json`):
-  - `npm run start` — Ejecuta `node src/index.js` (producción).
-  - `npm run dev` — Ejecuta `nodemon src/index.js` (desarrollo).
-  - `npm run agent:cli` — Ejecuta `node src/agent/cli.js` para usar el CLI de agentes.
+El objetivo principal es ofrecer una experiencia conversacional donde un usuario puede hacer preguntas sobre finanzas personales y recibir respuestas seguras y contextualizadas, apoyadas en documentación específica.
 
-Carpetas clave del backend
-- `src/agent/`: Implementación de agentes conversacionales y de integración.
-  - `cli.js`: Interfaz de línea de comandos para probar agentes.
-  - `knowledgeBase.js`: Manejo de la base de conocimiento (indexación, búsqueda).
-  - `ollamaClient.js`: Cliente para conectar con Ollama (modelo local) si está disponible.
-  - `orchestrator.js`, `responseAgent.js`, `securityAgent.js`, `specializedAgents.js`: Lógica de orquestación, generación de respuestas y agentes especializados.
-  - `documents/`: Documentos organizados por tema (MiPrimerAhorro, MiPrimeraInversión, etc.) usados como fuente de conocimiento.
+# Estructura general del repositorio
 
-- `config/`:
-  - `db.js`: Configuración de Sequelize y conexión a Postgres (Supabase).
-  - `firebaseAdmin.js`: Inicialización del SDK Admin de Firebase (usa `credentials/`).
-  - `firebaseAuth.js`: Helpers para verificar tokens y administrar usuarios.
-  - `firestoreHelpers.js`, `firestoreMensajes.js`: Integración con Firestore si se utiliza.
-  - `supabase.js`: Cliente Supabase para operaciones adicionales.
+- `credentials/`: credenciales sensibles, principalmente Firebase Admin. No deben subirse a repositorios públicos.
+- `markdown/`: archivos `.md` que contienen los prompts y guías temáticas que usan los agentes especializados.
+- `src/` (backend): código fuente principal para servidor, orquestador de agentes y lógica de negocio.
+- `config/`: configuración y helpers para bases de datos, Firebase, Supabase y Firestore.
+- `graphql/`: definición de esquema y resolvers GraphQL.
+- `models/`: definición de modelos de datos y sus relaciones usando Sequelize.
+- `validations/`: reglas de validación de entrada (Joi) para proteger API y resolver datos.
 
-- `graphql/`:
-  - `schemas.js`: Definición del esquema GraphQL.
-  - `resolvers.js`: Implementación de resolvers que usan `models/` y `config/`.
+# Backend (ruta: `EmprendeBackend`)
 
-- `models/`:
-  - `index.js`: Inicializa modelos Sequelize.
-  - `chat.js`, `mensaje.js`, `usuario.js`: Modelos y relaciones.
+## Tecnologías clave
 
-- `validations/`: Validaciones con Joi para las entradas de GraphQL/HTTP.
+- Node.js con ES modules
+- Express v5
+- Apollo Server / GraphQL
+- Sequelize con Postgres (puede ejecutarse vía Supabase)
+- Firebase Admin para autenticación y seguridad
+- Supabase JS para operaciones adicionales
+- LangChain (parcial) para carga y procesamiento de documentos
+- Ollama o cualquier cliente LLM configurado mediante `OLLAMA_HOST` y `OLLAMA_MODEL`
 
-Variables de entorno importantes (archivo `.env`):
-- `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` — Conexión Postgres/Supabase.
-- `NODE_ENV` — Entorno.
-- `OLLAMA_HOST`, `OLLAMA_MODEL` — Si se usa Ollama para modelos locales.
-- `FIREBASE_SERVICE_ACCOUNT_PATH` o `FIREBASE_SERVICE_ACCOUNT_JSON` — Credenciales para Firebase Admin.
+## Entrada del backend
 
-Cómo ejecutar el backend (resumen):
-1. Copiar credenciales a `credentials/` (archivo JSON de Firebase Admin).
-2. Crear y ajustar `.env` con las variables necesarias.
-3. Instalar dependencias: `npm install`.
-4. Ejecutar en desarrollo: `npm run dev`.
+- `src/index.js`: punto de arranque principal. Aquí se configura el servidor, el middleware y el esquema GraphQL.
+- `src/server.js`: puede contener la creación del servidor, middlewares y dependencias compartidas.
 
-Frontend (ruta: `EmprendeFrontend`)
+## Scripts principales
 
-- Tecnologías principales: Vite, React 19, TailwindCSS, Apollo Client, Firebase Web SDK, Supabase JS.
-- Entrada principal: `src/main.jsx` y `src/App.jsx`.
-- Scripts (ver `package.json` del frontend):
-  - `npm run dev` — Levanta servidor de desarrollo Vite.
-  - `npm run build` — Construye para producción.
-  - `npm run preview` — Preview local del build.
+- `npm run start`: ejecuta el backend en modo producción.
+- `npm run dev`: ejecuta el backend en modo desarrollo con `nodemon`.
+- `npm run agent:cli`: inicia el CLI de agentes para pruebas manuales desde terminal.
 
-Carpetas clave del frontend
-- `src/components/`:
-  - `Chat.jsx`: Componente principal del chat.
-  - `Sidebar.jsx`, `Header.jsx`, `ProfileModal.jsx`: UI y navegación.
-- `src/lib/`:
-  - `firebase.js`: Inicializa Firebase y helpers de autenticación.
-  - `apollo.js`: Cliente Apollo para GraphQL (si se usa con backend).
-  - `supabase.js`: Cliente Supabase para llamadas directas a DB si es necesario.
-- `src/views/`:
-  - `Login.tsx`: Pantalla de login que usa Firebase Auth.
+## Carpetas clave
 
-Variables de entorno del frontend (Vite):
-- Las variables comienzan con `VITE_` y se configuran en `.env` o en el CI. Ejemplos: `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_PROJECT_ID`, etc.
+### `src/agent/`
 
-Cómo ejecutar el frontend (resumen):
-1. Instalar dependencias: `npm install` dentro de `EmprendeFrontend`.
-2. Ejecutar desarrollo: `npm run dev`.
-3. Construir producción: `npm run build`.
+Este es el corazón de la arquitectura de agentes.
 
-Integración y flujo de datos
-- Autenticación: El frontend usa Firebase Auth; obtiene el token que luego puede enviarse al backend (validado por `firebaseAdmin.js`).
-- Persistencia: Chats y mensajes pueden almacenarse en Postgres (accesible vía Sequelize/Supabase) y/o Firestore.
-- Agentes: El backend contiene módulos para indexar documentos y generar respuestas usando modelos locales (Ollama) o servicios externos según la configuración.
+- `cli.js`: permite ejecutar consultas de prueba localmente desde la línea de comandos.
+- `knowledgeBase.js`: administra la base de conocimiento. Carga prompts, documentos, extrae texto y construye contexto para los agentes.
+- `ollamaClient.js`: cliente para enviar mensajes al modelo LLM. Soporta Ollama u otras fuentes de inferencia configuradas.
+- `orchestrator.js`: es el orquestador central que recibe la consulta, la valida, decide qué agente usar y compone la respuesta final.
+- `securityAgent.js`: valida que la consulta no intente acceder a datos sensibles, impersonar a otro usuario o utilizar un prompt malicioso.
+- `specializedAgents.js`: declara agentes específicos por tema (ahorro, inversión, endeudamiento, sueldo, planificación).
+- `responseAgent.js`: toma la salida del agente especializado y la transforma en una respuesta final clara para el usuario.
+- `documents/`: documentos de soporte por tema. Estos archivos son fuentes de información adicional para los agentes especializados.
 
-Sugerencias y próximos pasos
-- Asegurar que las credenciales sensibles no estén en el repositorio público. Usar variables de entorno/secret manager.
-- Documentar el contrato GraphQL (tipos, queries, mutations) en `graphql/schemas.js` para facilitar consumo.
-- Añadir scripts de Docker o `docker-compose` si se desea reproducibilidad local (Postgres/Ollama).
+### `config/`
 
-Contacto y autoría
-Revisar `package.json` del backend para autor: Amaro Alvial.
+- `db.js`: inicializa Sequelize y la conexión a la base Postgres/Supabase.
+- `firebaseAdmin.js`: configura Firebase Admin con las credenciales en `credentials/`.
+- `firebaseAuth.js`: helpers para verificar tokens de usuario y proteger rutas.
+- `firestoreHelpers.js`, `firestoreMensajes.js`: integración opcional con Firestore para almacenamiento de mensajes.
+- `supabase.js`: cliente Supabase para consultas directas si es necesario.
 
----
-Archivo generado automáticamente: documentación de alto nivel para el proyecto.
+### `graphql/`
+
+- `schemas.js`: define los tipos, queries y mutations disponibles para el frontend.
+- `resolvers.js`: implementa los resolvers que usan modelos y config para resolver datos.
+
+### `models/`
+
+- `index.js`: inicializa los modelos y las asociaciones.
+- `chat.js`, `mensaje.js`, `usuario.js`: modelos de dominio para chats, mensajes y usuarios.
+
+### `validations/`
+
+Contiene las reglas de validación para asegurarse de que las entradas de la API sean correctas antes de procesarlas.
+
+# Agentes y flujo de activación
+
+## 1. El orquestador recibe la consulta
+
+El flujo principal se encuentra en `src/agent/orchestrator.js`:
+
+1. Recibe la consulta del usuario.
+2. Llama a `validateQuery()` en `securityAgent.js`.
+3. Si la validación falla, devuelve un rechazo inmediato con motivo.
+4. Si la validación pasa, determina qué agente especializado debe atender la consulta.
+5. Si existe un agente especializado, llama a su método `respond()`.
+6. La respuesta del agente especializado se entrega a `responseAgent` para formatearla.
+7. Si no hay agente especializado, el `responseAgent` responde directamente.
+
+### Ejemplo didáctico
+
+Supongamos que el usuario pregunta: "¿Cómo puedo empezar a ahorrar?"
+
+- El orquestador valida que no hay datos sensibles.
+- El `determineSpecializedAgent()` reconoce palabras clave como "ahorrar".
+- Se selecciona `mi_primer_ahorro`.
+- Ese agente construye su prompt desde `markdown/system_prompt_MiPrimerAhorro.md`.
+- También recupera información extra de `src/agent/documents/MiPrimerAhorro/`.
+- El LLM recibe el prompt + contexto y genera una explicación.
+- El `responseAgent` transforma esa salida en una respuesta final amigable.
+
+## 2. El agente de seguridad valida primero
+
+`src/agent/securityAgent.js` aplica varias reglas:
+
+- Detecta saludos simples y los acepta sin usar LLM.
+- Rechaza intentos de suplantación: "soy admin", "yo soy usuario 123".
+- Rechaza consultas que pidan datos de otros usuarios.
+- Permite consultas sobre finanzas propias y recursos oficiales.
+- En casos dudosos, usa el LLM con un prompt de seguridad especializado.
+
+Esta separación asegura que ninguna consulta vaya al agente especializado si existe riesgo de abuso.
+
+## 3. Los agentes especializados usan prompts y documentos
+
+`src/agent/specializedAgents.js` define los agentes especializados y los enlaza con `knowledgeBase.js`.
+
+Cada agente tiene:
+
+- un `name` explícito,
+- una carpeta de documentos (`folder`) en `src/agent/documents/`,
+- un archivo de prompt en `markdown/`.
+
+Por ejemplo:
+
+- `mi_primer_ahorro` → `markdown/system_prompt_MiPrimerAhorro.md`
+- `mi_primera_inversion` → `markdown/system_prompt_MiPrimeraInversion.md`
+- `mi_primer_sueldo` → `markdown/system_prompt_MiPrimerSueldo.md`
+
+## 4. ¿Cómo usan los agentes los `system prompts`?
+
+Sí, los agentes especializados usan los `system prompts` ubicados en `markdown/`.
+
+En `knowledgeBase.js`:
+
+- `PROMPTS_ROOT` apunta a la carpeta `markdown`.
+- `loadAgentKnowledge(agentKey)` lee el archivo `promptFile` definido en `AGENT_CATALOG`.
+- El prompt se incluye como parte del `systemPrompt` con contexto adicional antes de llamar al LLM.
+
+Esto significa que el prompt no es un texto estático dentro del código, sino un recurso externo que puede editarse sin tocar la lógica de agentes.
+
+## 5. ¿Buscan los agentes información extra en `documents/`?
+
+Sí.
+
+En `knowledgeBase.js`:
+
+- `DOCUMENTS_ROOT` apunta a `src/agent/documents`.
+- `loadAgentKnowledge(agentKey)` recorre la carpeta del agente y recolecta los archivos.
+- Soporta formatos `.docx`, `.md`, `.txt` y `.rtf`.
+- Convierte el contenido en texto, extrae URLs y genera fragmentos de contexto.
+- Selecciona los fragmentos más relevantes en función de la consulta.
+
+Luego el prompt del agente incluye un bloque llamado `## CONTEXTO RECUPERADO DESDE DOCUMENTOS` con referencias tomadas de esos archivos.
+
+Así, los agentes especializados **sí tienen acceso** a la información extra guardada en `documents/`.
+
+# Detalle del proceso de construcción del prompt
+
+1. `getAgentKnowledge(agentKey)` carga el prompt y los documentos del agente.
+2. El texto se tokeniza y se compara con la consulta.
+3. Se puntúan los fragmentos de cada documento según relevancia.
+4. Se generan hasta 4 bloques de contexto relevantes.
+5. Se construye un `systemPrompt` completo que incluye:
+   - el prompt principal del agente,
+   - reglas de manejo de enlaces,
+   - enlaces autorizados extraídos de los documentos,
+   - el contexto recuperado desde los documentos.
+
+# Respuesta final y sanitización
+
+`responseAgent.js` es el último filtro. Su trabajo es:
+
+- recibir la respuesta del agente especializado,
+- usar memoria de sesión si existe,
+- evitar enlaces no autorizados,
+- y entregar una respuesta clara en español.
+
+Si el agente especializado no provee enlaces, `responseAgent` no inventa URLs.
+
+# Notas de ejecución importantes
+
+- El backend debe ejecutarse desde la raíz de `EmprendeBackend` para que `process.cwd()` apunte correctamente a `markdown/` y `src/agent/documents/`.
+- Si el proceso se inicia desde otra carpeta, las rutas relativas podrían fallar.
+- El contenido de los prompts y documentos es independiente del código, lo que facilita actualizar conocimiento sin cambiar la lógica.
+
+# Frontend (ruta: `EmprendeFrontend`)
+
+## Tecnologías principales
+
+- Vite
+- React 19
+- TailwindCSS
+- Apollo Client
+- Firebase Web SDK
+- Supabase JS
+
+## Entrada principal
+
+- `src/main.jsx`: arranca la app.
+- `src/App.jsx`: componente raíz.
+
+## Componentes principales
+
+- `src/components/Chat.jsx`: interfaz de chat y mensajes.
+- `src/components/Sidebar.jsx`: navegación lateral.
+- `src/components/Header.jsx`: encabezado de la aplicación.
+- `src/components/ProfileModal.jsx`: gestión de perfil y sesión.
+
+## Librerías y clientes
+
+- `src/lib/firebase.js`: inicializa Firebase Auth y provee helpers.
+- `src/lib/apollo.js`: cliente Apollo para GraphQL.
+- `src/lib/supabase.js`: cliente Supabase para operaciones directas.
+
+## Pantallas
+
+- `src/views/Login.tsx`: pantalla de inicio de sesión con Firebase.
+
+# Variables de entorno del frontend
+
+- Usar prefijo `VITE_`.
+- Ejemplo: `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_AUTH_DOMAIN`.
+
+# Cómo ejecutar el frontend
+
+1. `cd EmprendeFrontend`
+2. `npm install`
+3. `npm run dev`
+4. Para producción: `npm run build` y luego `npm run preview`
+
+# Integración entre frontend y backend
+
+- El frontend autentica al usuario con Firebase.
+- El backend valida el token usando `firebaseAdmin.js`.
+- El chat envía preguntas al backend y recibe respuestas generadas por los agentes.
+- El backend puede guardar chats en Postgres/Supabase o Firestore según la configuración.
+
+# Recomendaciones didácticas
+
+- Para entender el flujo de agentes, sigue la ruta:
+  1. `src/agent/orchestrator.js`
+  2. `src/agent/securityAgent.js`
+  3. `src/agent/specializedAgents.js`
+  4. `src/agent/knowledgeBase.js`
+  5. `src/agent/responseAgent.js`
+
+- Si quieres cambiar la lógica de un agente, edita primero el prompt en `markdown/` antes de tocar el código.
+- Si quieres añadir un nuevo tema, crea un nuevo agente en `specializedAgents.js`, agrega su prompt en `markdown/` y su carpeta de documentos en `src/agent/documents/`.
+
+# Resumen final
+
+Este proyecto separa claramente:
+
+- la seguridad (`securityAgent`),
+- la orquestación (`orchestrator`),
+- la especialización temática (`specializedAgents`),
+- la base de conocimiento externa (`markdown/` + `documents/`),
+- y la respuesta final al usuario (`responseAgent`).
+
+De esta forma, se logra una arquitectura modular, fácil de añadir nuevos temas y que usa datos documentales de forma responsable.

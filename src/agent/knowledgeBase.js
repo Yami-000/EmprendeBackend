@@ -38,6 +38,60 @@ const AGENT_CATALOG = {
     promptFile: 'system_prompt_MiPrimerSueldo.md',
     keywords: ['sueldo', 'salario', 'primer sueldo', 'tarjeta de débito', 'cuenta corriente', 'cuenta a la vista', 'pin', 'cajero', 'fraude'],
   },
+  mi_primera_constitucion_emp_simplificada: {
+    name: 'mi_primera_constitucion_emp_simplificada',
+    folder: 'MiPrimeraConstitucionEmpSimplificada',
+    promptFile: 'system_prompt_MiPrimeraConstitucionEmpSimplificada.md',
+    keywords: ['constitución', 'empresa', 'constitución simplificada', 'sociedad', 'estatutos', 'documentos'],
+  },
+  mi_primera_constitucion_emp_tradicional: {
+    name: 'mi_primera_constitucion_emp_tradicional',
+    folder: 'MiPrimeraConstitucionEmpTradicional',
+    promptFile: 'system_prompt_MiPrimeraConstitucionEmpTradicional.md',
+    keywords: ['constitución', 'empresa', 'constitución tradicional', 'sociedad', 'estatutos', 'documentos'],
+  },
+  mi_primera_documentacion_form: {
+    name: 'mi_primera_documentacion_form',
+    folder: 'MiPrimeraDocumentacionForm',
+    promptFile: 'system_prompt_MiPrimeraDocumentacionForm.md',
+    keywords: ['documentación', 'formulario', 'requisitos', 'tramites', 'papeles'],
+  },
+  mi_primera_eleccion_emp: {
+    name: 'mi_primera_eleccion_emp',
+    folder: 'MiPrimeraEleccionEmp',
+    promptFile: 'system_prompt_MiPrimeraEleccionEmp.md',
+    keywords: ['elección', 'tipo de empresa', 'forma jurídica', 'persona natural', 'persona jurídica', 'modelo de negocio'],
+  },
+  mi_primer_inicio_sii: {
+    name: 'mi_primer_inicio_sii',
+    folder: 'MiPrimerInicioSII',
+    promptFile: 'system_prompt_MiPrimerInicioSII.md',
+    keywords: ['SII', 'impuestos', 'RUT', 'facturación', 'declaración', 'obligaciones tributarias'],
+  },
+  mi_primeros_permisos_compl: {
+    name: 'mi_primeros_permisos_compl',
+    folder: 'MiPrimeroPermisosCompl',
+    promptFile: 'system_prompt_MiPrimeroPermisosCompl.md',
+    keywords: ['permiso', 'patente municipal', 'licencia', 'compliance', 'regulación'],
+  },
+  mi_primeros_costos_y_plazos_de_form: {
+    name: 'mi_primeros_costos_y_plazos_de_form',
+    folder: 'MiPrimerosCostosYPlazosDeForm',
+    promptFile: 'system_prompt_MiPrimerosCostosYPlazosDeForm.md',
+    keywords: ['costos', 'plazos', 'formación', 'trámites', 'tiempo', 'presupuesto'],
+  },
+  mi_primer_proceso_form: {
+    name: 'mi_primer_proceso_form',
+    folder: 'MiPrimerProcesoForm',
+    promptFile: 'system_prompt_MiPrimerProcesoForm.md',
+    keywords: ['proceso', 'trámites', 'paso a paso', 'formación de empresa', 'documentos', 'inscripción'],
+  },
+  mi_primera_patente_mun: {
+    name: 'mi_primera_patente_mun',
+    folder: 'MiPrimeraPatenteMun',
+    promptFile: 'systeme_prompt_MiPrimeraPatenteMun.md',
+    keywords: ['patente', 'municipal', 'patente municipal', 'licencia comercial'],
+  },
 };
 
 const TOKEN_PATTERN = /[\p{L}\p{N}]+/gu;
@@ -97,24 +151,31 @@ const stripRtf = (raw = '') => raw
   .trim();
 
 const collectFiles = async (directoryPath) => {
-  const entries = await fs.readdir(directoryPath, { withFileTypes: true });
-  const files = [];
+  try {
+    const entries = await fs.readdir(directoryPath, { withFileTypes: true });
+    const files = [];
 
-  for (const entry of entries) {
-    const fullPath = path.join(directoryPath, entry.name);
-    if (entry.isDirectory()) {
-      const nestedFiles = await collectFiles(fullPath);
-      files.push(...nestedFiles);
-      continue;
+    for (const entry of entries) {
+      const fullPath = path.join(directoryPath, entry.name);
+      if (entry.isDirectory()) {
+        const nestedFiles = await collectFiles(fullPath);
+        files.push(...nestedFiles);
+        continue;
+      }
+
+      const extension = path.extname(entry.name).toLowerCase();
+      if (['.docx', '.md', '.txt', '.rtf'].includes(extension)) {
+        files.push(fullPath);
+      }
     }
 
-    const extension = path.extname(entry.name).toLowerCase();
-    if (['.docx', '.md', '.txt', '.rtf'].includes(extension)) {
-      files.push(fullPath);
+    return files;
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return [];
     }
+    throw error;
   }
-
-  return files;
 };
 
 const loadFileText = async (filePath) => {
@@ -235,6 +296,11 @@ const selectRecommendedLinks = (agentKey, query, allowedLinks = []) => {
   return [];
 };
 
+const loadPromptText = async (promptFile) => {
+  const promptPath = path.join(PROMPTS_ROOT, promptFile);
+  return await fs.readFile(promptPath, 'utf8');
+};
+
 const loadAgentKnowledge = async (agentKey) => {
   const agent = AGENT_CATALOG[agentKey];
 
@@ -242,9 +308,7 @@ const loadAgentKnowledge = async (agentKey) => {
     throw new Error(`No existe configuración para el agente: ${agentKey}`);
   }
 
-  const promptPath = path.join(PROMPTS_ROOT, agent.promptFile);
-  const prompt = await fs.readFile(promptPath, 'utf8');
-
+  const prompt = await loadPromptText(agent.promptFile);
   const folderPath = path.join(DOCUMENTS_ROOT, agent.folder);
   const documentFiles = await collectFiles(folderPath);
   const chunks = [];
@@ -272,6 +336,19 @@ const loadAgentKnowledge = async (agentKey) => {
     chunks,
     urls: Array.from(urls),
   };
+};
+
+const getAllSystemPrompts = async () => {
+  const allPrompts = {};
+
+  await Promise.all(Object.entries(AGENT_CATALOG).map(async ([agentKey, agent]) => {
+    allPrompts[agentKey] = {
+      ...agent,
+      prompt: await loadPromptText(agent.promptFile),
+    };
+  }));
+
+  return allPrompts;
 };
 
 const knowledgeCache = new Map();
@@ -331,4 +408,4 @@ export const buildAgentSystemPrompt = async (agentKey, query) => {
   };
 };
 
-export { AGENT_CATALOG, normalizeText };
+export { AGENT_CATALOG, normalizeText, getAllSystemPrompts };

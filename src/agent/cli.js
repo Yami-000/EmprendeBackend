@@ -16,10 +16,10 @@ Comandos disponibles:
 `;
 
 const main = async () => {
-  console.log('\n=== LookFin Multi-Agent System ===');
+  console.log('\n=== Emprende Multi-Agent System ===');
   console.log(`Host: ${host}`);
   console.log(`Model: ${model}`);
-  console.log('Sistema de agentes especializado para finanzas personales.\n');
+  console.log('Sistema de agentes especializado para emprendedores.\n');
 
   try {
     const tags = await testOllamaConnection({ host });
@@ -61,10 +61,10 @@ const main = async () => {
         const result = await orchestrator.processQuery(userMessage, sessionHistory);
 
         if (result.validation && !result.validation.valida) {
-          console.log(`\nLookFin> ${result.response}\n`);
+          console.log(`\nEmprende> ${result.response}\n`);
         } else {
           const agentInfo = result.agentUsed ? ` [${result.agentUsed}]` : '';
-          console.log(`\nLookFin${agentInfo}> ${result.response}\n`);
+          console.log(`\nEmprende${agentInfo}> ${result.response}\n`);
         }
 
         sessionHistory.push({ role: 'user', content: userMessage });

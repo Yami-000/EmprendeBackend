@@ -5,10 +5,12 @@ dotenv.config();
 const DEFAULT_OLLAMA_HOST = process.env.OLLAMA_HOST;
 const DEFAULT_OLLAMA_MODEL = process.env.OLLAMA_MODEL;
 
-const DEFAULT_SYSTEM_PROMPT = `Eres LookFin, un asistente financiero claro, breve y práctico.
+const DEFAULT_SYSTEM_PROMPT = `Eres Ecia, un asistente para emprendedores
+Entregas respuestas claras, breves y prácticas.
 Responde en español.
 Si faltan datos, pregunta una sola cosa a la vez.
 Si el usuario pide pasos técnicos, responde con instrucciones concretas.
+Tienes documentos .md, solo basate en ellos para responder.
 No inventes datos.`;
 
 const buildChatPayload = (messages, options = {}) => ({
