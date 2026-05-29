@@ -1,5 +1,9 @@
-const DEFAULT_OLLAMA_HOST = process.env.OLLAMA_HOST ?? 'http://127.0.0.1:11434';
-const DEFAULT_OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? 'llama3.1';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const DEFAULT_OLLAMA_HOST = process.env.OLLAMA_HOST;
+const DEFAULT_OLLAMA_MODEL = process.env.OLLAMA_MODEL;
 
 const DEFAULT_SYSTEM_PROMPT = `Eres LookFin, un asistente financiero claro, breve y práctico.
 Responde en español.
