@@ -118,6 +118,62 @@ Supongamos que el usuario pregunta: "¿Cómo puedo empezar a ahorrar?"
 
 Esta separación asegura que ninguna consulta vaya al agente especializado si existe riesgo de abuso.
 
+## 2.1 Detalle del manejo de patrones en `securityAgent.js`
+
+Se añadieron y explicaron varios patrones de expresión regular que controla `securityAgent.js` antes de permitir una consulta:
+
+- `HAS_USER_DATA_PATTERN`
+  - Detecta frases que parecen pedir datos de otra persona o de cuentas ajenas, como:
+    - "usuario 123"
+    - "cuenta 456"
+    - "cartola de"
+    - "saldo de Juan"
+    - "datos del usuario"
+    - "información de usuario 789"
+  - Si la consulta coincide con este patrón, se rechaza inmediatamente por riesgo de acceso no autorizado.
+
+- `IMPERSONATION_PATTERN`
+  - Detecta intentos de suplantación o afirmaciones de identidad falsas, como:
+    - "yo soy usuario"
+    - "soy admin"
+    - "soy usuario vip"
+    - "cree que soy"
+  - Este patrón también produce un rechazo inmediato para evitar que alguien finja ser otro usuario.
+
+- `SIMPLE_GREETING_PATTERN`
+  - Detecta saludos o respuestas cortas simples, como:
+    - "hola", "hi", "hey"
+    - "buenos días", "buenas tardes"
+    - "ok", "claro", "de acuerdo"
+  - Estas consultas se permiten sin enviar la pregunta al LLM, porque no implican riesgo ni datos sensibles.
+
+- `OFFICIAL_LINK_REQUEST_PATTERN`
+  - Detecta consultas que piden recursos y enlaces oficiales, como:
+    - "link", "enlace", "sitio oficial"
+    - "documentación", "manual", "guía"
+  - Se usa para permitir solicitudes legítimas de información referenciada siempre que no involucren datos sensibles.
+
+- `PERSONAL_FINANCE_PATTERN`
+  - Detecta términos relacionados con finanzas, empresa y trámites, como:
+    - "ahorro", "presupuesto", "deuda", "impuestos"
+    - "SII", "patente", "empresa", "negocio"
+    - "documentación", "trámites"
+  - Se utiliza junto a `OFFICIAL_LINK_REQUEST_PATTERN` para validar que una petición de enlace oficial realmente está en el contexto financiero o emprendedor.
+
+### Qué se corrigió
+
+Antes del cambio, `securityAgent.js` intentaba usar `OFFICIAL_LINK_REQUEST_PATTERN` y `PERSONAL_FINANCE_PATTERN` sin haberlos definido, lo que producía el error:
+
+- `OFFICIAL_LINK_REQUEST_PATTERN is not defined`
+
+Esto provocaba que la validación fallara internamente y, en el flujo anterior, la consulta siguiera adelante con un resultado no confiable.
+
+### Comportamiento seguro ahora
+
+- Si la validación detecta un patrón de datos sensibles o suplantación, devuelve `valida: false` con una razón clara.
+- Si el LLM devuelve algo que no es JSON válido, también se bloquea la consulta en lugar de permitirla.
+- Si ocurre un error interno de validación, la respuesta final indica que hubo un error y no intenta generar una respuesta inventada.
+
 ## 3. Los agentes especializados usan prompts y documentos
 
 `src/agent/specializedAgents.js` define los agentes especializados y los enlaza con `knowledgeBase.js`.
