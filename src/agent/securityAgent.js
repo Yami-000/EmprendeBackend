@@ -9,6 +9,9 @@ const HAS_USER_DATA_PATTERN = /\b(usuario\s+\d+|cuenta\s+\d+|cartola\s+de\s+|sal
 const IMPERSONATION_PATTERN = /\b(yo\s+soy\s+usuario|soy\s+admin|soy\s+usuario\s+vip|cree\s+que\s+soy)\b/i;
 const SIMPLE_GREETING_PATTERN = /^\s*(hola|hi|hey|buenos|buenas|buenos d[ií]as|buenas noches|buenas tardes|que tal|qu[eé] tal|saludo|yo|si|no|ok|claro|de acuerdo)\s*$/i;
 
+const OFFICIAL_LINK_REQUEST_PATTERN = /\b(link|enlace|sitio oficial|sitio web|documentación|recurso|portal|página|página oficial|manual|guía)\b/i;
+const PERSONAL_FINANCE_PATTERN = /\b(ahorro|invertir|presupuesto|deuda|gastos|saldo|cuenta|finanzas|impuestos|SII|patente|empresa|negocio|documentación|paso a paso|trámites|formación)\b/i;
+
 const isAllowedLinkQuery = (query) => {
   const normalized = normalizeQuery(query);
   const asksForOfficialResource = OFFICIAL_LINK_REQUEST_PATTERN.test(normalized);
@@ -95,8 +98,8 @@ export const validateQuery = async (query, host, model) => {
         validation = JSON.parse(jsonMatch[0]);
       } else {
         return {
-          valida: true,
-          razon: 'Consulta permitida por defecto (validación fallida).',
+          valida: false,
+          razon: 'No se pudo validar la consulta: la respuesta de seguridad no es JSON válido.',
         };
       }
     }
@@ -106,10 +109,10 @@ export const validateQuery = async (query, host, model) => {
       razon: validation.razon || 'Sin especificar',
     };
   } catch (error) {
-    console.error('Error en validación:', error.message);
+    console.error('Error en validación:', error);
     return {
-      valida: true,
-      razon: 'Consulta permitida (error en validación de seguridad).',
+      valida: false,
+      razon: 'Error interno de validación de seguridad. No se puede procesar la consulta en este momento.',
     };
   }
 };

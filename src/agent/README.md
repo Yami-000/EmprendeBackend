@@ -1,4 +1,4 @@
-# LookFin Multi-Agent System
+# Emprende Multi-Agent System
 
 Sistema de agentes especializados en finanzas personales basado en Ollama y llama3.1.
 
