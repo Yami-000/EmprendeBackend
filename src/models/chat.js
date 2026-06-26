@@ -33,6 +33,10 @@ export default (sequelize) => {
             foreignKey: 'usuarioID',
             as: 'usuario',
         });
+        Chat.hasMany(models.Mensaje, {
+            foreignKey: 'chatID',
+            as: 'mensajes',
+        });
     };
 
     return Chat;

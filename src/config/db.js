@@ -3,38 +3,57 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const db = new Sequelize(
-  process.env.PGDATABASE || process.env.DB_NAME,
-  process.env.PGUSER || process.env.DB_USER,
-  process.env.PGPASSWORD || process.env.DB_PASSWORD,
+export let db = null;
+
+const createPostgres = () => new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: process.env.PGHOST || process.env.DB_HOST,
-    port: process.env.PGPORT || process.env.DB_PORT || 5432,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
     dialect: 'postgres',
     logging: false,
-    // dialectOptions: {
-    //   ssl: process.env.NODE_ENV === 'production' ? {
-    //     require: true,
-    //     rejectUnauthorized: false,
-    //   } : false,
-    // },
     dialectOptions: {
       ssl: {
         require: true,
         rejectUnauthorized: false,
       },
-    }, 
+    },
   }
 );
 
 export const connectDB = async () => {
   try {
+    db = createPostgres();
     await db.authenticate();
-    console.log('Conexión a la base de datos exitosa');
-    await db.sync({ alter: true }); // alter | force
+    console.log('✅ Conexión a Supabase (Postgres) establecida correctamente.');
+    await db.sync({ alter: true });
     console.log('Tablas sincronizadas (alter:true)');
+    return;
   } catch (error) {
-    console.error('Error al conectar a la base de datos:', error.message);
-    process.exit(1);
+    console.error('Error al conectar a Supabase (Postgres):', error.message);
+    console.error('Detalles de conexión:', {
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+    });
+
+    if ((process.env.NODE_ENV || 'development') === 'development') {
+      console.warn('Cayendo a SQLite en memoria como último recurso para desarrollo.');
+      db = new Sequelize({ dialect: 'sqlite', storage: ':memory:', logging: false });
+      try {
+        await db.authenticate();
+        console.log('Conexión a la base de datos (SQLite in-memory) establecida');
+        await db.sync({ alter: true });
+        console.log('Tablas sincronizadas en SQLite (alter:true)');
+      } catch (e) {
+        console.error('Error al inicializar SQLite fallback:', e.message);
+      }
+      return;
+    }
+
+    throw error;
   }
 };
