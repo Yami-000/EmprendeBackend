@@ -80,6 +80,11 @@ export default (sequelize) => {
             allowNull: true,
             unique: true,
         },
+        telegramId: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: true,
+        },
     }, {
         tableName: 'Usuario',
         timestamps: true,
@@ -112,7 +117,7 @@ export default (sequelize) => {
 
     Usuario.associate = (models) => {
         Usuario.hasMany(models.Mensaje, {
-            foreignKey: 'emisorID',
+            foreignKey: 'usuarioID',
             as: 'mensajesEnviados'
         });
         Usuario.hasMany(models.Chat, {
