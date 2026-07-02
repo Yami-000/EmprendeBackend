@@ -26,7 +26,7 @@ export default (sequelize) => {
         },
         texto: {
             type: DataTypes.STRING(500),
-            allowNull: false,
+            allowNull: true,
             validate: {
                 len: [1, 500],
             },
@@ -38,7 +38,16 @@ export default (sequelize) => {
                 isUrl: true,
                 len: [0, 255],
             },
-        }
+        },
+        role: {
+            type: DataTypes.ENUM('user', 'assistant'),
+            allowNull: false,
+            defaultValue: 'user',
+        },
+        content: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
     }, {
         tableName: 'Mensaje',
         timestamps: true,

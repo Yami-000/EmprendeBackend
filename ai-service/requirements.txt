@@ -1,0 +1,8 @@
+langchain>=0.0.418
+chromadb>=0.3.29
+ollama>=0.1.4
+sentence-transformers>=2.2.2
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.7.0
+httpx>=0.24.0
