@@ -1,0 +1,20 @@
+[
+  {
+    "id": "bp_001",
+    "pregunta": "¿Cuáles son los pasos para iniciar actividades en el SII?",
+    "respuesta_esperada_keywords": ["inicio de actividades","SII","formulario"],
+    "categoria": "sii"
+  },
+  {
+    "id": "bp_002",
+    "pregunta": "¿Qué es la patente municipal y cuándo se requiere?",
+    "respuesta_esperada_keywords": ["patente municipal","municipalidad","actividad"],
+    "categoria": "sii"
+  },
+  {
+    "id": "bp_003",
+    "pregunta": "¿Cómo funciona el impuesto a la renta para personas naturales en Chile?",
+    "respuesta_esperada_keywords": ["impuesto a la renta","personas naturales","tramos"],
+    "categoria": "tributario"
+  }
+]

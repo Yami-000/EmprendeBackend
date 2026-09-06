@@ -234,3 +234,10 @@ Fin del Roadmap de Refactorización.
   - `src/bot.js`: la petición a `RAG_URL` usa `timeout: 60000` y ahora tiene manejo de error amigable al usuario cuando el backend no responde.
   - Documentación recomendada: arrancar el servicio RAG con `uvicorn ai-service.api:app --host 0.0.0.0 --port 11400` y ajustar `RAG_URL` si el servicio escucha en otro host/puerto.
 
+## Testing y Metodología
+
+- Se añadió `METODOLOGIA_TESTING.md` con el protocolo de evaluación (métricas, fases, branching strategy y topología de archivos) para institucionalizar pruebas del chatbot.
+- Se creó la estructura de `tests/` con dataset de ejemplo `tests/dataset/banco_preguntas.json` y plantillas de iteración en `tests/iteraciones/` para registrar resultados, planes y bifurcaciones experimentales.
+- Objetivo: ejecutar benchmarks automatizados y evolucionar mediante ramas hijas siguiendo la Regla de Oro (aislamiento de variables).
+
+

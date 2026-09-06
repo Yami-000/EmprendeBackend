@@ -9,6 +9,7 @@
 | 2026-09-06 | RAG / Seguridad / Frontend | Docs/Audit | Auditoría Fase 2: mapeo RAG, revisión de código muerto frontend y evaluación de seguridad/resiliencia | Identifica riesgos: credenciales en repo, timeouts inexistentes, riesgo de prompt injection, dependencias frontend no usadas |
 | 2026-09-06 | Seguridad / Infraestructura | Fix | Limpieza inmediata: remoción del archivo de credenciales del árbol de trabajo, añadido de `credentials/` y `data/` a .gitignore, eliminación de `firebase` y `firebase-admin` de `package.json` | Credenciales movidas fuera del repo; dependencias eliminadas del manifest; se recomienda rotación y purgado del historial |
 | 2026-09-06 | Auditoría Fase 1 | Docs/Validation | Fase 1 validada y operativa tras smoke tests: RAG en http://0.0.0.0:11400, backend Node arrancando, y persistencia SQLite en `./data/dev.sqlite` | Cambios aplicados: timeouts, num_ctx, persistencia local; pendiente saneamiento y modernización RAG |
+| 2026-09-06 | Testing / Tests/ | Docs | Añadida `METODOLOGIA_TESTING.md` y estructura `tests/` (dataset y plantillas de iteración) para institucionalizar protocoles de evaluación y experimentación | Permite ejecutar benchmarks y documentar iteraciones experimentales; próximo: correr baseline y llenar `resultado_1.0.md` |
 
 ## Deuda Técnica Inicial Detectada (Línea Base)
  - [x] Eliminar `credentials/*.json` del repositorio, rotar claves y usar un secret manager (alto riesgo de exposición).
