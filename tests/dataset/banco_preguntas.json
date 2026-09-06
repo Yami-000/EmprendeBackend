@@ -7,10 +7,10 @@
     "tipo": "factual",
     "ground_truth": {
       "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
-      "seccion": null,
-      "cita_anclaje": "__Marco Institucional, Mandato y Funciones del Banco Central de Chile__\n\n__Resumen Ejecutivo__\n\nEl Banco Central de Chile \\(BCCh\\) se constituye como una entidad técnica de carácter autónomo y rango constitucional, cuya misión fundamental es velar por la estabilidad de la moneda y la continuidad de los sistemas de pago\\.",
-      "respuesta_esperada": "__Marco Institucional, Mandato y Funciones del Banco Central de Chile__\n\n__Resumen Ejecutivo__\n\nEl Banco Central de Chile \\(BCCh\\) se constituye como una entidad técnica de carácter autónomo y rango constitucional, cuya misión fundamental es velar por la estabilidad de la moneda y la continuidad de los sistemas de pago\\."
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpTradicional.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "---\n\n### 3.1 Características del Régimen Tradicional\n\n- Requiere formalización mediante documentos legales  \n- Incluye validación ante autoridades e instituciones  \n- Se realiza mediante etapas estructuradas y obligatorias  \n\n---\n\n### 3.2 Etapas del Proceso\n\nEl proceso de constitución en régimen tradicional comprende las siguientes etapas:\n\n#### Escritura Pública\n- La empresa se crea mediante un documento firmado ante notario  \n\n#### Publicación\n- La constitución debe publicarse en el Diario Oficial  \n\n#### Inscripción\n- La empresa se registra en el Registro de Comercio correspondiente  \n\n#### Obtención de RUT\n- Se solicita el número tributario ante el Servicio de Impuestos Internos  \n\n---\n\n### 3.3 Consideraciones del Proceso\n\nEste tipo de constitución:\n\n- Es más formal que otras alternativas  \n- Puede implicar mayores costos  \n- Puede requerir más tiempo para completarse  \n- Sigue siendo una opción válida según las necesidades del emprendimiento  \n\n---\n\n## 4.",
+      "respuesta_esperada": "---\n\n### 3.1 Características del Régimen Tradicional\n\n- Requiere formalización mediante documentos legales  \n- Incluye validación ante autoridades e instituciones  \n- Se realiza mediante etapas estructuradas y obligatorias  \n\n---\n\n### 3.2 Etapas del Proceso\n\nEl proceso de constitución en régimen tradicional comprende las siguientes etapas:\n\n#### Escritura Pública\n- La empresa se crea mediante un documento firmado ante notario  \n\n#### Publicación\n- La constitución debe publicarse en el Diario Oficial  \n\n#### Inscripción\n- La empresa se registra en el Registro de Comercio correspondiente  \n\n#### Obtención de RUT\n- Se solicita el número tributario ante el Servicio de Impuestos Internos  \n\n---\n\n### 3.3 Consideraciones del Proceso\n\nEste tipo de constitución:\n\n- Es más formal que otras alternativas  \n- Puede implicar mayores costos  \n- Puede requerir más tiempo para completarse  \n- Sigue siendo una opción válida según las necesidades del emprendimiento  \n\n---\n\n## 4."
     }
   },
   {
@@ -21,10 +21,10 @@
     "tipo": "factual",
     "ground_truth": {
       "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BonosCorporativos.md",
-      "seccion": null,
-      "cita_anclaje": "- __Canales de adquisición:__ La compra puede realizarse directamente al emisor, a través de intermediarios \\(corredores de bolsa y agentes de valores\\) u otros agentes autorizados\\.",
-      "respuesta_esperada": "- __Canales de adquisición:__ La compra puede realizarse directamente al emisor, a través de intermediarios \\(corredores de bolsa y agentes de valores\\) u otros agentes autorizados\\."
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md",
+      "seccion": "## 5. Límites del Agente",
+      "cita_anclaje": "Límites del Agente\n\nEl agente **no debe**:\n\n- Realizar el trámite en nombre del usuario\n- Entregar asesoría tributaria vinculante\n- Incluir requisitos o pasos no presentes en el contenido base\n- Sustituir al Servicio de Impuestos Internos u otras entidades oficiales\n\n---\n\n## 6.",
+      "respuesta_esperada": "Límites del Agente\n\nEl agente **no debe**:\n\n- Realizar el trámite en nombre del usuario\n- Entregar asesoría tributaria vinculante\n- Incluir requisitos o pasos no presentes en el contenido base\n- Sustituir al Servicio de Impuestos Internos u otras entidades oficiales\n\n---\n\n## 6."
     }
   },
   {
@@ -62,11 +62,11 @@
     "criterio_esperado": "Mencionar atención a contribuyentes, fiscalización directa, aplicación de sanciones administrativas y resolución de peticiones en su jurisdicción.",
     "tipo": "factual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Sección 3: Funciones Reguladoras y Operativas__\n\nEl Banco Central posee facultades exclusivas y compartidas que impactan directamente en la economía real y financiera:\n\n- __Potestad de Emisión:__ Facultad exclusiva para la emisión de billetes y la acuñación de monedas\\.",
-      "respuesta_esperada": "__Sección 3: Funciones Reguladoras y Operativas__\n\nEl Banco Central posee facultades exclusivas y compartidas que impactan directamente en la economía real y financiera:\n\n- __Potestad de Emisión:__ Facultad exclusiva para la emisión de billetes y la acuñación de monedas\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -76,11 +76,11 @@
     "criterio_esperado": "Especificar el plazo legal de 2 meses siguientes a aquel en que se comiencen a desarrollar las actividades económicas.",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
-      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -90,11 +90,11 @@
     "criterio_esperado": "Diferenciar rentas del capital/empresas (Primera Categoría) frente a rentas del trabajo personal o profesional independiente (Segunda Categoría).",
     "tipo": "conceptual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Tabla de Ejemplo de Costos \\(Estimados\\):__\n\n__Concepto__\n\n__Inversión $500\\.000__\n\n__Inversión $1\\.000\\.000__\n\n__Inversión $5\\.000\\.000__\n\nComisión \\(aprox\\.\\)\n\n$2\\.500\n\n$5\\.000\n\n$25\\.000\n\nFacturación\n\n$3\\.000\n\n$3\\.000\n\n$3\\.000\n\nIVA \\(19%\\)\n\n$1\\.045\n\n$1\\.520\n\n$5\\.320\n\n__Costo Total__\n\n__$6\\.545__\n\n__$9\\.520__\n\n__$33\\.320__\n\n__Conceptos Financieros Clave__\n\n- __Ganancia de Capital:__ Utilidad derivada de la diferencia positiva entre el precio de compra y el de venta\\.",
-      "respuesta_esperada": "__Tabla de Ejemplo de Costos \\(Estimados\\):__\n\n__Concepto__\n\n__Inversión $500\\.000__\n\n__Inversión $1\\.000\\.000__\n\n__Inversión $5\\.000\\.000__\n\nComisión \\(aprox\\.\\)\n\n$2\\.500\n\n$5\\.000\n\n$25\\.000\n\nFacturación\n\n$3\\.000\n\n$3\\.000\n\n$3\\.000\n\nIVA \\(19%\\)\n\n$1\\.045\n\n$1\\.520\n\n$5\\.320\n\n__Costo Total__\n\n__$6\\.545__\n\n__$9\\.520__\n\n__$33\\.320__\n\n__Conceptos Financieros Clave__\n\n- __Ganancia de Capital:__ Utilidad derivada de la diferencia positiva entre el precio de compra y el de venta\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -104,11 +104,11 @@
     "criterio_esperado": "Mencionar contrato de arriendo notariado, certificado de dominio vigente, títulos de propiedad o autorización notarial de uso.",
     "tipo": "procedimiento",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "- __Evaluación Financiera:__ Antecedentes de actividad, bienes, deudas e informes bancarios para acreditar solvencia\\.",
-      "respuesta_esperada": "- __Evaluación Financiera:__ Antecedentes de actividad, bienes, deudas e informes bancarios para acreditar solvencia\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -118,11 +118,11 @@
     "criterio_esperado": "Aclarar que constituye infracción tributaria (multas según Código Tributario) e imposibilidad de timbrar/emitir documentos tributarios.",
     "tipo": "sancion",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
-      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -133,10 +133,10 @@
     "tipo": "delimitacion",
     "ground_truth": {
       "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AgentesValores.md",
-      "seccion": null,
-      "cita_anclaje": "- __Voluntariedad:__ Este servicio es opcional; el inversionista puede decidir mantener los títulos por sí mismo o en otra institución\\.",
-      "respuesta_esperada": "- __Voluntariedad:__ Este servicio es opcional; el inversionista puede decidir mantener los títulos por sí mismo o en otra institución\\."
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/systeme_prompt_MiPrimeraPatenteMun.md",
+      "seccion": "# System Prompt — Asesor de Patente Municipal",
+      "cita_anclaje": "# System Prompt — Asesor de Patente Municipal\n\n## 1.",
+      "respuesta_esperada": "# System Prompt — Asesor de Patente Municipal\n\n## 1."
     }
   },
   {
@@ -202,11 +202,11 @@
     "criterio_esperado": "No. Debe emitir Facturas No Afectas o Exentas de IVA, salvo que amplíe su giro ante el SII a actividades afectas.",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "- __Capacidad de Giro:__ El titular puede disponer de fondos mediante cheques, tarjetas de débito o transferencias electrónicas\\.",
-      "respuesta_esperada": "- __Capacidad de Giro:__ El titular puede disponer de fondos mediante cheques, tarjetas de débito o transferencias electrónicas\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -216,11 +216,11 @@
     "criterio_esperado": "Identificar obligatoriamente la Nota de Crédito Electrónica.",
     "tipo": "procedimiento",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CarteraInversion.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Ponderación Relativa:__ El texto original menciona que se detalla \"en qué instrumentos se concentra\", pero no define si este detalle debe expresarse en montos nominales, cantidad de títulos o porcentajes de participación\\.",
-      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Ponderación Relativa:__ El texto original menciona que se detalla \"en qué instrumentos se concentra\", pero no define si este detalle debe expresarse en montos nominales, cantidad de títulos o porcentajes de participación\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -245,10 +245,10 @@
     "tipo": "sancion",
     "ground_truth": {
       "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
-      "seccion": null,
-      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
-      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpTradicional.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "---\n\n### 3.1 Características del Régimen Tradicional\n\n- Requiere formalización mediante documentos legales  \n- Incluye validación ante autoridades e instituciones  \n- Se realiza mediante etapas estructuradas y obligatorias  \n\n---\n\n### 3.2 Etapas del Proceso\n\nEl proceso de constitución en régimen tradicional comprende las siguientes etapas:\n\n#### Escritura Pública\n- La empresa se crea mediante un documento firmado ante notario  \n\n#### Publicación\n- La constitución debe publicarse en el Diario Oficial  \n\n#### Inscripción\n- La empresa se registra en el Registro de Comercio correspondiente  \n\n#### Obtención de RUT\n- Se solicita el número tributario ante el Servicio de Impuestos Internos  \n\n---\n\n### 3.3 Consideraciones del Proceso\n\nEste tipo de constitución:\n\n- Es más formal que otras alternativas  \n- Puede implicar mayores costos  \n- Puede requerir más tiempo para completarse  \n- Sigue siendo una opción válida según las necesidades del emprendimiento  \n\n---\n\n## 4.",
+      "respuesta_esperada": "---\n\n### 3.1 Características del Régimen Tradicional\n\n- Requiere formalización mediante documentos legales  \n- Incluye validación ante autoridades e instituciones  \n- Se realiza mediante etapas estructuradas y obligatorias  \n\n---\n\n### 3.2 Etapas del Proceso\n\nEl proceso de constitución en régimen tradicional comprende las siguientes etapas:\n\n#### Escritura Pública\n- La empresa se crea mediante un documento firmado ante notario  \n\n#### Publicación\n- La constitución debe publicarse en el Diario Oficial  \n\n#### Inscripción\n- La empresa se registra en el Registro de Comercio correspondiente  \n\n#### Obtención de RUT\n- Se solicita el número tributario ante el Servicio de Impuestos Internos  \n\n---\n\n### 3.3 Consideraciones del Proceso\n\nEste tipo de constitución:\n\n- Es más formal que otras alternativas  \n- Puede implicar mayores costos  \n- Puede requerir más tiempo para completarse  \n- Sigue siendo una opción válida según las necesidades del emprendimiento  \n\n---\n\n## 4."
     }
   },
   {
@@ -272,11 +272,11 @@
     "criterio_esperado": "Hasta el día 12 del mes siguiente en formato tradicional o hasta el día 20 si es contribuyente facturador electrónico.",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BonosCorporativos.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\.",
-      "respuesta_esperada": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -286,11 +286,11 @@
     "criterio_esperado": "Definirlos como anticipos obligatorios a cuenta del Impuesto a la Renta de Primera Categoría anual, calculados sobre los ingresos brutos.",
     "tipo": "conceptual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CalculadoraDemoraPagarTarjeta.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "El simulador permite comparar el impacto de pagar únicamente el monto mínimo sugerido frente a la realización de pagos fijos mensuales por un importe superior\\.",
-      "respuesta_esperada": "El simulador permite comparar el impacto de pagar únicamente el monto mínimo sugerido frente a la realización de pagos fijos mensuales por un importe superior\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
     }
   },
   {
@@ -314,11 +314,11 @@
     "criterio_esperado": "Declaración Anual de Impuesto a la Renta, presentada habitualmente durante el mes de abril de cada año tributario.",
     "tipo": "conceptual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/InstrumentosFinancierosValores.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Vehículos de Inversión Colectiva:__ Instrumentos que representan la participación en patrimonios administrados por terceros:\n\t- __Cuotas de Fondos Mutuos:__ Orientadas habitualmente a la liquidez y diversificación masiva\\.",
-      "respuesta_esperada": "__Vehículos de Inversión Colectiva:__ Instrumentos que representan la participación en patrimonios administrados por terceros:\n\t- __Cuotas de Fondos Mutuos:__ Orientadas habitualmente a la liquidez y diversificación masiva\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -342,11 +342,11 @@
     "criterio_esperado": "Se genera cuando los créditos acumulados o retenciones/PPM pagados superan el impuesto anual calculado, siendo devuelto por la Tesorería General de la República.",
     "tipo": "procedimiento",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Contexto y Propósito del Documento__\n\nEste documento estructura la información relativa a la naturaleza, operación y riesgos de las acciones en el mercado de valores chileno\\.",
-      "respuesta_esperada": "__Contexto y Propósito del Documento__\n\nEste documento estructura la información relativa a la naturaleza, operación y riesgos de las acciones en el mercado de valores chileno\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -356,11 +356,11 @@
     "criterio_esperado": "Régimen simplificado con tasa reducida de Primera Categoría, tributación en base a ingresos percibidos y gastos pagados, y depreciación instantánea.",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Sección 4: Estructura de Costos y Régimen Tributario__\n\nEl mantenimiento de la cuenta y sus productos asociados genera costos que el banco fija libremente bajo criterios de no discriminación\\.",
-      "respuesta_esperada": "__Sección 4: Estructura de Costos y Régimen Tributario__\n\nEl mantenimiento de la cuenta y sus productos asociados genera costos que el banco fija libremente bajo criterios de no discriminación\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -385,10 +385,10 @@
     "tipo": "normativa",
     "ground_truth": {
       "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CalculadoraDemoraPagarTarjeta.md",
-      "seccion": null,
-      "cita_anclaje": "Su propósito es evidenciar el ahorro financiero y la reducción de plazos que se obtienen al incrementar el esfuerzo de pago, además de advertir sobre escenarios donde el pago mínimo es insuficiente para reducir el capital adeudado\\.",
-      "respuesta_esperada": "Su propósito es evidenciar el ahorro financiero y la reducción de plazos que se obtienen al incrementar el esfuerzo de pago, además de advertir sobre escenarios donde el pago mínimo es insuficiente para reducir el capital adeudado\\."
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/systeme_prompt_MiPrimeraPatenteMun.md",
+      "seccion": "## 9. Comportamiento Esperado",
+      "cita_anclaje": "Comportamiento Esperado\n\n- No hacer preguntas innecesarias\n- No agregar información fuera del contenido proporcionado\n- No explicar el proceso interno de análisis\n- Entregar respuestas directamente utilizables\n- Mantener enfoque en la comprensión de la patente municipal como requisito legal",
+      "respuesta_esperada": "Comportamiento Esperado\n\n- No hacer preguntas innecesarias\n- No agregar información fuera del contenido proporcionado\n- No explicar el proceso interno de análisis\n- Entregar respuestas directamente utilizables\n- Mantener enfoque en la comprensión de la patente municipal como requisito legal"
     }
   },
   {
@@ -398,11 +398,11 @@
     "criterio_esperado": "La liquidación determina formalmente el monto adeudado notificando la diferencia; el giro es la orden de cobro directa para pagar en Tesorería.",
     "tipo": "conceptual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\.",
-      "respuesta_esperada": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -468,11 +468,11 @@
     "criterio_esperado": "Plataforma digital para declarar remuneraciones ante la Dirección del Trabajo (DT), compartiendo datos de fiscalización con el SII.",
     "tipo": "delimitacion",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "- __Desmaterializadas:__ Valores representados mediante anotaciones en cuenta en un registro electrónico \\(central de depósito\\), eliminando la necesidad de títulos físicos y asegurando la integridad de la información\\.",
-      "respuesta_esperada": "- __Desmaterializadas:__ Valores representados mediante anotaciones en cuenta en un registro electrónico \\(central de depósito\\), eliminando la necesidad de títulos físicos y asegurando la integridad de la información\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -496,11 +496,11 @@
     "criterio_esperado": "Avisar en línea dentro de los dos meses siguientes al cese definitivo de actividades, pagando los impuestos adeudados.",
     "tipo": "procedimiento",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "Su propósito es servir como guía técnica para entender los derechos del accionista, los procedimientos de compraventa y los factores de riesgo que condicionan este tipo de inversión de largo plazo\\.",
-      "respuesta_esperada": "Su propósito es servir como guía técnica para entender los derechos del accionista, los procedimientos de compraventa y los factores de riesgo que condicionan este tipo de inversión de largo plazo\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -539,10 +539,10 @@
     "tipo": "conceptual",
     "ground_truth": {
       "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
-      "seccion": null,
-      "cita_anclaje": "- Impresión digital \\(pulgar derecho\\) y registro de domicilio\\.",
-      "respuesta_esperada": "- Impresión digital \\(pulgar derecho\\) y registro de domicilio\\."
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpSimplificada.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "---\n\n### 3.1 Características de la Modalidad Simplificada\n\n- Se realiza completamente mediante una plataforma digital  \n- Permite una constitución rápida  \n- No tiene costo asociado al proceso  \n- Reduce la complejidad del procedimiento tradicional  \n\n---\n\n### 3.2 Proceso de Constitución\n\nEl proceso sigue una secuencia estructurada:\n\n#### Acceso a la plataforma\n- Se ingresa al portal habilitado para la creación de empresas  \n\n#### Registro de usuario\n- Se ingresan datos personales como RUT, nombre y correo electrónico  \n\n#### Inicio de sesión\n- Se accede con las credenciales registradas  \n\n#### Selección de acción\n- Se elige la opción de constituir una empresa  \n\n#### Elección del tipo de empresa\n- Se define la estructura legal previamente seleccionada  \n\n#### Completar formulario\n- Se ingresan los datos de la empresa y de los socios  \n\n#### Firma del documento\n- Los participantes suscriben el formulario, digitalmente o ante notario  \n\n---\n\n### 3.3 Resultados del Proceso\n\nUna vez completado el proceso:\n\n- Se asigna un RUT a la empresa  \n- Se puede comenzar a operar formalmente  \n- Se recibe una notificación de constitución  \n\n---\n\n### 3.4 Importancia del Método\n\nEste modelo permite:\n\n- Reducir tiempos de formalización  \n- Eliminar costos asociados a procesos tradicionales  \n- Facilitar el acceso a la creación de empresas  \n\n---\n\n## 4.",
+      "respuesta_esperada": "---\n\n### 3.1 Características de la Modalidad Simplificada\n\n- Se realiza completamente mediante una plataforma digital  \n- Permite una constitución rápida  \n- No tiene costo asociado al proceso  \n- Reduce la complejidad del procedimiento tradicional  \n\n---\n\n### 3.2 Proceso de Constitución\n\nEl proceso sigue una secuencia estructurada:\n\n#### Acceso a la plataforma\n- Se ingresa al portal habilitado para la creación de empresas  \n\n#### Registro de usuario\n- Se ingresan datos personales como RUT, nombre y correo electrónico  \n\n#### Inicio de sesión\n- Se accede con las credenciales registradas  \n\n#### Selección de acción\n- Se elige la opción de constituir una empresa  \n\n#### Elección del tipo de empresa\n- Se define la estructura legal previamente seleccionada  \n\n#### Completar formulario\n- Se ingresan los datos de la empresa y de los socios  \n\n#### Firma del documento\n- Los participantes suscriben el formulario, digitalmente o ante notario  \n\n---\n\n### 3.3 Resultados del Proceso\n\nUna vez completado el proceso:\n\n- Se asigna un RUT a la empresa  \n- Se puede comenzar a operar formalmente  \n- Se recibe una notificación de constitución  \n\n---\n\n### 3.4 Importancia del Método\n\nEste modelo permite:\n\n- Reducir tiempos de formalización  \n- Eliminar costos asociados a procesos tradicionales  \n- Facilitar el acceso a la creación de empresas  \n\n---\n\n## 4."
     }
   },
   {
@@ -567,10 +567,10 @@
     "tipo": "normativa",
     "ground_truth": {
       "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
-      "seccion": null,
-      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
-      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4.",
+      "respuesta_esperada": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4."
     }
   },
   {
@@ -594,11 +594,11 @@
     "criterio_esperado": "El Código Tributario (contenido en el Decreto Ley N° 830).",
     "tipo": "factual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Contexto y Propósito del Documento__\n\nEste documento sistematiza la naturaleza jurídica, los objetivos estratégicos y las atribuciones operativas del Banco Central de Chile\\.",
-      "respuesta_esperada": "__Contexto y Propósito del Documento__\n\nEste documento sistematiza la naturaleza jurídica, los objetivos estratégicos y las atribuciones operativas del Banco Central de Chile\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -622,11 +622,11 @@
     "criterio_esperado": "La Tesorería General de la República (TGR), diferenciándola del rol fiscalizador y tasador del SII.",
     "tipo": "delimitacion",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/SuperintendenciaPensiones.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "- __Liderazgo:__ La máxima autoridad del organismo es el __Superintendente__, responsable de dirigir las labores de fiscalización\\.",
-      "respuesta_esperada": "- __Liderazgo:__ La máxima autoridad del organismo es el __Superintendente__, responsable de dirigir las labores de fiscalización\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
     }
   },
   {
@@ -636,11 +636,11 @@
     "criterio_esperado": "Tributa bajo reglas generales de Primera Categoría/ProPyme e IVA si sus giros están afectos, pero con facilidades de zonificación municipal.",
     "tipo": "conceptual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/GananciaCapital.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Costos de Transacción:__ El texto no especifica si para el cálculo de la ganancia neta se deben deducir las comisiones de intermediación, impuestos o gastos de corretaje\\.",
-      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Costos de Transacción:__ El texto no especifica si para el cálculo de la ganancia neta se deben deducir las comisiones de intermediación, impuestos o gastos de corretaje\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -650,11 +650,11 @@
     "criterio_esperado": "Determinación según reglas de domicilio y residencia del Código Tributario (permanencia ininterrumpida o no por más de 183 días).",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\.",
-      "respuesta_esperada": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -664,11 +664,11 @@
     "criterio_esperado": "Tributo que grava el avalúo fiscal de los bienes raíces determinado por el SII, pagado trimestralmente en la TGR.",
     "tipo": "conceptual",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "- __Potestad de Emisión:__ Monopolio legal sobre la creación de la base monetaria \\(efectivo\\)\\.",
-      "respuesta_esperada": "- __Potestad de Emisión:__ Monopolio legal sobre la creación de la base monetaria \\(efectivo\\)\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -678,11 +678,11 @@
     "criterio_esperado": "Constituyen créditos contra impuestos o gastos deducibles según las leyes especiales vigentes que regulan donaciones.",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuotasFondosInversion.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "- __Tratamiento Tributario:__ El documento original no hace referencia a las implicancias impositivas de las ganancias de capital o el reparto de beneficios\\.",
-      "respuesta_esperada": "- __Tratamiento Tributario:__ El documento original no hace referencia a las implicancias impositivas de las ganancias de capital o el reparto de beneficios\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -692,11 +692,11 @@
     "criterio_esperado": "Obligación de reserva funcionaria sobre datos del contribuyente, levantable solo por orden judicial expresa o acuerdos internacionales de intercambio de información.",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BonosCorporativos.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\.",
-      "respuesta_esperada": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -706,11 +706,11 @@
     "criterio_esperado": "El modelo debe rechazar amablemente indicando que el SII no gestiona licencias de conducir, siendo competencia exclusiva de las Direcciones de Tránsito municipales.",
     "tipo": "adversarial",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/RutaNegociosMercadoValores.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "Su propósito es clarificar los requisitos de entrada, los roles de los distintos agentes del mercado y la estructura de costos asociada, permitiendo que la toma de decisiones se realice bajo un marco de seguridad jurídica y eficiencia financiera\\.",
-      "respuesta_esperada": "Su propósito es clarificar los requisitos de entrada, los roles de los distintos agentes del mercado y la estructura de costos asociada, permitiendo que la toma de decisiones se realice bajo un marco de seguridad jurídica y eficiencia financiera\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Pregunta fuera del alcance (out_of_scope)."
     }
   },
   {
@@ -720,11 +720,11 @@
     "criterio_esperado": "El modelo debe advertir que el SII no tiene facultades laborales, debiendo acudir a la Dirección del Trabajo (DT) o Tribunales Laborales.",
     "tipo": "adversarial",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Ahorro.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "Busca clarificar cómo el tiempo y la regularidad actúan como multiplicadores del capital, y cómo las instituciones financieras facilitan este proceso mediante diversos mecanismos de captación\\.",
-      "respuesta_esperada": "Busca clarificar cómo el tiempo y la regularidad actúan como multiplicadores del capital, y cómo las instituciones financieras facilitan este proceso mediante diversos mecanismos de captación\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Pregunta fuera del alcance (out_of_scope)."
     }
   },
   {
@@ -734,11 +734,11 @@
     "criterio_esperado": "El modelo debe declarar que el alcance del SII y sus documentos normativos se limita exclusivamente a la República de Chile.",
     "tipo": "adversarial",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Ahorro.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "La tasa de interés varía según el plazo, el tipo de instrumento y la moneda de la operación\\.",
-      "respuesta_esperada": "La tasa de interés varía según el plazo, el tipo de instrumento y la moneda de la operación\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Pregunta fuera del alcance (out_of_scope)."
     }
   },
   {
@@ -752,7 +752,7 @@
       "md_origen": null,
       "seccion": null,
       "cita_anclaje": null,
-      "respuesta_esperada": "Información no disponible en la colección de documentos."
+      "respuesta_esperada": "Pregunta fuera del alcance (out_of_scope)."
     }
   },
   {
@@ -762,11 +762,11 @@
     "criterio_esperado": "El modelo debe rechazar la predicción temporal indicando que no se disponen datos proyectados futuros en los registros del SII.",
     "tipo": "adversarial",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Futuros.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Sección 2: Activos Subyacentes y Funcionamiento__\n\nLos contratos se referencian a activos específicos cuyo valor fluctúa en el mercado:\n\n- __Tipos de Activos:__\n\t- __Dólar USA:__ El precio varía según el \"dólar observado\"\\.",
-      "respuesta_esperada": "__Sección 2: Activos Subyacentes y Funcionamiento__\n\nLos contratos se referencian a activos específicos cuyo valor fluctúa en el mercado:\n\n- __Tipos de Activos:__\n\t- __Dólar USA:__ El precio varía según el \"dólar observado\"\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Pregunta fuera del alcance (out_of_scope)."
     }
   },
   {
@@ -790,11 +790,11 @@
     "criterio_esperado": "Libro Diario, Mayor, Balances, Inventarios y el respaldo documental físico o digital de ingresos y egresos.",
     "tipo": "procedimiento",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Supuestos, Riesgos o Consideraciones Relevantes__\n\n- __Riesgo de Emisor:__ La recuperación de la inversión depende directamente de la capacidad de la empresa para generar utilidades\\.",
-      "respuesta_esperada": "__Supuestos, Riesgos o Consideraciones Relevantes__\n\n- __Riesgo de Emisor:__ La recuperación de la inversión depende directamente de la capacidad de la empresa para generar utilidades\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -804,11 +804,11 @@
     "criterio_esperado": "Obligación accesoria donde administradores, directores o socios pueden responder con su propio patrimonio ante fraudes o incumplimientos calificados.",
     "tipo": "normativa",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Análisis Técnico Operativo: Acciones de Sociedades Anónimas Abiertas__\n\n__Resumen Ejecutivo__\n\nLas acciones de Sociedades Anónimas \\(S\\.A\\.\\) abiertas representan una fracción del patrimonio de una empresa, otorgando a su titular derechos de propiedad, control proporcional y participación en las utilidades\\.",
-      "respuesta_esperada": "__Análisis Técnico Operativo: Acciones de Sociedades Anónimas Abiertas__\n\n__Resumen Ejecutivo__\n\nLas acciones de Sociedades Anónimas \\(S\\.A\\.\\) abiertas representan una fracción del patrimonio de una empresa, otorgando a su titular derechos de propiedad, control proporcional y participación en las utilidades\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
@@ -818,11 +818,11 @@
     "criterio_esperado": "Reajustes según IPC, intereses penales mensuales (1.5%) y multas porcentuales sobre el impuesto adeudado según el Art. 97 del Código Tributario.",
     "tipo": "sancion",
     "ground_truth": {
-      "presente_en_docs": true,
-      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuotasFondosMutuos.md",
+      "presente_en_docs": false,
+      "md_origen": null,
       "seccion": null,
-      "cita_anclaje": "__Sección 4: Estructura de Costos y Remuneraciones__\n\nLas administradoras aplican dos categorías principales de cobros que impactan la rentabilidad final:\n\n- __Remuneración por Administración:__ Cargo por la gestión del fondo, estipulado en el reglamento interno\\.",
-      "respuesta_esperada": "__Sección 4: Estructura de Costos y Remuneraciones__\n\nLas administradoras aplican dos categorías principales de cobros que impactan la rentabilidad final:\n\n- __Remuneración por Administración:__ Cargo por la gestión del fondo, estipulado en el reglamento interno\\."
+      "cita_anclaje": null,
+      "respuesta_esperada": "Fuente excluida por política: documento financiero/inversiones."
     }
   },
   {
