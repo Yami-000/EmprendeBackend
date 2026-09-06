@@ -43,17 +43,11 @@ async def startup_event():
 
     # Init chromadb client
     try:
-        _chroma_client = chromadb.Client()
-        # Use get_or_create to tolerate missing persisted collection
-        try:
-            _collection = _chroma_client.get_or_create_collection(name=CHROMA_COLLECTION)
-        except Exception:
-            _collection = _chroma_client.get_collection(name=CHROMA_COLLECTION)
+        _chroma_client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+        _collection = _chroma_client.get_or_create_collection(name=CHROMA_COLLECTION)
     except Exception as e:
-        # If collection is not found or client fails, keep None and raise on requests
         _chroma_client = None
         _collection = None
-        app.logger = getattr(app, "logger", None)
         # don't raise here; we'll return 500 on requests if needed
 
 
@@ -67,16 +61,30 @@ async def _embed_text(text: str) -> List[float]:
 
 
 def _build_system_prompt(fragments: List[Dict[str, Any]]) -> str:
-    base = """Eres 'Ecia', un asistente legal y tributario experto en la formalización de PYMEs en Chile y normativas del SII (Servicio de Impuestos Internos).
-REGLA DE ORO: Tienes estrictamente prohibido inventar información, leyes, nombres de trámites o tipos de sociedades.
-Tu única fuente de verdad es el 'Contexto recuperado' que se te proporciona abajo.
-Si el usuario pregunta algo y la respuesta NO está en el contexto, debes responder EXACTAMENTE: "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII."
-Responde siempre en español, de forma clara, profesional y en formato Markdown."""
+    base = """Eres 'Ecia', asistente tributario y legal especializado EXCLUSIVAMENTE en normativa chilena vigente.
+
+TERMINOLOGÍA OBLIGATORIA — usa SOLO estos términos chilenos:
+- Identificación personal: "Cédula de Identidad" (NUNCA "DNI", "pasaporte" como documento estándar, ni "NIT")
+- Número de empresa: "RUT" (NUNCA "NIF", "NIT", "RUC")
+- SII = "Servicio de Impuestos Internos" (NUNCA "Servicio de Integración Nacional" ni ninguna otra variante)
+- Tipos de sociedad válidos: Persona Natural con Giro, MEF, EIRL, SRL, SpA, SA abierta, SA cerrada, Sociedad Colectiva, Sociedad Comanditaria
+- Instituciones válidas: SII, Notaría, Diario Oficial, Conservador de Bienes Raíces, Municipalidad, SEREMI de Salud, Ministerio de Economía
+
+REGLAS ABSOLUTAS:
+1. USA ÚNICAMENTE la información del 'Contexto recuperado'. Nada más.
+2. PROHIBIDO inventar o extrapolar de otros países. No existen en Chile: "matrícula mercantil", "DNI", "NIT", "RUC", "Cámara de Comercio" como ente formalizador, "hacienda pública".
+3. Si la respuesta NO está en el contexto, di EXACTAMENTE: "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII."
+4. NUNCA inventes costos, plazos, formularios ni instituciones.
+
+FORMATO:
+- Máximo 3-5 oraciones o listado corto.
+- Sin introducción ni cierre. Directo al punto.
+- Sin frases como "Por supuesto", "Claro que sí", "Entiendo tu pregunta"."""
     ctx_lines = ["\nContexto recuperado:"]
     for i, f in enumerate(fragments, 1):
         src = f.get("metadata", {}).get("source", "")
         doc = f.get("document", f.get("page_content", ""))
-        snippet = doc.replace('\n', ' ')[:800]
+        snippet = doc.replace('\n', ' ')[:1400]
         ctx_lines.append(f"[{i}] Fuente: {src}\n{snippet}\n")
     return base + "\n" + "\n".join(ctx_lines)
 
@@ -109,7 +117,7 @@ async def chat_endpoint(payload: ChatRequest):
 
     # Retrieve top-k
     try:
-        fragments = await _query_chroma(query_vec, k=4)
+        fragments = await _query_chroma(query_vec, k=6)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Retrieval error: {str(e)}")
 
@@ -130,13 +138,14 @@ async def chat_endpoint(payload: ChatRequest):
         "stream": True,
         "options": {
             "temperature": 0.0,
-            "top_p": 0.1
+            "top_p": 0.1,
+            "num_predict": 300,
+            "num_ctx": 4096
         }
     }
-
     async def event_stream() -> AsyncGenerator[str, None]:
         # Connect to Ollama and stream response
-        async with httpx.AsyncClient(timeout=None) as client:
+        async with httpx.AsyncClient(timeout=60) as client:
             try:
                 async with client.stream("POST", OLLAMA_URL, json=ollama_body) as resp:
                     if resp.status_code != 200:
@@ -146,7 +155,7 @@ async def chat_endpoint(payload: ChatRequest):
                         for i, f in enumerate(fragments, 1):
                             src = f.get("metadata", {}).get("source", "")
                             doc = f.get("document", "")
-                            snippet = doc.replace('\n', ' ')[:800]
+                            snippet = doc.replace('\n', ' ')[:1400]
                             fallback += f"[{i}] {src}: {snippet}\n\n"
                         yield f"data: {fallback}\n\n"
                         return
@@ -167,7 +176,7 @@ async def chat_endpoint(payload: ChatRequest):
                             for i, f in enumerate(fragments, 1):
                                 src = f.get("metadata", {}).get("source", "")
                                 doc = f.get("document", "")
-                                snippet = doc.replace('\n', ' ')[:800]
+                                snippet = doc.replace('\n', ' ')[:1400]
                                 fallback += f"[{i}] {src}: {snippet}\n\n"
                             yield f"data: {fallback}\n\n"
                             return

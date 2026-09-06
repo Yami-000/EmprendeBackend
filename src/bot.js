@@ -91,13 +91,22 @@ export async function startBot() {
         history = [];
       }
 
-      const resp = await axios.request({
-        method: 'POST',
-        url: RAG_URL,
-        data: { query, history },
-        responseType: 'stream',
-        timeout: 0,
-      });
+      let resp;
+      try {
+        resp = await axios.request({
+          method: 'POST',
+          url: RAG_URL,
+          data: { query, history },
+          responseType: 'stream',
+          timeout: 60000,
+        });
+      } catch (reqErr) {
+        console.error('Error contacting RAG service:', reqErr?.message || reqErr);
+        try {
+          await ctx.telegram.editMessageText(chatId, messageId, undefined, '❗ El servicio de búsqueda no respondió. Intenta más tarde.');
+        } catch (e) {}
+        return;
+      }
 
       const stream = resp.data; // Node.js readable stream
 

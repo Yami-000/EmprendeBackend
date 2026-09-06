@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(mes
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
-DOCS_DIR = BASE_DIR / "docs"
+DOCS_DIR = BASE_DIR / "docs" / "sii"
 CHROMA_DIR = BASE_DIR / "chroma_db"
 
 MODEL_NAME = "nomic-embed-text"
@@ -127,15 +127,8 @@ def create_vector_store(documents):
             raise
     CHROMA_DIR.mkdir(parents=True, exist_ok=True)
     try:
-        try:
-            client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory=str(CHROMA_DIR)))
-            collection = client.get_or_create_collection(name="sii_markdown")
-        except ValueError:
-            # chromadb Settings-based construction is deprecated in recent versions.
-            # Fall back to the new client ctor which manages persistence differently.
-            logger.warning("Chroma Settings deprecated; falling back to chromadb.Client() ctor")
-            client = chromadb.Client()
-            collection = client.get_or_create_collection(name="sii_markdown")
+        client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+        collection = client.get_or_create_collection(name="sii_markdown")
 
         # documents are plain dicts produced by split_documents
         texts = [d.get('page_content', '') for d in documents]
