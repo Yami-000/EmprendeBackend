@@ -9,6 +9,13 @@ DOCS_DIR = ROOT / 'ai-service' / 'docs'
 
 STOPWORDS = set(["de","la","el","que","y","en","del","los","las","con","por","para","al","se","su","sus","es","una","un","lo","como","o"])
 
+# keywords that indicate tax/SII domain
+TAX_KW = [
+    'sii', 'servicio de impuestos internos', 'formulario', 'f29', 'ppm', 'patente', 'inicio de actividades',
+    'clave tributaria', 'claveúnica', 'clave única', 'citacion', 'citación', 'código tributario', 'codigo tributario',
+    'impuesto', 'iva', 'renta', 'tesorería', 'tesoreria', 'tgr', 'tribunal', 'tribunales tributarios', 'rut'
+]
+
 def split_sentences(text):
     # naive sentence splitter
     parts = re.split(r'(?<=[\.!?])\s+', text.replace('\r','\n'))
@@ -111,12 +118,41 @@ def main():
         question = q.get('pregunta','')
         kws = extract_keywords(question)
         found = False
+        # enforce out_of_scope questions as not present
+        if q.get('categoria') == 'out_of_scope' or q.get('id') in ('PREG-051','PREG-052','PREG-053','PREG-054','PREG-055'):
+            q['ground_truth'] = {
+                'presente_en_docs': False,
+                'md_origen': None,
+                'seccion': None,
+                'cita_anclaje': None,
+                'respuesta_esperada': 'Pregunta fuera del alcance (out_of_scope).'
+            }
+            missing += 1
+            continue
         for p,content in docs_content.items():
             ok, header, frag = find_in_file(content, question, kws)
-            if ok:
-                # build ground_truth
+            if not ok:
+                continue
+            # stricter semantic validation
+            frag_lc = (frag or '').lower()
+            question_lc = question.lower()
+            # if question seems tax-related, require fragment to include tax indicators
+            is_tax_q = any(tk in question_lc for tk in TAX_KW)
+            frag_has_tax = any(tk in frag_lc for tk in TAX_KW)
+            path_has_sii = 'sii' in p.lower() or 'sii' in Path(p).parts
+
+            accept = False
+            if is_tax_q:
+                # accept only if fragment explicitly includes tax indicators or file path references SII
+                if frag_has_tax or path_has_sii:
+                    accept = True
+            else:
+                # non-tax question: accept if at least 2 keyword matches (already ensured) and fragment length reasonable
+                if frag and len(frag) > 40:
+                    accept = True
+
+            if accept:
                 respuesta = frag
-                # shorten respuesta to max 2 sentences
                 sents = split_sentences(respuesta)
                 respuesta_short = ' '.join(sents[:2]) if sents else respuesta
                 q['ground_truth'] = {
