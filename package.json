@@ -34,8 +34,7 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "firebase": "^12.13.0",
-    "firebase-admin": "^14.0.0",
+    
     "joi": "^18.0.2",
     "mammoth": "^1.8.0",
     "pg": "^8.22.0",

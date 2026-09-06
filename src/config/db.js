@@ -1,5 +1,7 @@
 import { Sequelize } from "sequelize";
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
@@ -41,15 +43,20 @@ export const connectDB = async () => {
     });
 
     if ((process.env.NODE_ENV || 'development') === 'development') {
-      console.warn('Cayendo a SQLite en memoria como último recurso para desarrollo.');
-      db = new Sequelize({ dialect: 'sqlite', storage: ':memory:', logging: false });
+      console.warn('Cayendo a SQLite en disco como fallback de desarrollo.');
       try {
+        const dataDir = path.resolve(process.cwd(), 'data');
+        if (!fs.existsSync(dataDir)) {
+          fs.mkdirSync(dataDir, { recursive: true });
+        }
+        const devSqlitePath = path.join(dataDir, 'dev.sqlite');
+        db = new Sequelize({ dialect: 'sqlite', storage: devSqlitePath, logging: false });
         await db.authenticate();
-        console.log('Conexión a la base de datos (SQLite in-memory) establecida');
+        console.log('Conexión a la base de datos (SQLite file) establecida en', devSqlitePath);
         await db.sync({ alter: true });
         console.log('Tablas sincronizadas en SQLite (alter:true)');
       } catch (e) {
-        console.error('Error al inicializar SQLite fallback:', e.message);
+        console.error('Error al inicializar SQLite fallback en disco:', e.message);
       }
       return;
     }

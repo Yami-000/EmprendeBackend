@@ -1,0 +1,32 @@
+# ROL Y OBJETIVO
+Actúa como Ingeniero de Software Principal y Auditor de Seguridad/RAG. Tomando como base la estructura ya creada en la Fase 1, tu tarea es analizar en profundidad tres áreas críticas del código y actualizar tanto `CONTEXTO.md` como `Bitacora.md`.
+
+---
+
+### ENTREGABLE 1: Anexar a `CONTEXTO.md` (Secciones 5, 6 y 7)
+Genera el contenido para agregar al archivo:
+
+## 5. Mapeo Profundo del Pipeline RAG Actual
+- **Fuente de Documentos:** Dónde se ubican los archivos `.md`, cómo se leen y si existen filtros de lectura.
+- **Ciclo de Ingesta:** ¿Cuándo se procesan los documentos? (¿En cada arranque del servidor, por cada mensaje de Telegram, o están cacheados/indexados previamente?).
+- **Chunking y Tokenización:** ¿Existe división de texto (chunks, overlap) o se indexa el archivo completo?
+- **Embeddings y Búsqueda Vectorial:** Modelo/función usado para vectorizar, mecanismo de cálculo de similitud (coseno, strings, vector DB embebida) y manejo de top-k resultados.
+- **Cuellos de Botella:** Limitaciones detectadas (rendimiento, saturación de RAM, límites de contexto).
+
+## 6. Auditoría de Código Muerto (Frontend Descartado)
+- **Inventario Residual:** Lista completa de directorios, archivos, componentes UI, dependencias no utilizadas y assets del frontend que ya no se usan.
+- **Puntos de Acoplamiento Backend-Frontend:** Rutas/endpoints expuestos, middlewares, variables de entorno o imports residuales en el backend que aún hacen referencia al frontend.
+- **Plan de Desacoplamiento Seguro:** Procedimiento paso a paso para eliminar el código muerto sin romper la ejecución del bot de Telegram.
+
+## 7. Seguridad, Resiliencia y Manejo de Errores
+- **Gestión de Secretos:** Dónde y cómo se cargan credenciales sensibles (`TELEGRAM_BOT_TOKEN`, URLs de Ollama, claves de API). Detección de posibles datos hardcodeados.
+- **Manejo de Caídas y Timeouts:** Comportamiento del sistema ante latencia extrema o caída del servidor de Ollama (¿se manejan excepciones o Telegram entra en bucles de reintento?).
+- **Vulnerabilidades de Prompting:** Evaluación de riesgo de Prompt Injection mediante archivos `.md` manipulados o entradas maliciosas en Telegram.
+- **Matriz de Variables de Entorno:** Tabla completa con Nombre, Tipo, Valor por Defecto (si aplica) y Si es Obligatoria.
+
+---
+
+### ENTREGABLE 2: Actualización de `Bitacora.md`
+Actualiza el archivo `Bitacora.md`:
+1. Agrega una nueva fila a la tabla **Registro Histórico de Cambios** indicando la auditoría del RAG, frontend y seguridad.
+2. Agrega a la lista de **Deuda Técnica Inicial Detectada** todos los riesgos de seguridad, acoplamientos y fallos de resiliencia descubiertos en este análisis.
