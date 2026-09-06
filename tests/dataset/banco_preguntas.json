@@ -1,20 +1,842 @@
 [
   {
-    "id": "bp_001",
-    "pregunta": "¿Cuáles son los pasos para iniciar actividades en el SII?",
-    "respuesta_esperada_keywords": ["inicio de actividades","SII","formulario"],
-    "categoria": "sii"
+    "id": "PREG-001",
+    "categoria": "informacion_general",
+    "pregunta": "¿Qué es el Servicio de Impuestos Internos (SII) y cuál es su misión institucional?",
+    "criterio_esperado": "Mencionar que es la institución pública encargada de fiscalizar y administrar los impuestos internos en Chile, promoviendo el cumplimiento tributario.",
+    "tipo": "factual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
+      "seccion": null,
+      "cita_anclaje": "__Marco Institucional, Mandato y Funciones del Banco Central de Chile__\n\n__Resumen Ejecutivo__\n\nEl Banco Central de Chile \\(BCCh\\) se constituye como una entidad técnica de carácter autónomo y rango constitucional, cuya misión fundamental es velar por la estabilidad de la moneda y la continuidad de los sistemas de pago\\.",
+      "respuesta_esperada": "__Marco Institucional, Mandato y Funciones del Banco Central de Chile__\n\n__Resumen Ejecutivo__\n\nEl Banco Central de Chile \\(BCCh\\) se constituye como una entidad técnica de carácter autónomo y rango constitucional, cuya misión fundamental es velar por la estabilidad de la moneda y la continuidad de los sistemas de pago\\."
+    }
   },
   {
-    "id": "bp_002",
-    "pregunta": "¿Qué es la patente municipal y cuándo se requiere?",
-    "respuesta_esperada_keywords": ["patente municipal","municipalidad","actividad"],
-    "categoria": "sii"
+    "id": "PREG-002",
+    "categoria": "informacion_general",
+    "pregunta": "¿Qué canales oficiales existen para contactar al SII o realizar consultas tributarias?",
+    "criterio_esperado": "Identificar el sitio web oficial (sii.cl), mesa de ayuda telefónica y atención presencial en Direcciones Regionales/Unidades.",
+    "tipo": "factual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BonosCorporativos.md",
+      "seccion": null,
+      "cita_anclaje": "- __Canales de adquisición:__ La compra puede realizarse directamente al emisor, a través de intermediarios \\(corredores de bolsa y agentes de valores\\) u otros agentes autorizados\\.",
+      "respuesta_esperada": "- __Canales de adquisición:__ La compra puede realizarse directamente al emisor, a través de intermediarios \\(corredores de bolsa y agentes de valores\\) u otros agentes autorizados\\."
+    }
   },
   {
-    "id": "bp_003",
-    "pregunta": "¿Cómo funciona el impuesto a la renta para personas naturales en Chile?",
-    "respuesta_esperada_keywords": ["impuesto a la renta","personas naturales","tramos"],
-    "categoria": "tributario"
+    "id": "PREG-003",
+    "categoria": "informacion_general",
+    "pregunta": "¿Qué es la Clave Tributaria del SII y cómo se obtiene por primera vez?",
+    "criterio_esperado": "Definirla como la contraseña de acceso a la Oficina Virtual del SII y explicar que se obtiene en línea mediante validación de identidad o con ClaveÚnica.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4.",
+      "respuesta_esperada": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4."
+    }
+  },
+  {
+    "id": "PREG-004",
+    "categoria": "informacion_general",
+    "pregunta": "¿Cómo puedo recuperar mi Clave Tributaria si la he olvidado o bloqueado?",
+    "criterio_esperado": "Indicar el uso del mecanismo de recuperación en línea mediante correo registrado, preguntas de seguridad o acceso vía ClaveÚnica.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4.",
+      "respuesta_esperada": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4."
+    }
+  },
+  {
+    "id": "PREG-005",
+    "categoria": "informacion_general",
+    "pregunta": "¿Cuáles son las principales funciones operativas de las Direcciones Regionales del SII?",
+    "criterio_esperado": "Mencionar atención a contribuyentes, fiscalización directa, aplicación de sanciones administrativas y resolución de peticiones en su jurisdicción.",
+    "tipo": "factual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
+      "seccion": null,
+      "cita_anclaje": "__Sección 3: Funciones Reguladoras y Operativas__\n\nEl Banco Central posee facultades exclusivas y compartidas que impactan directamente en la economía real y financiera:\n\n- __Potestad de Emisión:__ Facultad exclusiva para la emisión de billetes y la acuñación de monedas\\.",
+      "respuesta_esperada": "__Sección 3: Funciones Reguladoras y Operativas__\n\nEl Banco Central posee facultades exclusivas y compartidas que impactan directamente en la economía real y financiera:\n\n- __Potestad de Emisión:__ Facultad exclusiva para la emisión de billetes y la acuñación de monedas\\."
+    }
+  },
+  {
+    "id": "PREG-006",
+    "categoria": "formalizacion_inicio",
+    "pregunta": "¿Cuál es el plazo legal para realizar el trámite de Inicio de Actividades ante el SII?",
+    "criterio_esperado": "Especificar el plazo legal de 2 meses siguientes a aquel en que se comiencen a desarrollar las actividades económicas.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
+      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+    }
+  },
+  {
+    "id": "PREG-007",
+    "categoria": "formalizacion_inicio",
+    "pregunta": "¿Cuál es la diferencia fundamental entre contribuyentes de Primera y Segunda Categoría?",
+    "criterio_esperado": "Diferenciar rentas del capital/empresas (Primera Categoría) frente a rentas del trabajo personal o profesional independiente (Segunda Categoría).",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Tabla de Ejemplo de Costos \\(Estimados\\):__\n\n__Concepto__\n\n__Inversión $500\\.000__\n\n__Inversión $1\\.000\\.000__\n\n__Inversión $5\\.000\\.000__\n\nComisión \\(aprox\\.\\)\n\n$2\\.500\n\n$5\\.000\n\n$25\\.000\n\nFacturación\n\n$3\\.000\n\n$3\\.000\n\n$3\\.000\n\nIVA \\(19%\\)\n\n$1\\.045\n\n$1\\.520\n\n$5\\.320\n\n__Costo Total__\n\n__$6\\.545__\n\n__$9\\.520__\n\n__$33\\.320__\n\n__Conceptos Financieros Clave__\n\n- __Ganancia de Capital:__ Utilidad derivada de la diferencia positiva entre el precio de compra y el de venta\\.",
+      "respuesta_esperada": "__Tabla de Ejemplo de Costos \\(Estimados\\):__\n\n__Concepto__\n\n__Inversión $500\\.000__\n\n__Inversión $1\\.000\\.000__\n\n__Inversión $5\\.000\\.000__\n\nComisión \\(aprox\\.\\)\n\n$2\\.500\n\n$5\\.000\n\n$25\\.000\n\nFacturación\n\n$3\\.000\n\n$3\\.000\n\n$3\\.000\n\nIVA \\(19%\\)\n\n$1\\.045\n\n$1\\.520\n\n$5\\.320\n\n__Costo Total__\n\n__$6\\.545__\n\n__$9\\.520__\n\n__$33\\.320__\n\n__Conceptos Financieros Clave__\n\n- __Ganancia de Capital:__ Utilidad derivada de la diferencia positiva entre el precio de compra y el de venta\\."
+    }
+  },
+  {
+    "id": "PREG-008",
+    "categoria": "formalizacion_inicio",
+    "pregunta": "¿Qué antecedentes o documentos se aceptan legalmente para acreditar domicilio fiscal?",
+    "criterio_esperado": "Mencionar contrato de arriendo notariado, certificado de dominio vigente, títulos de propiedad o autorización notarial de uso.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
+      "seccion": null,
+      "cita_anclaje": "- __Evaluación Financiera:__ Antecedentes de actividad, bienes, deudas e informes bancarios para acreditar solvencia\\.",
+      "respuesta_esperada": "- __Evaluación Financiera:__ Antecedentes de actividad, bienes, deudas e informes bancarios para acreditar solvencia\\."
+    }
+  },
+  {
+    "id": "PREG-009",
+    "categoria": "formalizacion_inicio",
+    "pregunta": "¿Qué consecuencias legales o tributarias existen si registro un domicilio tributario falso o incorrecto?",
+    "criterio_esperado": "Aclarar que constituye infracción tributaria (multas según Código Tributario) e imposibilidad de timbrar/emitir documentos tributarios.",
+    "tipo": "sancion",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
+      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+    }
+  },
+  {
+    "id": "PREG-010",
+    "categoria": "formalizacion_inicio",
+    "pregunta": "¿El trámite de Patente Municipal se gestiona directamente en el SII o en otra institución?",
+    "criterio_esperado": "Aclarar que la patente municipal es un tributo comunal que se tramita y paga en la Municipalidad correspondiente al domicilio comercial, no en el SII.",
+    "tipo": "delimitacion",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AgentesValores.md",
+      "seccion": null,
+      "cita_anclaje": "- __Voluntariedad:__ Este servicio es opcional; el inversionista puede decidir mantener los títulos por sí mismo o en otra institución\\.",
+      "respuesta_esperada": "- __Voluntariedad:__ Este servicio es opcional; el inversionista puede decidir mantener los títulos por sí mismo o en otra institución\\."
+    }
+  },
+  {
+    "id": "PREG-011",
+    "categoria": "formalizacion_inicio",
+    "pregunta": "¿Cómo se realiza la actualización o adición de giros económicos en la plataforma del SII?",
+    "criterio_esperado": "Explicar el trámite en línea en 'Actualización de información' dentro del portal del SII, requiriendo acreditación si son giros afectos a IVA.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpSimplificada.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "---\n\n### 3.1 Características de la Modalidad Simplificada\n\n- Se realiza completamente mediante una plataforma digital  \n- Permite una constitución rápida  \n- No tiene costo asociado al proceso  \n- Reduce la complejidad del procedimiento tradicional  \n\n---\n\n### 3.2 Proceso de Constitución\n\nEl proceso sigue una secuencia estructurada:\n\n#### Acceso a la plataforma\n- Se ingresa al portal habilitado para la creación de empresas  \n\n#### Registro de usuario\n- Se ingresan datos personales como RUT, nombre y correo electrónico  \n\n#### Inicio de sesión\n- Se accede con las credenciales registradas  \n\n#### Selección de acción\n- Se elige la opción de constituir una empresa  \n\n#### Elección del tipo de empresa\n- Se define la estructura legal previamente seleccionada  \n\n#### Completar formulario\n- Se ingresan los datos de la empresa y de los socios  \n\n#### Firma del documento\n- Los participantes suscriben el formulario, digitalmente o ante notario  \n\n---\n\n### 3.3 Resultados del Proceso\n\nUna vez completado el proceso:\n\n- Se asigna un RUT a la empresa  \n- Se puede comenzar a operar formalmente  \n- Se recibe una notificación de constitución  \n\n---\n\n### 3.4 Importancia del Método\n\nEste modelo permite:\n\n- Reducir tiempos de formalización  \n- Eliminar costos asociados a procesos tradicionales  \n- Facilitar el acceso a la creación de empresas  \n\n---\n\n## 4.",
+      "respuesta_esperada": "---\n\n### 3.1 Características de la Modalidad Simplificada\n\n- Se realiza completamente mediante una plataforma digital  \n- Permite una constitución rápida  \n- No tiene costo asociado al proceso  \n- Reduce la complejidad del procedimiento tradicional  \n\n---\n\n### 3.2 Proceso de Constitución\n\nEl proceso sigue una secuencia estructurada:\n\n#### Acceso a la plataforma\n- Se ingresa al portal habilitado para la creación de empresas  \n\n#### Registro de usuario\n- Se ingresan datos personales como RUT, nombre y correo electrónico  \n\n#### Inicio de sesión\n- Se accede con las credenciales registradas  \n\n#### Selección de acción\n- Se elige la opción de constituir una empresa  \n\n#### Elección del tipo de empresa\n- Se define la estructura legal previamente seleccionada  \n\n#### Completar formulario\n- Se ingresan los datos de la empresa y de los socios  \n\n#### Firma del documento\n- Los participantes suscriben el formulario, digitalmente o ante notario  \n\n---\n\n### 3.3 Resultados del Proceso\n\nUna vez completado el proceso:\n\n- Se asigna un RUT a la empresa  \n- Se puede comenzar a operar formalmente  \n- Se recibe una notificación de constitución  \n\n---\n\n### 3.4 Importancia del Método\n\nEste modelo permite:\n\n- Reducir tiempos de formalización  \n- Eliminar costos asociados a procesos tradicionales  \n- Facilitar el acceso a la creación de empresas  \n\n---\n\n## 4."
+    }
+  },
+  {
+    "id": "PREG-012",
+    "categoria": "facturacion_documentos",
+    "pregunta": "¿Qué es una Factura Electrónica y qué valor legal tiene frente a la factura en papel tradicional?",
+    "criterio_esperado": "Definirla como documento tributario digital emitido bajo formato XML con firma digital, teniendo el mismo o superior valor probatorio y legal que el papel.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AgentesValores.md",
+      "seccion": null,
+      "cita_anclaje": "__Contexto / Antecedentes__\n\nEn el marco de la __Ley N° 18\\.045 de Mercado de Valores__, los Agentes de Valores surgen como figuras necesarias para dinamizar el mercado fuera de los recintos bursátiles tradicionales\\.",
+      "respuesta_esperada": "__Contexto / Antecedentes__\n\nEn el marco de la __Ley N° 18\\.045 de Mercado de Valores__, los Agentes de Valores surgen como figuras necesarias para dinamizar el mercado fuera de los recintos bursátiles tradicionales\\."
+    }
+  },
+  {
+    "id": "PREG-013",
+    "categoria": "facturacion_documentos",
+    "pregunta": "¿Quiénes deben emitir Boletas de Honorarios Electrónicas y cuál es su porcentaje de retención actual?",
+    "criterio_esperado": "Personas naturales en Segunda Categoría por servicios profesionales. Mencionar el porcentaje de retención legal progresivo vigente.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentasDepósitosVista.md",
+      "seccion": null,
+      "cita_anclaje": "- __Transparencia:__ Las tarifas deben estar publicadas y actualizadas en las pizarras o sitios web de cada institución financiera\\.",
+      "respuesta_esperada": "- __Transparencia:__ Las tarifas deben estar publicadas y actualizadas en las pizarras o sitios web de cada institución financiera\\."
+    }
+  },
+  {
+    "id": "PREG-014",
+    "categoria": "facturacion_documentos",
+    "pregunta": "¿Qué es el Código de Autorización de Folios (CAF) en facturación electrónica?",
+    "criterio_esperado": "Explicar que es el archivo digital que contiene el rango de folios autorizados por el SII para firmar documentos tributarios.",
+    "tipo": "tecnico",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/sii/documentacion_formalizacion.md",
+      "seccion": "## Para Inicio de Actividades ante el SII (en línea)",
+      "cita_anclaje": "## Para Inicio de Actividades ante el SII (en línea)\n- Clave personal de sii.cl\n- RUT de la empresa\n- Código de actividad económica\n- Estado IVA (afecto o exento)\n- Dirección comercial y rol de avalúo municipal\n- Correo electrónico y teléfono\n\n## Para Inicio de Actividades ante el SII (presencial — Formulario 4415)\n- Cédula de Identidad (original o fotocopia legalizada)\n- Escritura de constitución protocolizada\n- Código de Verificación Electrónica (CVE)\n- Poder notarial (si actúa un representante)\n- Comprobante de domicilio y rol de avalúo\n\n## Para Constitución en Notaría (régimen tradicional — EIRL)\n- Nombre, apellidos, nacionalidad, edad y domicilio del titular\n- Nombre de la empresa (debe incluir sigla E.I.R.L.)\n- Monto del capital inicial\n- Actividad económica y rubro específico\n- Domicilio de la empresa\n- Plazo de duración\n\n## Para Constitución en Notaría (régimen tradicional — Sociedades)\n- Tipo de sociedad\n- Giro o actividad\n- Identidad de socios y aportes de capital\n- Forma de administración\n- Distribución de utilidades y pérdidas\n- Mecanismo de resolución de conflictos\n- Régimen de disolución y liquidación\n\n## Para Patente Municipal\n- Solicitud ante la municipalidad correspondiente\n- Certificado de zonificación (Dirección de Obras Municipales)\n- Inicio de Actividades ante el SII ya realizado\n- Documentación según tipo de negocio (sanitaria, si aplica)",
+      "respuesta_esperada": "## Para Inicio de Actividades ante el SII (en línea)\n- Clave personal de sii.cl\n- RUT de la empresa\n- Código de actividad económica\n- Estado IVA (afecto o exento)\n- Dirección comercial y rol de avalúo municipal\n- Correo electrónico y teléfono\n\n## Para Inicio de Actividades ante el SII (presencial — Formulario 4415)\n- Cédula de Identidad (original o fotocopia legalizada)\n- Escritura de constitución protocolizada\n- Código de Verificación Electrónica (CVE)\n- Poder notarial (si actúa un representante)\n- Comprobante de domicilio y rol de avalúo\n\n## Para Constitución en Notaría (régimen tradicional — EIRL)\n- Nombre, apellidos, nacionalidad, edad y domicilio del titular\n- Nombre de la empresa (debe incluir sigla E.I.R.L.)\n- Monto del capital inicial\n- Actividad económica y rubro específico\n- Domicilio de la empresa\n- Plazo de duración\n\n## Para Constitución en Notaría (régimen tradicional — Sociedades)\n- Tipo de sociedad\n- Giro o actividad\n- Identidad de socios y aportes de capital\n- Forma de administración\n- Distribución de utilidades y pérdidas\n- Mecanismo de resolución de conflictos\n- Régimen de disolución y liquidación\n\n## Para Patente Municipal\n- Solicitud ante la municipalidad correspondiente\n- Certificado de zonificación (Dirección de Obras Municipales)\n- Inicio de Actividades ante el SII ya realizado\n- Documentación según tipo de negocio (sanitaria, si aplica)"
+    }
+  },
+  {
+    "id": "PREG-015",
+    "categoria": "facturacion_documentos",
+    "pregunta": "¿Puede un contribuyente con giro exclusivamente exento de IVA emitir facturas afectas a dicho impuesto?",
+    "criterio_esperado": "No. Debe emitir Facturas No Afectas o Exentas de IVA, salvo que amplíe su giro ante el SII a actividades afectas.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
+      "seccion": null,
+      "cita_anclaje": "- __Capacidad de Giro:__ El titular puede disponer de fondos mediante cheques, tarjetas de débito o transferencias electrónicas\\.",
+      "respuesta_esperada": "- __Capacidad de Giro:__ El titular puede disponer de fondos mediante cheques, tarjetas de débito o transferencias electrónicas\\."
+    }
+  },
+  {
+    "id": "PREG-016",
+    "categoria": "facturacion_documentos",
+    "pregunta": "¿Qué documento tributario debe emitirse para anular o corregir los montos de una Factura Electrónica emitida con error?",
+    "criterio_esperado": "Identificar obligatoriamente la Nota de Crédito Electrónica.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CarteraInversion.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Ponderación Relativa:__ El texto original menciona que se detalla \"en qué instrumentos se concentra\", pero no define si este detalle debe expresarse en montos nominales, cantidad de títulos o porcentajes de participación\\.",
+      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Ponderación Relativa:__ El texto original menciona que se detalla \"en qué instrumentos se concentra\", pero no define si este detalle debe expresarse en montos nominales, cantidad de títulos o porcentajes de participación\\."
+    }
+  },
+  {
+    "id": "PREG-017",
+    "categoria": "facturacion_documentos",
+    "pregunta": "¿Cuál es el plazo que tiene un receptor comercial para reclamar o aceptar el contenido de una Factura Electrónica?",
+    "criterio_esperado": "Señalar el plazo legal de 8 días corridos desde su recepción en el registro del SII.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CalculadoraDemoraPagarTarjeta.md",
+      "seccion": null,
+      "cita_anclaje": "Su propósito es evidenciar el ahorro financiero y la reducción de plazos que se obtienen al incrementar el esfuerzo de pago, además de advertir sobre escenarios donde el pago mínimo es insuficiente para reducir el capital adeudado\\.",
+      "respuesta_esperada": "Su propósito es evidenciar el ahorro financiero y la reducción de plazos que se obtienen al incrementar el esfuerzo de pago, además de advertir sobre escenarios donde el pago mínimo es insuficiente para reducir el capital adeudado\\."
+    }
+  },
+  {
+    "id": "PREG-018",
+    "categoria": "facturacion_documentos",
+    "pregunta": "¿Qué sanciones contempla el Código Tributario por la no emisión de boletas o facturas obligatorias?",
+    "criterio_esperado": "Mencionar multas pecuniarias (del 50% al 500% del monto de la operación) y posible clausura temporal del establecimiento.",
+    "tipo": "sancion",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
+      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+    }
+  },
+  {
+    "id": "PREG-019",
+    "categoria": "impuestos_mensuales",
+    "pregunta": "¿Qué es el Formulario 29 (F29) y qué obligaciones tributarias principales se declaran en él?",
+    "criterio_esperado": "Definirlo como la declaración mensual de impuestos donde se declara y paga IVA, retenciones de boletas y Pagos Provisionales Mensuales (PPM).",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4.",
+      "respuesta_esperada": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4."
+    }
+  },
+  {
+    "id": "PREG-020",
+    "categoria": "impuestos_mensuales",
+    "pregunta": "¿Cuál es el plazo habitual de vencimiento para presentar y pagar el Formulario 29 de IVA?",
+    "criterio_esperado": "Hasta el día 12 del mes siguiente en formato tradicional o hasta el día 20 si es contribuyente facturador electrónico.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BonosCorporativos.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\.",
+      "respuesta_esperada": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\."
+    }
+  },
+  {
+    "id": "PREG-021",
+    "categoria": "impuestos_mensuales",
+    "pregunta": "¿Qué son los Pagos Provisionales Mensuales (PPM) y para qué sirven?",
+    "criterio_esperado": "Definirlos como anticipos obligatorios a cuenta del Impuesto a la Renta de Primera Categoría anual, calculados sobre los ingresos brutos.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CalculadoraDemoraPagarTarjeta.md",
+      "seccion": null,
+      "cita_anclaje": "El simulador permite comparar el impacto de pagar únicamente el monto mínimo sugerido frente a la realización de pagos fijos mensuales por un importe superior\\.",
+      "respuesta_esperada": "El simulador permite comparar el impacto de pagar únicamente el monto mínimo sugerido frente a la realización de pagos fijos mensuales por un importe superior\\."
+    }
+  },
+  {
+    "id": "PREG-022",
+    "categoria": "impuestos_mensuales",
+    "pregunta": "¿Qué ocurre si una empresa no registra ventas ni movimientos económicos durante un mes específico?",
+    "criterio_esperado": "Debe presentar obligatoriamente la declaración 'Sin Movimiento' dentro de los plazos legales establecidos.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Diversificar.md",
+      "seccion": null,
+      "cita_anclaje": "__Supuestos, Riesgos o Consideraciones Relevantes__\n\n- __Riesgo Sistémico:__ Es importante considerar que la diversificación protege contra el riesgo específico \\(de una empresa o industria\\), pero no elimina el riesgo de mercado general \\(crisis globales o sistémicas que afecten a todos los activos simultáneamente\\)\\.",
+      "respuesta_esperada": "__Supuestos, Riesgos o Consideraciones Relevantes__\n\n- __Riesgo Sistémico:__ Es importante considerar que la diversificación protege contra el riesgo específico \\(de una empresa o industria\\), pero no elimina el riesgo de mercado general \\(crisis globales o sistémicas que afecten a todos los activos simultáneamente\\)\\."
+    }
+  },
+  {
+    "id": "PREG-023",
+    "categoria": "impuestos_anuales",
+    "pregunta": "¿Qué es el Formulario 22 (F22) y en qué período del año se presenta habitualmente?",
+    "criterio_esperado": "Declaración Anual de Impuesto a la Renta, presentada habitualmente durante el mes de abril de cada año tributario.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/InstrumentosFinancierosValores.md",
+      "seccion": null,
+      "cita_anclaje": "__Vehículos de Inversión Colectiva:__ Instrumentos que representan la participación en patrimonios administrados por terceros:\n\t- __Cuotas de Fondos Mutuos:__ Orientadas habitualmente a la liquidez y diversificación masiva\\.",
+      "respuesta_esperada": "__Vehículos de Inversión Colectiva:__ Instrumentos que representan la participación en patrimonios administrados por terceros:\n\t- __Cuotas de Fondos Mutuos:__ Orientadas habitualmente a la liquidez y diversificación masiva\\."
+    }
+  },
+  {
+    "id": "PREG-024",
+    "categoria": "impuestos_anuales",
+    "pregunta": "¿Qué es el Impuesto Global Complementario y a quiénes aplica?",
+    "criterio_esperado": "Impuesto personal, progresivo y global que grava las rentas percibidas por personas naturales residentes o domiciliadas en Chile.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/DecalogoInversionista.md",
+      "seccion": null,
+      "cita_anclaje": "__IVA \\(19%\\):__ Impuesto aplicable sobre la comisión del corredor\\.",
+      "respuesta_esperada": "__IVA \\(19%\\):__ Impuesto aplicable sobre la comisión del corredor\\."
+    }
+  },
+  {
+    "id": "PREG-025",
+    "categoria": "impuestos_anuales",
+    "pregunta": "¿Cómo opera la devolución de impuestos resultante de la Operación Renta anual?",
+    "criterio_esperado": "Se genera cuando los créditos acumulados o retenciones/PPM pagados superan el impuesto anual calculado, siendo devuelto por la Tesorería General de la República.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Contexto y Propósito del Documento__\n\nEste documento estructura la información relativa a la naturaleza, operación y riesgos de las acciones en el mercado de valores chileno\\.",
+      "respuesta_esperada": "__Contexto y Propósito del Documento__\n\nEste documento estructura la información relativa a la naturaleza, operación y riesgos de las acciones en el mercado de valores chileno\\."
+    }
+  },
+  {
+    "id": "PREG-026",
+    "categoria": "impuestos_anuales",
+    "pregunta": "¿En qué consiste el régimen tributario ProPyme General (Art. 14 D N°3)?",
+    "criterio_esperado": "Régimen simplificado con tasa reducida de Primera Categoría, tributación en base a ingresos percibidos y gastos pagados, y depreciación instantánea.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
+      "seccion": null,
+      "cita_anclaje": "__Sección 4: Estructura de Costos y Régimen Tributario__\n\nEl mantenimiento de la cuenta y sus productos asociados genera costos que el banco fija libremente bajo criterios de no discriminación\\.",
+      "respuesta_esperada": "__Sección 4: Estructura de Costos y Régimen Tributario__\n\nEl mantenimiento de la cuenta y sus productos asociados genera costos que el banco fija libremente bajo criterios de no discriminación\\."
+    }
+  },
+  {
+    "id": "PREG-027",
+    "categoria": "fiscalizacion_recursos",
+    "pregunta": "¿Qué es una Citación (Art. 63 del Código Tributario) emitida por el SII?",
+    "criterio_esperado": "Acto formal donde el SII pide al contribuyente aclarar, rectificar o documentar operaciones antes de emitir una liquidación.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": false,
+      "md_origen": null,
+      "seccion": null,
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
+    }
+  },
+  {
+    "id": "PREG-028",
+    "categoria": "fiscalizacion_recursos",
+    "pregunta": "¿Cuál es el plazo legal que tiene un contribuyente para dar respuesta a una Citación del SII?",
+    "criterio_esperado": "Plazo de un mes prorrogable por hasta un mes adicional a solicitud del contribuyente.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CalculadoraDemoraPagarTarjeta.md",
+      "seccion": null,
+      "cita_anclaje": "Su propósito es evidenciar el ahorro financiero y la reducción de plazos que se obtienen al incrementar el esfuerzo de pago, además de advertir sobre escenarios donde el pago mínimo es insuficiente para reducir el capital adeudado\\.",
+      "respuesta_esperada": "Su propósito es evidenciar el ahorro financiero y la reducción de plazos que se obtienen al incrementar el esfuerzo de pago, además de advertir sobre escenarios donde el pago mínimo es insuficiente para reducir el capital adeudado\\."
+    }
+  },
+  {
+    "id": "PREG-029",
+    "categoria": "fiscalizacion_recursos",
+    "pregunta": "¿Qué diferencia existe entre una Liquidación y un Giro de impuestos emitido por el SII?",
+    "criterio_esperado": "La liquidación determina formalmente el monto adeudado notificando la diferencia; el giro es la orden de cobro directa para pagar en Tesorería.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\.",
+      "respuesta_esperada": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\."
+    }
+  },
+  {
+    "id": "PREG-030",
+    "categoria": "fiscalizacion_recursos",
+    "pregunta": "¿Qué es la Reposición Administrativa Voluntaria (RAV) contemplada en el Código Tributario?",
+    "criterio_esperado": "Recurso administrativo ante la misma autoridad del SII que emitió una liquidación o resolución para impugnarla antes de ir a tribunales.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": false,
+      "md_origen": null,
+      "seccion": null,
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
+    }
+  },
+  {
+    "id": "PREG-031",
+    "categoria": "fiscalizacion_recursos",
+    "pregunta": "¿Qué es la Revisión de la Actuación Fiscalizadora (RAF)?",
+    "criterio_esperado": "Mecanismo extraordinario administrativo para corregir vicios o errores manifiestos en actos del SII cuando ya vencieron los plazos comunes.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": false,
+      "md_origen": null,
+      "seccion": null,
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
+    }
+  },
+  {
+    "id": "PREG-032",
+    "categoria": "fiscalizacion_recursos",
+    "pregunta": "¿Qué tribunal es competente para conocer reclamaciones judiciales contra liquidaciones del SII?",
+    "criterio_esperado": "Los Tribunales Tributarios y Aduaneros (TTA), órganos jurisdiccionales independientes del SII.",
+    "tipo": "delimitacion",
+    "ground_truth": {
+      "presente_en_docs": false,
+      "md_origen": null,
+      "seccion": null,
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
+    }
+  },
+  {
+    "id": "PREG-033",
+    "categoria": "obligaciones_laborales_terceros",
+    "pregunta": "¿Qué retenciones previsionales u obligaciones tributarias debe aplicar una empresa al pagar sueldos a sus trabajadores?",
+    "criterio_esperado": "Retener y declarar el Impuesto Único de Segunda Categoría (si aplica) y retener las cotizaciones previsionales de salud y AFP.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Capital.md",
+      "seccion": null,
+      "cita_anclaje": "- __Persona Jurídica:__ Ente ficticio \\(empresa, fundación, sociedad\\) capaz de ejercer derechos y contraer obligaciones civiles, y de ser representada judicial y extrajudicialmente\\.",
+      "respuesta_esperada": "- __Persona Jurídica:__ Ente ficticio \\(empresa, fundación, sociedad\\) capaz de ejercer derechos y contraer obligaciones civiles, y de ser representada judicial y extrajudicialmente\\."
+    }
+  },
+  {
+    "id": "PREG-034",
+    "categoria": "obligaciones_laborales_terceros",
+    "pregunta": "¿Qué es el Libro de Remuneraciones Electrónico (LRE) y ante qué organismo se declara?",
+    "criterio_esperado": "Plataforma digital para declarar remuneraciones ante la Dirección del Trabajo (DT), compartiendo datos de fiscalización con el SII.",
+    "tipo": "delimitacion",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "- __Desmaterializadas:__ Valores representados mediante anotaciones en cuenta en un registro electrónico \\(central de depósito\\), eliminando la necesidad de títulos físicos y asegurando la integridad de la información\\.",
+      "respuesta_esperada": "- __Desmaterializadas:__ Valores representados mediante anotaciones en cuenta en un registro electrónico \\(central de depósito\\), eliminando la necesidad de títulos físicos y asegurando la integridad de la información\\."
+    }
+  },
+  {
+    "id": "PREG-035",
+    "categoria": "obligaciones_laborales_terceros",
+    "pregunta": "¿Qué obligaciones tributarias tienen las personas que generan ingresos prestando servicios digitales en plataformas online?",
+    "criterio_esperado": "Hacer inicio de actividades, emitir boletas de honorarios o facturas según corresponda y declarar dichos ingresos en F29 y F22.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentasAhorro.md",
+      "seccion": null,
+      "cita_anclaje": "Estos sistemas han evolucionado desde el soporte físico tradicional \\(\"libretas\"\\) hacia plataformas digitales y tarjetas, manteniendo su función esencial como herramientas de previsión para necesidades generales o beneficios estatales específicos \\(vivienda, educación, deporte y previsión\\)\\.",
+      "respuesta_esperada": "Estos sistemas han evolucionado desde el soporte físico tradicional \\(\"libretas\"\\) hacia plataformas digitales y tarjetas, manteniendo su función esencial como herramientas de previsión para necesidades generales o beneficios estatales específicos \\(vivienda, educación, deporte y previsión\\)\\."
+    }
+  },
+  {
+    "id": "PREG-036",
+    "categoria": "termino_giro",
+    "pregunta": "¿Cuál es el procedimiento y plazo para dar aviso de Término de Giro ante el SII?",
+    "criterio_esperado": "Avisar en línea dentro de los dos meses siguientes al cese definitivo de actividades, pagando los impuestos adeudados.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "Su propósito es servir como guía técnica para entender los derechos del accionista, los procedimientos de compraventa y los factores de riesgo que condicionan este tipo de inversión de largo plazo\\.",
+      "respuesta_esperada": "Su propósito es servir como guía técnica para entender los derechos del accionista, los procedimientos de compraventa y los factores de riesgo que condicionan este tipo de inversión de largo plazo\\."
+    }
+  },
+  {
+    "id": "PREG-037",
+    "categoria": "termino_giro",
+    "pregunta": "¿Qué sucede con los inventarios y activos fijos al momento de tramitar el Término de Giro de una empresa?",
+    "criterio_esperado": "Se consideran retirados o adjudicados a los socios, devengando los impuestos correspondientes (IVA si aplica y Renta).",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CobrosIntermediacion.md",
+      "seccion": null,
+      "cita_anclaje": "La estructura de estos cobros se divide principalmente en comisiones variables, impuestos legales y costos fijos de administración y resguardo de activos\\.",
+      "respuesta_esperada": "La estructura de estos cobros se divide principalmente en comisiones variables, impuestos legales y costos fijos de administración y resguardo de activos\\."
+    }
+  },
+  {
+    "id": "PREG-038",
+    "categoria": "tecnologia_plataforma",
+    "pregunta": "¿Dónde se consultan las anotaciones tributarias o inconcurrencias vigentes de un contribuyente?",
+    "criterio_esperado": "En la sección 'Mi SII' o 'Situación Tributaria' de la Oficina Virtual tras autenticarse con RUT y clave.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md",
+      "seccion": "## 3. Contexto de Conocimiento",
+      "cita_anclaje": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4.",
+      "respuesta_esperada": "Este proceso:\n\n- Es requerido para todo tipo de empresas, sin importar su estructura\n- Permite formalizar la actividad económica ante la autoridad tributaria\n- Es un paso clave para operar dentro del sistema fiscal\n\n---\n\n### 3.1 Características del Trámite\n\n- Se realiza ante el Servicio de Impuestos Internos (SII)\n- No tiene costo\n- Puede efectuarse en línea o de forma presencial\n\n---\n\n### 3.2 Proceso General\n\nEl trámite sigue una secuencia básica:\n\n#### Ingreso al sistema\n- El contribuyente accede utilizando su RUT y clave\n\n#### Selección de opción\n- Se elige la sección correspondiente a inicio de actividades\n\n#### Registro de información\n- Se declara la actividad económica que se desarrollará\n\n---\n\n### 3.3 Importancia del Trámite\n\nEl inicio de actividades:\n\n- Habilita a la empresa para emitir documentos tributarios\n- Permite operar formalmente dentro del sistema fiscal\n- Es indispensable para el cumplimiento de obligaciones tributarias\n\n---\n\n## 4."
+    }
+  },
+  {
+    "id": "PREG-039",
+    "categoria": "tecnologia_plataforma",
+    "pregunta": "¿Qué es el Registro de Compras y Ventas (RCV) digital del SII?",
+    "criterio_esperado": "Plataforma electrónica automática que almacena y valida los DTE emitidos y recibidos, alimentando la propuesta del F29.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuentaCorriente.md",
+      "seccion": null,
+      "cita_anclaje": "- Impresión digital \\(pulgar derecho\\) y registro de domicilio\\.",
+      "respuesta_esperada": "- Impresión digital \\(pulgar derecho\\) y registro de domicilio\\."
+    }
+  },
+  {
+    "id": "PREG-040",
+    "categoria": "tecnologia_plataforma",
+    "pregunta": "¿Cómo se descarga un Certificado de Situación Tributaria en el sitio web del SII?",
+    "criterio_esperado": "En el menú de Certificados dentro del portal web, sin costo, autenticado con Clave Tributaria.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md",
+      "seccion": "## Costos Reales de Formalización",
+      "cita_anclaje": "## Costos Reales de Formalización\n\n### Régimen Simplificado (Tu Empresa en un Día)\n- **Costo total: $0 (gratuito)**\n- Incluye constitución, publicación en Diario Oficial e inscripción en Registro de Comercio\n- Solo se paga si se requiere Firma Electrónica Avanzada ante notario (costo variable según notaría)\n\n### Régimen Tradicional (costos aproximados)\n- **Escritura pública en notaría:** $50.000 - $200.000 CLP (depende del capital y la notaría)\n- **Publicación en Diario Oficial:** $30.000 - $80.000 CLP\n- **Inscripción en Registro de Comercio (Conservador de Bienes Raíces):** $30.000 - $100.000 CLP\n- **Inicio de Actividades en SII:** Gratuito\n- **Total estimado régimen tradicional:** $110.000 - $380.000 CLP\n\n### Patente Municipal\n- **Costo:** entre 0,25% y 0,5% del capital inicial declarado, con un mínimo de 1 UTM y un máximo de 8.000 UTM anuales\n- **Pago:** anual, en dos cuotas (julio y enero)\n\n## Obligaciones Tributarias de una Empresa en Chile\n\n### Impuestos Mensuales\n\n**Formulario 29 (F29) — Declaración Mensual de IVA**\n- Declaración y pago del IVA (19%) sobre ventas\n- Plazo: hasta el día 12 del mes siguiente (o hasta el 20 si se declara en línea sin deuda)\n- Obligatorio para empresas con actividades afectas a IVA\n- Se realiza en www.sii.cl\n\n**Formulario 50 (F50) — Impuestos de Segunda Categoría**\n- Para declarar retenciones de honorarios y otros impuestos específicos\n- Plazo: día 12 del mes siguiente\n\n### Impuesto Anual\n\n**Formulario 22 (F22) — Declaración Anual de Renta**\n- Declaración anual del Impuesto a la Renta\n- Plazo: hasta el 30 de abril de cada año (por el año tributario anterior)\n- Tasa general: 25% para empresas bajo régimen de renta atribuida; 27% para régimen semi-integrado\n- Pequeñas empresas acogidas al régimen del artículo 14D pueden tributar con tasas menores\n\n### Facturación Electrónica\n- Obligatoria para todas las empresas en Chile desde 2017\n- Se emiten a través del sistema del SII o software autorizado\n- Tipos: Factura Electrónica, Boleta Electrónica, Nota de Crédito/Débito Electrónica\n- Las boletas electrónicas son obligatorias para ventas a consumidores finales\n\n### Libros de Contabilidad\n- Las empresas deben llevar Libro de Compras y Ventas (electrónico en SII)\n- Las SA y SpA deben llevar contabilidad completa con balance y estado de resultados\n- Las empresas bajo régimen simplificado pueden llevar registro de ingresos y egresos\n\n## Regímenes Tributarios\n\n### Régimen General (14A)\n- Para empresas medianas y grandes\n- Tasa: 25% (renta atribuida) o 27% (semi-integrado)\n- Contabilidad completa obligatoria\n\n### Régimen Pro Pyme (14D N°3)\n- Para PYMEs con ventas anuales entre 0 y 75.000 UF\n- Tasa: 25%\n- Contabilidad simplificada permitida\n\n### Régimen Pro Pyme Transparente (14D N°8)\n- Para micro y pequeñas empresas con ventas hasta 75.000 UF\n- Los dueños tributan directamente en base a retiros\n- Exento de Impuesto de Primera Categoría a nivel de empresa\n\n## Instituciones del Proceso de Formalización en Chile\n\n| Institución | Rol |\n|---|---|\n| SII (Servicio de Impuestos Internos) | RUT, Inicio de Actividades, declaración de impuestos |\n| Notaría | Escritura pública de constitución (régimen tradicional) |\n| Diario Oficial | Publicación del extracto de constitución |\n| Conservador de Bienes Raíces | Inscripción en Registro de Comercio |\n| Municipalidad | Patente municipal y permisos de edificación |\n| SEREMI de Salud | Autorización sanitaria para alimentos y salud |\n| Ministerio de Economía | Registro de Empresas y Sociedades (Tu Empresa en un Día) |\n| Dirección de Obras Municipales | Certificado de zonificación e informaciones previas |",
+      "respuesta_esperada": "## Costos Reales de Formalización\n\n### Régimen Simplificado (Tu Empresa en un Día)\n- **Costo total: $0 (gratuito)**\n- Incluye constitución, publicación en Diario Oficial e inscripción en Registro de Comercio\n- Solo se paga si se requiere Firma Electrónica Avanzada ante notario (costo variable según notaría)\n\n### Régimen Tradicional (costos aproximados)\n- **Escritura pública en notaría:** $50.000 - $200.000 CLP (depende del capital y la notaría)\n- **Publicación en Diario Oficial:** $30.000 - $80.000 CLP\n- **Inscripción en Registro de Comercio (Conservador de Bienes Raíces):** $30.000 - $100.000 CLP\n- **Inicio de Actividades en SII:** Gratuito\n- **Total estimado régimen tradicional:** $110.000 - $380.000 CLP\n\n### Patente Municipal\n- **Costo:** entre 0,25% y 0,5% del capital inicial declarado, con un mínimo de 1 UTM y un máximo de 8.000 UTM anuales\n- **Pago:** anual, en dos cuotas (julio y enero)\n\n## Obligaciones Tributarias de una Empresa en Chile\n\n### Impuestos Mensuales\n\n**Formulario 29 (F29) — Declaración Mensual de IVA**\n- Declaración y pago del IVA (19%) sobre ventas\n- Plazo: hasta el día 12 del mes siguiente (o hasta el 20 si se declara en línea sin deuda)\n- Obligatorio para empresas con actividades afectas a IVA\n- Se realiza en www.sii.cl\n\n**Formulario 50 (F50) — Impuestos de Segunda Categoría**\n- Para declarar retenciones de honorarios y otros impuestos específicos\n- Plazo: día 12 del mes siguiente\n\n### Impuesto Anual\n\n**Formulario 22 (F22) — Declaración Anual de Renta**\n- Declaración anual del Impuesto a la Renta\n- Plazo: hasta el 30 de abril de cada año (por el año tributario anterior)\n- Tasa general: 25% para empresas bajo régimen de renta atribuida; 27% para régimen semi-integrado\n- Pequeñas empresas acogidas al régimen del artículo 14D pueden tributar con tasas menores\n\n### Facturación Electrónica\n- Obligatoria para todas las empresas en Chile desde 2017\n- Se emiten a través del sistema del SII o software autorizado\n- Tipos: Factura Electrónica, Boleta Electrónica, Nota de Crédito/Débito Electrónica\n- Las boletas electrónicas son obligatorias para ventas a consumidores finales\n\n### Libros de Contabilidad\n- Las empresas deben llevar Libro de Compras y Ventas (electrónico en SII)\n- Las SA y SpA deben llevar contabilidad completa con balance y estado de resultados\n- Las empresas bajo régimen simplificado pueden llevar registro de ingresos y egresos\n\n## Regímenes Tributarios\n\n### Régimen General (14A)\n- Para empresas medianas y grandes\n- Tasa: 25% (renta atribuida) o 27% (semi-integrado)\n- Contabilidad completa obligatoria\n\n### Régimen Pro Pyme (14D N°3)\n- Para PYMEs con ventas anuales entre 0 y 75.000 UF\n- Tasa: 25%\n- Contabilidad simplificada permitida\n\n### Régimen Pro Pyme Transparente (14D N°8)\n- Para micro y pequeñas empresas con ventas hasta 75.000 UF\n- Los dueños tributan directamente en base a retiros\n- Exento de Impuesto de Primera Categoría a nivel de empresa\n\n## Instituciones del Proceso de Formalización en Chile\n\n| Institución | Rol |\n|---|---|\n| SII (Servicio de Impuestos Internos) | RUT, Inicio de Actividades, declaración de impuestos |\n| Notaría | Escritura pública de constitución (régimen tradicional) |\n| Diario Oficial | Publicación del extracto de constitución |\n| Conservador de Bienes Raíces | Inscripción en Registro de Comercio |\n| Municipalidad | Patente municipal y permisos de edificación |\n| SEREMI de Salud | Autorización sanitaria para alimentos y salud |\n| Ministerio de Economía | Registro de Empresas y Sociedades (Tu Empresa en un Día) |\n| Dirección de Obras Municipales | Certificado de zonificación e informaciones previas |"
+    }
+  },
+  {
+    "id": "PREG-041",
+    "categoria": "derechos_contribuyente",
+    "pregunta": "¿Cuáles son los derechos fundamentales garantizados al contribuyente en el Artículo 8 bis del Código Tributario?",
+    "criterio_esperado": "Mencionar derecho a trato respetuoso, presunción de buena fe, información clara y expedita, y reserva de información tributaria.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\.",
+      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Beneficios Tributarios:__ Se menciona la existencia de beneficios para acciones de \"primera emisión\", pero no se detallan los artículos legales o condiciones específicas para acceder a ellos\\."
+    }
+  },
+  {
+    "id": "PREG-042",
+    "categoria": "derechos_contribuyente",
+    "pregunta": "¿Qué institución autónoma defiende a los contribuyentes frente a vulneraciones cometidas por el SII?",
+    "criterio_esperado": "Identificar a la Defensoría del Contribuyente (DEDECON).",
+    "tipo": "factual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/MiPrimerEndeudamiento.md",
+      "seccion": null,
+      "cita_anclaje": "__Derechos del Usuario y Regulación Específica \\(Capítulo 8\\-41\\)__\n\nLa normativa de la CMF y la Ley de Fraudes \\(Ley N° 21\\.234\\) otorgan protecciones específicas frente a la institución financiera:\n\n- __Prohibición de Cambios Unilaterales:__ Las instituciones financieras no pueden modificar las comisiones, tasas de interés o condiciones económicas del contrato de manera unilateral\\.",
+      "respuesta_esperada": "__Derechos del Usuario y Regulación Específica \\(Capítulo 8\\-41\\)__\n\nLa normativa de la CMF y la Ley de Fraudes \\(Ley N° 21\\.234\\) otorgan protecciones específicas frente a la institución financiera:\n\n- __Prohibición de Cambios Unilaterales:__ Las instituciones financieras no pueden modificar las comisiones, tasas de interés o condiciones económicas del contrato de manera unilateral\\."
+    }
+  },
+  {
+    "id": "PREG-043",
+    "categoria": "normativa_general",
+    "pregunta": "¿Cuál es la norma jurídica principal que rige los procedimientos tributarios en Chile?",
+    "criterio_esperado": "El Código Tributario (contenido en el Decreto Ley N° 830).",
+    "tipo": "factual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
+      "seccion": null,
+      "cita_anclaje": "__Contexto y Propósito del Documento__\n\nEste documento sistematiza la naturaleza jurídica, los objetivos estratégicos y las atribuciones operativas del Banco Central de Chile\\.",
+      "respuesta_esperada": "__Contexto y Propósito del Documento__\n\nEste documento sistematiza la naturaleza jurídica, los objetivos estratégicos y las atribuciones operativas del Banco Central de Chile\\."
+    }
+  },
+  {
+    "id": "PREG-044",
+    "categoria": "normativa_general",
+    "pregunta": "¿Qué es la prescripción tributaria y qué plazos generales rigen para la fiscalización del SII?",
+    "criterio_esperado": "Extinción de la facultad de fiscalización: regla general de 3 años, ampliable a 6 años si no se presentó declaración o fue maliciosamente falsa.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": false,
+      "md_origen": null,
+      "seccion": null,
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
+    }
+  },
+  {
+    "id": "PREG-045",
+    "categoria": "normativa_general",
+    "pregunta": "¿Qué organismo público es responsable directo de recaudar y cobrar los impuestos girados por el SII?",
+    "criterio_esperado": "La Tesorería General de la República (TGR), diferenciándola del rol fiscalizador y tasador del SII.",
+    "tipo": "delimitacion",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/SuperintendenciaPensiones.md",
+      "seccion": null,
+      "cita_anclaje": "- __Liderazgo:__ La máxima autoridad del organismo es el __Superintendente__, responsable de dirigir las labores de fiscalización\\.",
+      "respuesta_esperada": "- __Liderazgo:__ La máxima autoridad del organismo es el __Superintendente__, responsable de dirigir las labores de fiscalización\\."
+    }
+  },
+  {
+    "id": "PREG-046",
+    "categoria": "casos_especiales",
+    "pregunta": "¿Qué impuestos debe pagar una microempresa familiar (MEF) acogida a la Ley 19.749?",
+    "criterio_esperado": "Tributa bajo reglas generales de Primera Categoría/ProPyme e IVA si sus giros están afectos, pero con facilidades de zonificación municipal.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/GananciaCapital.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a Aclarar o Información Faltante__\n\n- __Costos de Transacción:__ El texto no especifica si para el cálculo de la ganancia neta se deben deducir las comisiones de intermediación, impuestos o gastos de corretaje\\.",
+      "respuesta_esperada": "__Puntos a Aclarar o Información Faltante__\n\n- __Costos de Transacción:__ El texto no especifica si para el cálculo de la ganancia neta se deben deducir las comisiones de intermediación, impuestos o gastos de corretaje\\."
+    }
+  },
+  {
+    "id": "PREG-047",
+    "categoria": "casos_especiales",
+    "pregunta": "¿Cómo se realiza la acreditación de no residencia para efectos del pago de impuestos de extranjeros en Chile?",
+    "criterio_esperado": "Determinación según reglas de domicilio y residencia del Código Tributario (permanencia ininterrumpida o no por más de 183 días).",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\.",
+      "respuesta_esperada": "Su negociación se realiza obligatoriamente a través de intermediarios regulados, bajo condiciones de liquidación estandarizadas y una estructura de costos que incluye comisiones, impuestos y gastos de custodia\\."
+    }
+  },
+  {
+    "id": "PREG-048",
+    "categoria": "casos_especiales",
+    "pregunta": "¿Qué es el Impuesto Territorial (contribuciones) y sobre qué base se calcula?",
+    "criterio_esperado": "Tributo que grava el avalúo fiscal de los bienes raíces determinado por el SII, pagado trimestralmente en la TGR.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BancoCentral.md",
+      "seccion": null,
+      "cita_anclaje": "- __Potestad de Emisión:__ Monopolio legal sobre la creación de la base monetaria \\(efectivo\\)\\.",
+      "respuesta_esperada": "- __Potestad de Emisión:__ Monopolio legal sobre la creación de la base monetaria \\(efectivo\\)\\."
+    }
+  },
+  {
+    "id": "PREG-049",
+    "categoria": "casos_especiales",
+    "pregunta": "¿Qué tratamiento tributario tienen las donaciones con fines culturales o educacionales?",
+    "criterio_esperado": "Constituyen créditos contra impuestos o gastos deducibles según las leyes especiales vigentes que regulan donaciones.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuotasFondosInversion.md",
+      "seccion": null,
+      "cita_anclaje": "- __Tratamiento Tributario:__ El documento original no hace referencia a las implicancias impositivas de las ganancias de capital o el reparto de beneficios\\.",
+      "respuesta_esperada": "- __Tratamiento Tributario:__ El documento original no hace referencia a las implicancias impositivas de las ganancias de capital o el reparto de beneficios\\."
+    }
+  },
+  {
+    "id": "PREG-050",
+    "categoria": "casos_especiales",
+    "pregunta": "¿Qué es el secreto de la información tributaria y en qué casos excepcionales puede ser levantado?",
+    "criterio_esperado": "Obligación de reserva funcionaria sobre datos del contribuyente, levantable solo por orden judicial expresa o acuerdos internacionales de intercambio de información.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/BonosCorporativos.md",
+      "seccion": null,
+      "cita_anclaje": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\.",
+      "respuesta_esperada": "__Puntos a aclarar / información faltante__\n\n- __Tipos de Tasa Variable:__ El texto menciona que el interés puede ser variable, pero no define cuáles son los índices de referencia habituales \\(ej\\."
+    }
+  },
+  {
+    "id": "PREG-051",
+    "categoria": "out_of_scope",
+    "pregunta": "¿Cuáles son los requisitos y el costo para renovar mi Licencia de Conducir en el SII?",
+    "criterio_esperado": "El modelo debe rechazar amablemente indicando que el SII no gestiona licencias de conducir, siendo competencia exclusiva de las Direcciones de Tránsito municipales.",
+    "tipo": "adversarial",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/RutaNegociosMercadoValores.md",
+      "seccion": null,
+      "cita_anclaje": "Su propósito es clarificar los requisitos de entrada, los roles de los distintos agentes del mercado y la estructura de costos asociada, permitiendo que la toma de decisiones se realice bajo un marco de seguridad jurídica y eficiencia financiera\\.",
+      "respuesta_esperada": "Su propósito es clarificar los requisitos de entrada, los roles de los distintos agentes del mercado y la estructura de costos asociada, permitiendo que la toma de decisiones se realice bajo un marco de seguridad jurídica y eficiencia financiera\\."
+    }
+  },
+  {
+    "id": "PREG-052",
+    "categoria": "out_of_scope",
+    "pregunta": "¿Cómo tramito un reclamo por despido injustificado ante el SII?",
+    "criterio_esperado": "El modelo debe advertir que el SII no tiene facultades laborales, debiendo acudir a la Dirección del Trabajo (DT) o Tribunales Laborales.",
+    "tipo": "adversarial",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Ahorro.md",
+      "seccion": null,
+      "cita_anclaje": "Busca clarificar cómo el tiempo y la regularidad actúan como multiplicadores del capital, y cómo las instituciones financieras facilitan este proceso mediante diversos mecanismos de captación\\.",
+      "respuesta_esperada": "Busca clarificar cómo el tiempo y la regularidad actúan como multiplicadores del capital, y cómo las instituciones financieras facilitan este proceso mediante diversos mecanismos de captación\\."
+    }
+  },
+  {
+    "id": "PREG-053",
+    "categoria": "out_of_scope",
+    "pregunta": "¿Qué tasa de IVA aplica actualmente la AFIP en Argentina según el Código Tributario chileno?",
+    "criterio_esperado": "El modelo debe declarar que el alcance del SII y sus documentos normativos se limita exclusivamente a la República de Chile.",
+    "tipo": "adversarial",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Ahorro.md",
+      "seccion": null,
+      "cita_anclaje": "La tasa de interés varía según el plazo, el tipo de instrumento y la moneda de la operación\\.",
+      "respuesta_esperada": "La tasa de interés varía según el plazo, el tipo de instrumento y la moneda de la operación\\."
+    }
+  },
+  {
+    "id": "PREG-054",
+    "categoria": "out_of_scope",
+    "pregunta": "¿Dónde descargo el formulario del SII para solicitar una subvención de vivienda SERVIU?",
+    "criterio_esperado": "Debe indicar que las subvenciones habitacionales corresponden al Ministerio de Vivienda y Urbanismo (MINVU/SERVIU), no al SII.",
+    "tipo": "adversarial",
+    "ground_truth": {
+      "presente_en_docs": false,
+      "md_origen": null,
+      "seccion": null,
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
+    }
+  },
+  {
+    "id": "PREG-055",
+    "categoria": "out_of_scope",
+    "pregunta": "¿Cuál es la cotización del dólar observada para el año 2030 según las tablas del SII?",
+    "criterio_esperado": "El modelo debe rechazar la predicción temporal indicando que no se disponen datos proyectados futuros en los registros del SII.",
+    "tipo": "adversarial",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Futuros.md",
+      "seccion": null,
+      "cita_anclaje": "__Sección 2: Activos Subyacentes y Funcionamiento__\n\nLos contratos se referencian a activos específicos cuyo valor fluctúa en el mercado:\n\n- __Tipos de Activos:__\n\t- __Dólar USA:__ El precio varía según el \"dólar observado\"\\.",
+      "respuesta_esperada": "__Sección 2: Activos Subyacentes y Funcionamiento__\n\nLos contratos se referencian a activos específicos cuyo valor fluctúa en el mercado:\n\n- __Tipos de Activos:__\n\t- __Dólar USA:__ El precio varía según el \"dólar observado\"\\."
+    }
+  },
+  {
+    "id": "PREG-056",
+    "categoria": "gestion_interna",
+    "pregunta": "¿Qué es la auditoría tributaria integral llevada a cabo por el SII?",
+    "criterio_esperado": "Revisión exhaustiva de la totalidad de las operaciones, libros contables y declaraciones de un contribuyente en un año tributario específico.",
+    "tipo": "conceptual",
+    "ground_truth": {
+      "presente_en_docs": false,
+      "md_origen": null,
+      "seccion": null,
+      "cita_anclaje": null,
+      "respuesta_esperada": "Información no disponible en la colección de documentos."
+    }
+  },
+  {
+    "id": "PREG-057",
+    "categoria": "gestion_interna",
+    "pregunta": "¿Qué documentación contable física obligatoria debe presentar una empresa con contabilidad completa ante una revisión?",
+    "criterio_esperado": "Libro Diario, Mayor, Balances, Inventarios y el respaldo documental físico o digital de ingresos y egresos.",
+    "tipo": "procedimiento",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Supuestos, Riesgos o Consideraciones Relevantes__\n\n- __Riesgo de Emisor:__ La recuperación de la inversión depende directamente de la capacidad de la empresa para generar utilidades\\.",
+      "respuesta_esperada": "__Supuestos, Riesgos o Consideraciones Relevantes__\n\n- __Riesgo de Emisor:__ La recuperación de la inversión depende directamente de la capacidad de la empresa para generar utilidades\\."
+    }
+  },
+  {
+    "id": "PREG-058",
+    "categoria": "gestion_interna",
+    "pregunta": "¿Cómo opera la figura de la Responsabilidad Solidaria en las deudas tributarias de una sociedad?",
+    "criterio_esperado": "Obligación accesoria donde administradores, directores o socios pueden responder con su propio patrimonio ante fraudes o incumplimientos calificados.",
+    "tipo": "normativa",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/AccionesSociedadesAnónimasAbiertas.md",
+      "seccion": null,
+      "cita_anclaje": "__Análisis Técnico Operativo: Acciones de Sociedades Anónimas Abiertas__\n\n__Resumen Ejecutivo__\n\nLas acciones de Sociedades Anónimas \\(S\\.A\\.\\) abiertas representan una fracción del patrimonio de una empresa, otorgando a su titular derechos de propiedad, control proporcional y participación en las utilidades\\.",
+      "respuesta_esperada": "__Análisis Técnico Operativo: Acciones de Sociedades Anónimas Abiertas__\n\n__Resumen Ejecutivo__\n\nLas acciones de Sociedades Anónimas \\(S\\.A\\.\\) abiertas representan una fracción del patrimonio de una empresa, otorgando a su titular derechos de propiedad, control proporcional y participación en las utilidades\\."
+    }
+  },
+  {
+    "id": "PREG-059",
+    "categoria": "gestion_interna",
+    "pregunta": "¿Qué sanciones aplican por la presentación tardía y fuera de plazo del Formulario 22 de Renta?",
+    "criterio_esperado": "Reajustes según IPC, intereses penales mensuales (1.5%) y multas porcentuales sobre el impuesto adeudado según el Art. 97 del Código Tributario.",
+    "tipo": "sancion",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/CuotasFondosMutuos.md",
+      "seccion": null,
+      "cita_anclaje": "__Sección 4: Estructura de Costos y Remuneraciones__\n\nLas administradoras aplican dos categorías principales de cobros que impactan la rentabilidad final:\n\n- __Remuneración por Administración:__ Cargo por la gestión del fondo, estipulado en el reglamento interno\\.",
+      "respuesta_esperada": "__Sección 4: Estructura de Costos y Remuneraciones__\n\nLas administradoras aplican dos categorías principales de cobros que impactan la rentabilidad final:\n\n- __Remuneración por Administración:__ Cargo por la gestión del fondo, estipulado en el reglamento interno\\."
+    }
+  },
+  {
+    "id": "PREG-060",
+    "categoria": "gestion_interna",
+    "pregunta": "¿Qué es un convenio de pago de impuestos y ante qué organismo se suscribe?",
+    "criterio_esperado": "Acuerdo para cancelar deudas tributarias morosas en cuotas, suscrito ante la Tesorería General de la República (TGR), no en el SII.",
+    "tipo": "delimitacion",
+    "ground_truth": {
+      "presente_en_docs": true,
+      "md_origen": "C:/Visual/EmprendeBackend/ai-service/docs/Ahorro.md",
+      "seccion": null,
+      "cita_anclaje": "__Sección 3: Estructura de Retorno y Protección del Capital__\n\nAhorrar en el sistema financiero formal otorga beneficios que el ahorro informal \\(físico o \"bajo el colchón\"\\) no posee:\n\n- __Rentabilidad \\(Intereses\\):__ Es el pago que la institución financiera otorga al ahorrante por el uso de su dinero\\.",
+      "respuesta_esperada": "__Sección 3: Estructura de Retorno y Protección del Capital__\n\nAhorrar en el sistema financiero formal otorga beneficios que el ahorro informal \\(físico o \"bajo el colchón\"\\) no posee:\n\n- __Rentabilidad \\(Intereses\\):__ Es el pago que la institución financiera otorga al ahorrante por el uso de su dinero\\."
+    }
   }
 ]
