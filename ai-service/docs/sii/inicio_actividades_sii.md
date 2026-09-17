@@ -1,7 +1,7 @@
 Inicio de actividades ante el Servicio de Impuestos Internos
 
 El inicio de actividades es el trámite mediante el cual una empresa informa que comenzará a operar económicamente.
-Este paso es obligatorio para todas las empresas, независимо de su tipo o forma de constitución.
+Este paso es obligatorio para todas las empresas, independientemente de su tipo o forma de constitución.
 Características principales:
 
 Se realiza ante el Servicio de Impuestos Internos (SII).

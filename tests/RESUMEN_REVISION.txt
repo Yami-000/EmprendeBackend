@@ -1,0 +1,151 @@
+═════════════════════════════════════════════════════════════════════════════
+REVISIÓN DE BANCO DE PREGUNTAS - GUÍA COMPLETA
+═════════════════════════════════════════════════════════════════════════════
+
+ARCHIVOS GENERADOS:
+═════════════════════════════════════════════════════════════════════════════
+
+1. revision_preguntas_prompt.md
+   └─ Prompt estructurado para modelo pesado
+   └─ Incluye: contexto, documentos disponibles, estructura, tarea, formato salida
+   └─ Uso: Cópialo y pégalo en Claude Opus/Sonnet o GPT-4
+
+2. preguntas_para_revision.txt
+   └─ Listado legible de 100 preguntas
+   └─ Formato: [ID] [Clasificación] [Categoría]
+   └─ Incluye: Pregunta, Criterio, Documento origen
+   └─ Uso: Referencia rápida para análisis
+
+3. COMO_REVISAR_CON_MODELO.md
+   └─ Instrucciones paso a paso
+   └─ Opciones: Revisión completa o por grupos
+   └─ Tiempo estimado: 15-20 min (Opus) o 5-8 min por grupo
+   └─ Modelos recomendados: Opus > Sonnet > GPT-4 Turbo
+
+4. RESUMEN_REVISION.txt (este archivo)
+   └─ Guía rápida
+
+═════════════════════════════════════════════════════════════════════════════
+INFORMACIÓN CLAVE PARA EL MODELO
+═════════════════════════════════════════════════════════════════════════════
+
+DOCUMENTOS DISPONIBLES (13 archivos en ai-service/docs/sii/):
+- tipos_sociedad_chile.md
+- obligaciones_tributarias_y_tipos_sociedad.md
+- constitucion_empresa_simplificada.md
+- constitucion_empresa_tradicional.md
+- costos_y_plazos_formalizacion.md
+- documentacion_formalizacion.md
+- formularios_tributarios_chile.md
+- inicio_actividades_formalizacion_sii.md
+- inicio_actividades_sii.md
+- patente_municipal.md
+- permisos_complementarios.md
+- planificacion_formalizacion.md
+- tipos_empresa_decision.md
+
+ESTOS SON LOS ÚNICOS QUE TIENE EL AGENTE RAG.
+
+CLASIFICACIÓN ACTUAL:
+- Preguntas 1-52: Marcadas como RESPONDIBLES (con información disponible)
+- Preguntas 53-100: Marcadas como NO RESPONDIBLES (para detectar alucinaciones)
+
+OBJETIVO DE LA REVISIÓN:
+Verificar si la clasificación es correcta:
+✅ ¿Las respondibles REALMENTE tienen info en los docs?
+✅ ¿Las no respondibles REALMENTE no tienen info en los docs?
+❌ ¿Hay preguntas mal clasificadas?
+
+═════════════════════════════════════════════════════════════════════════════
+CÓMO EJECUTAR LA REVISIÓN
+═════════════════════════════════════════════════════════════════════════════
+
+OPCIÓN 1: Revisión COMPLETA (EXHAUSTIVA)
+─────────────────────────────────────────
+1. Abre Claude Opus o Sonnet
+2. Copia el contenido de revision_preguntas_prompt.md
+3. Pégalo en el chat
+4. Adjunta el archivo banco_preguntas_respuestas.json
+5. Proporciona acceso a los 13 archivos .md
+6. Ejecuta: "Por favor, analiza todas las 100 preguntas..."
+
+Tiempo: 15-20 minutos
+Exhaustividad: 100%
+
+OPCIÓN 2: Revisión en GRUPOS PARALELOS (RÁPIDO)
+────────────────────────────────────────────────
+Divide en 5 chats simultáneos:
+- Chat 1: PREG-001 a PREG-020 + documentos
+- Chat 2: PREG-021 a PREG-040 + documentos
+- Chat 3: PREG-041 a PREG-060 + documentos
+- Chat 4: PREG-061 a PREG-080 + documentos
+- Chat 5: PREG-081 a PREG-100 + documentos
+
+Tiempo: 5-8 minutos por grupo (en paralelo: ~8 minutos total)
+Exhaustividad: 95%
+
+═════════════════════════════════════════════════════════════════════════════
+RESULTADO ESPERADO
+═════════════════════════════════════════════════════════════════════════════
+
+El modelo entregará:
+
+1. TABLA DE ANÁLISIS (formato CSV/Markdown)
+   - ID | Pregunta | Clasificación Actual | Verificación | Problema | Recomendación
+
+2. RESUMEN POR CATEGORÍA
+   - Información General: X correctas, Y errores
+   - Tipos de Empresa: ...
+   - Etc.
+
+3. PROBLEMAS CLASIFICADOS POR SEVERIDAD
+   🔴 CRÍTICOS: Preguntas totalmente mal clasificadas (mover de categoría)
+   🟡 MEDIOS: Criterio débil o incorrecto (ajustar)
+   🟢 MENORES: Pequeños detalles (redacción)
+
+4. ESTADÍSTICAS FINALES
+   - Total verificadas: 100
+   - Correctas: X%
+   - Con error: Y%
+   - Ambiguas: Z%
+
+═════════════════════════════════════════════════════════════════════════════
+PRÓXIMOS PASOS
+═════════════════════════════════════════════════════════════════════════════
+
+Después de recibir el análisis:
+
+1. CONSOLIDAR CAMBIOS
+   - Si hay errores críticos, edita banco_preguntas_respuestas.json
+   - Regenera banco_preguntas.json (solo id + pregunta)
+
+2. EJECUTAR PREGUNTAS
+   - Usa el banco actualizado contra el agente RAG
+   - Mide: Accuracy en respondibles vs. no respondibles
+   - Detecta: Tasa de alucinación
+
+3. COMPARA RESULTADOS
+   - Baseline anterior (v5): 28/40
+   - Objetivo: 32/40+ (Nivel Alto)
+   - Métrica alucinaciones: esperado >50% en no respondibles
+
+═════════════════════════════════════════════════════════════════════════════
+ARCHIVOS DE REFERENCIA
+═════════════════════════════════════════════════════════════════════════════
+
+En tests/dataset/:
+- banco_preguntas_respuestas.json (completo, con criterios y documentos)
+- banco_preguntas.json (limpio, solo id + pregunta)
+
+En tests/:
+- revision_preguntas_prompt.md (PROMPT PRINCIPAL)
+- preguntas_para_revision.txt (listado legible)
+- COMO_REVISAR_CON_MODELO.md (guía detallada)
+- RESUMEN_REVISION.txt (este archivo)
+
+═════════════════════════════════════════════════════════════════════════════
+¿PREGUNTAS?
+═════════════════════════════════════════════════════════════════════════════
+
+Consulta COMO_REVISAR_CON_MODELO.md para más detalles.
+
