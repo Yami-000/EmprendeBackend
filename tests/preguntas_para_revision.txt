@@ -1,0 +1,704 @@
+﻿BANCO DE PREGUNTAS PARA REVISIÓN
+================================================================================
+
+PREG-001 [✅ RESPONDIBLE] [informacion_general]
+Tipo: factual
+Pregunta: ¿Qué es el Servicio de Impuestos Internos (SII) y cuál es su misión institucional?
+Criterio: Mencionar que es la institución pública encargada de fiscalizar y administrar los impuestos internos en Chile, promoviendo el cumplimiento tributario.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpTradicional.md
+--------------------------------------------------------------------------------
+
+PREG-002 [✅ RESPONDIBLE] [informacion_general]
+Tipo: factual
+Pregunta: ¿Qué canales oficiales existen para contactar al SII o realizar consultas tributarias?
+Criterio: Identificar el sitio web oficial (sii.cl), mesa de ayuda telefónica y atención presencial en Direcciones Regionales/Unidades.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md
+--------------------------------------------------------------------------------
+
+PREG-003 [✅ RESPONDIBLE] [informacion_general]
+Tipo: procedimiento
+Pregunta: ¿Qué es la Clave Tributaria del SII y cómo se obtiene por primera vez?
+Criterio: Definirla como la contraseña de acceso a la Oficina Virtual del SII y explicar que se obtiene en línea mediante validación de identidad o con ClaveÚnica.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md
+--------------------------------------------------------------------------------
+
+PREG-004 [✅ RESPONDIBLE] [informacion_general]
+Tipo: procedimiento
+Pregunta: ¿Cómo puedo recuperar mi Clave Tributaria si la he olvidado o bloqueado?
+Criterio: Indicar el uso del mecanismo de recuperación en línea mediante correo registrado, preguntas de seguridad o acceso vía ClaveÚnica.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md
+--------------------------------------------------------------------------------
+
+PREG-010 [✅ RESPONDIBLE] [formalizacion_inicio]
+Tipo: delimitacion
+Pregunta: ¿El trámite de Patente Municipal se gestiona directamente en el SII o en otra institución?
+Criterio: Aclarar que la patente municipal es un tributo comunal que se tramita y paga en la Municipalidad correspondiente al domicilio comercial, no en el SII.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/systeme_prompt_MiPrimeraPatenteMun.md
+--------------------------------------------------------------------------------
+
+PREG-011 [✅ RESPONDIBLE] [formalizacion_inicio]
+Tipo: procedimiento
+Pregunta: ¿Cómo se realiza la actualización o adición de giros económicos en la plataforma del SII?
+Criterio: Explicar el trámite en línea en 'Actualización de información' dentro del portal del SII, requiriendo acreditación si son giros afectos a IVA.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpSimplificada.md
+--------------------------------------------------------------------------------
+
+PREG-012 [✅ RESPONDIBLE] [facturacion_documentos]
+Tipo: conceptual
+Pregunta: ¿Qué es una Factura Electrónica y qué valor legal tiene frente a la factura en papel tradicional?
+Criterio: Definirla como documento tributario digital emitido bajo formato XML con firma digital, teniendo el mismo o superior valor probatorio y legal que el papel.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/AgentesValores.md
+--------------------------------------------------------------------------------
+
+PREG-013 [✅ RESPONDIBLE] [facturacion_documentos]
+Tipo: normativa
+Pregunta: ¿Quiénes deben emitir Boletas de Honorarios Electrónicas y cuál es su porcentaje de retención actual?
+Criterio: Personas naturales en Segunda Categoría por servicios profesionales. Mencionar el porcentaje de retención legal progresivo vigente.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/CuentasDepósitosVista.md
+--------------------------------------------------------------------------------
+
+PREG-014 [✅ RESPONDIBLE] [facturacion_documentos]
+Tipo: tecnico
+Pregunta: ¿Qué es el Código de Autorización de Folios (CAF) en facturación electrónica?
+Criterio: Explicar que es el archivo digital que contiene el rango de folios autorizados por el SII para firmar documentos tributarios.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/documentacion_formalizacion.md
+--------------------------------------------------------------------------------
+
+PREG-017 [✅ RESPONDIBLE] [facturacion_documentos]
+Tipo: normativa
+Pregunta: ¿Cuál es el plazo que tiene un receptor comercial para reclamar o aceptar el contenido de una Factura Electrónica?
+Criterio: Señalar el plazo legal de 8 días corridos desde su recepción en el registro del SII.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/CalculadoraDemoraPagarTarjeta.md
+--------------------------------------------------------------------------------
+
+PREG-018 [✅ RESPONDIBLE] [facturacion_documentos]
+Tipo: sancion
+Pregunta: ¿Qué sanciones contempla el Código Tributario por la no emisión de boletas o facturas obligatorias?
+Criterio: Mencionar multas pecuniarias (del 50% al 500% del monto de la operación) y posible clausura temporal del establecimiento.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpTradicional.md
+--------------------------------------------------------------------------------
+
+PREG-019 [✅ RESPONDIBLE] [impuestos_mensuales]
+Tipo: conceptual
+Pregunta: ¿Qué es el Formulario 29 (F29) y qué obligaciones tributarias principales se declaran en él?
+Criterio: Definirlo como la declaración mensual de impuestos donde se declara y paga IVA, retenciones de boletas y Pagos Provisionales Mensuales (PPM).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md
+--------------------------------------------------------------------------------
+
+PREG-022 [✅ RESPONDIBLE] [impuestos_mensuales]
+Tipo: procedimiento
+Pregunta: ¿Qué ocurre si una empresa no registra ventas ni movimientos económicos durante un mes específico?
+Criterio: Debe presentar obligatoriamente la declaración 'Sin Movimiento' dentro de los plazos legales establecidos.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/Diversificar.md
+--------------------------------------------------------------------------------
+
+PREG-024 [✅ RESPONDIBLE] [impuestos_anuales]
+Tipo: conceptual
+Pregunta: ¿Qué es el Impuesto Global Complementario y a quiénes aplica?
+Criterio: Impuesto personal, progresivo y global que grava las rentas percibidas por personas naturales residentes o domiciliadas en Chile.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/DecalogoInversionista.md
+--------------------------------------------------------------------------------
+
+PREG-028 [✅ RESPONDIBLE] [fiscalizacion_recursos]
+Tipo: normativa
+Pregunta: ¿Cuál es el plazo legal que tiene un contribuyente para dar respuesta a una Citación del SII?
+Criterio: Plazo de un mes prorrogable por hasta un mes adicional a solicitud del contribuyente.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/systeme_prompt_MiPrimeraPatenteMun.md
+--------------------------------------------------------------------------------
+
+PREG-033 [✅ RESPONDIBLE] [obligaciones_laborales_terceros]
+Tipo: normativa
+Pregunta: ¿Qué retenciones previsionales u obligaciones tributarias debe aplicar una empresa al pagar sueldos a sus trabajadores?
+Criterio: Retener y declarar el Impuesto Único de Segunda Categoría (si aplica) y retener las cotizaciones previsionales de salud y AFP.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/Capital.md
+--------------------------------------------------------------------------------
+
+PREG-035 [✅ RESPONDIBLE] [obligaciones_laborales_terceros]
+Tipo: procedimiento
+Pregunta: ¿Qué obligaciones tributarias tienen las personas que generan ingresos prestando servicios digitales en plataformas online?
+Criterio: Hacer inicio de actividades, emitir boletas de honorarios o facturas según corresponda y declarar dichos ingresos en F29 y F22.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/CuentasAhorro.md
+--------------------------------------------------------------------------------
+
+PREG-037 [✅ RESPONDIBLE] [termino_giro]
+Tipo: normativa
+Pregunta: ¿Qué sucede con los inventarios y activos fijos al momento de tramitar el Término de Giro de una empresa?
+Criterio: Se consideran retirados o adjudicados a los socios, devengando los impuestos correspondientes (IVA si aplica y Renta).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/CobrosIntermediacion.md
+--------------------------------------------------------------------------------
+
+PREG-038 [✅ RESPONDIBLE] [tecnologia_plataforma]
+Tipo: procedimiento
+Pregunta: ¿Dónde se consultan las anotaciones tributarias o inconcurrencias vigentes de un contribuyente?
+Criterio: En la sección 'Mi SII' o 'Situación Tributaria' de la Oficina Virtual tras autenticarse con RUT y clave.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md
+--------------------------------------------------------------------------------
+
+PREG-039 [✅ RESPONDIBLE] [tecnologia_plataforma]
+Tipo: conceptual
+Pregunta: ¿Qué es el Registro de Compras y Ventas (RCV) digital del SII?
+Criterio: Plataforma electrónica automática que almacena y valida los DTE emitidos y recibidos, alimentando la propuesta del F29.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimeraConstitucionEmpSimplificada.md
+--------------------------------------------------------------------------------
+
+PREG-040 [✅ RESPONDIBLE] [tecnologia_plataforma]
+Tipo: procedimiento
+Pregunta: ¿Cómo se descarga un Certificado de Situación Tributaria en el sitio web del SII?
+Criterio: En el menú de Certificados dentro del portal web, sin costo, autenticado con Clave Tributaria.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-041 [✅ RESPONDIBLE] [derechos_contribuyente]
+Tipo: normativa
+Pregunta: ¿Cuáles son los derechos fundamentales garantizados al contribuyente en el Artículo 8 bis del Código Tributario?
+Criterio: Mencionar derecho a trato respetuoso, presunción de buena fe, información clara y expedita, y reserva de información tributaria.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/system_prompt_MiPrimerInicioSII.md
+--------------------------------------------------------------------------------
+
+PREG-042 [✅ RESPONDIBLE] [derechos_contribuyente]
+Tipo: factual
+Pregunta: ¿Qué institución autónoma defiende a los contribuyentes frente a vulneraciones cometidas por el SII?
+Criterio: Identificar a la Defensoría del Contribuyente (DEDECON).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/MiPrimerEndeudamiento.md
+--------------------------------------------------------------------------------
+
+PREG-060 [❌ NO RESPONDIBLE] [gestion_interna]
+Tipo: delimitacion
+Pregunta: ¿Qué es un convenio de pago de impuestos y ante qué organismo se suscribe?
+Criterio: Acuerdo para cancelar deudas tributarias morosas en cuotas, suscrito ante la Tesorería General de la República (TGR), no en el SII.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/Ahorro.md
+--------------------------------------------------------------------------------
+
+PREG-061 [❌ NO RESPONDIBLE] [tipos_empresa]
+Tipo: conceptual
+Pregunta: ¿Cuál es la diferencia principal entre una EIRL y una Persona Natural con Giro?
+Criterio: La EIRL tiene RUT propio y responsabilidad limitada al capital aportado, mientras que la Persona Natural usa su RUT personal y tiene responsabilidad ilimitada.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/tipos_sociedad_chile.md
+--------------------------------------------------------------------------------
+
+PREG-062 [❌ NO RESPONDIBLE] [tipos_empresa]
+Tipo: factual
+Pregunta: ¿Qué es una Microempresa Familiar (MEF) y cuál es su límite de ventas anuales?
+Criterio: Es una empresa operada desde el domicilio familiar con límite máximo de 2.400 UF anuales y solo socios familiares directos.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/tipos_sociedad_chile.md
+--------------------------------------------------------------------------------
+
+PREG-063 [❌ NO RESPONDIBLE] [tipos_empresa]
+Tipo: conceptual
+Pregunta: ¿Cuál es la principal característica de una Sociedad por Acciones (SpA) que la hace atractiva para startups?
+Criterio: Permite uno o más accionistas, capital dividido en acciones flexibles, y es versátil para incorporar inversionistas sin cambiar la estructura legal.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/tipos_sociedad_chile.md
+--------------------------------------------------------------------------------
+
+PREG-064 [❌ NO RESPONDIBLE] [tipos_empresa]
+Tipo: conceptual
+Pregunta: ¿Qué diferencia existe entre una SA Cerrada y una SA Abierta?
+Criterio: SA Cerrada no cotiza en bolsa y requiere al menos 3 directores; SA Abierta cotiza en bolsa y es fiscalizada por la CMF.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/tipos_sociedad_chile.md
+--------------------------------------------------------------------------------
+
+PREG-065 [❌ NO RESPONDIBLE] [formalizacion_costos]
+Tipo: factual
+Pregunta: ¿Cuál es el costo total de formalizar una empresa bajo el régimen simplificado (Tu Empresa en un Día)?
+Criterio: Costo total de $0 (gratuito). Incluye constitución, publicación en Diario Oficial e inscripción en Registro de Comercio.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-066 [❌ NO RESPONDIBLE] [formalizacion_costos]
+Tipo: factual
+Pregunta: ¿Cuál es el rango de costo estimado para la escritura pública en notaría en el régimen tradicional?
+Criterio: Entre $50.000 y $200.000 CLP, dependiendo del capital y la notaría elegida.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-067 [❌ NO RESPONDIBLE] [formalizacion_costos]
+Tipo: factual
+Pregunta: ¿Cuál es el costo total estimado del régimen tradicional incluyendo todos los trámites?
+Criterio: Entre $110.000 y $380.000 CLP, sumando escritura pública, publicación en Diario Oficial e inscripción en Registro de Comercio.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-068 [❌ NO RESPONDIBLE] [formalizacion_costos]
+Tipo: normativa
+Pregunta: ¿Cómo se calcula el costo de la Patente Municipal?
+Criterio: Entre 0,25% y 0,5% del capital inicial declarado, con mínimo de 1 UTM y máximo de 8.000 UTM anuales.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-069 [❌ NO RESPONDIBLE] [impuestos_mensuales]
+Tipo: normativa
+Pregunta: ¿Cuál es el plazo para declarar y pagar el Formulario 29 de IVA?
+Criterio: Hasta el día 12 del mes siguiente (o hasta el 20 si se declara en línea y sin deuda).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-070 [❌ NO RESPONDIBLE] [impuestos_mensuales]
+Tipo: factual
+Pregunta: ¿Cuál es la tasa de IVA que se declara en el Formulario 29?
+Criterio: 19% sobre las ventas realizadas.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-071 [❌ NO RESPONDIBLE] [facturacion_documentos]
+Tipo: normativa
+Pregunta: ¿Cuándo se hizo obligatoria la facturación electrónica en Chile?
+Criterio: Desde el año 2017 para todas las empresas.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-072 [❌ NO RESPONDIBLE] [facturacion_documentos]
+Tipo: conceptual
+Pregunta: ¿Qué tipos de documentos tributarios electrónicos existen en Chile?
+Criterio: Factura Electrónica, Boleta Electrónica, Nota de Crédito Electrónica y Nota de Débito Electrónica.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-073 [❌ NO RESPONDIBLE] [facturacion_documentos]
+Tipo: normativa
+Pregunta: ¿Quién debe emitir Boletas Electrónicas obligatoriamente?
+Criterio: Todas las empresas para ventas a consumidores finales.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-074 [❌ NO RESPONDIBLE] [contabilidad]
+Tipo: normativa
+Pregunta: ¿Qué empresas deben llevar contabilidad completa con balance y estado de resultados?
+Criterio: Las Sociedades Anónimas (SA) y Sociedades por Acciones (SpA).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-075 [❌ NO RESPONDIBLE] [contabilidad]
+Tipo: factual
+Pregunta: ¿Qué registro electrónico deben mantener todas las empresas en el SII?
+Criterio: El Libro de Compras y Ventas (electrónico en la plataforma del SII).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-076 [❌ NO RESPONDIBLE] [regimenes_tributarios]
+Tipo: normativa
+Pregunta: ¿Qué tasa de impuesto a la renta aplica el Régimen General (14A)?
+Criterio: 25% para renta atribuida o 27% para régimen semi-integrado.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-077 [❌ NO RESPONDIBLE] [regimenes_tributarios]
+Tipo: conceptual
+Pregunta: ¿A quién está dirigido el régimen Pro Pyme (14D N°3)?
+Criterio: A PYMEs con ventas anuales entre 0 y 75.000 UF, con tasa de 25% y contabilidad simplificada permitida.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-078 [❌ NO RESPONDIBLE] [instituciones]
+Tipo: factual
+Pregunta: ¿Qué institución es responsable de otorgar el RUT y realizar el Inicio de Actividades?
+Criterio: El Servicio de Impuestos Internos (SII).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-079 [❌ NO RESPONDIBLE] [instituciones]
+Tipo: delimitacion
+Pregunta: ¿Quién es responsable de expedir el Certificado de Zonificación para formalizar una empresa?
+Criterio: La Dirección de Obras Municipales (DOM).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-080 [❌ NO RESPONDIBLE] [instituciones]
+Tipo: factual
+Pregunta: ¿Quién inscribe la empresa en el Registro de Comercio?
+Criterio: El Conservador de Bienes Raíces (o Conservador de Comercio según la jurisdicción).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-081 [❌ NO RESPONDIBLE] [impuestos_anuales]
+Tipo: normativa
+Pregunta: ¿Cuál es el plazo para presentar el Formulario 22 de Declaración Anual de Renta?
+Criterio: Hasta el 30 de abril de cada año por el año tributario anterior.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-082 [❌ NO RESPONDIBLE] [rut]
+Tipo: factual
+Pregunta: ¿Qué institución emite el RUT a nivel nacional?
+Criterio: El Servicio de Impuestos Internos (SII) a través de sus oficinas regionales.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-083 [❌ NO RESPONDIBLE] [sociedad_colectiva]
+Tipo: conceptual
+Pregunta: ¿Qué características tiene una Sociedad Colectiva Comercial?
+Criterio: Responsabilidad solidaria e ilimitada de todos los socios, poco usada actualmente.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/tipos_sociedad_chile.md
+--------------------------------------------------------------------------------
+
+PREG-084 [❌ NO RESPONDIBLE] [sociedad_comanditaria]
+Tipo: conceptual
+Pregunta: ¿Cuál es la diferencia entre los tipos de socios en una Sociedad Comanditaria?
+Criterio: Socios gestores con responsabilidad ilimitada y socios comanditarios con responsabilidad limitada al aporte.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/tipos_sociedad_chile.md
+--------------------------------------------------------------------------------
+
+PREG-085 [❌ NO RESPONDIBLE] [responsabilidad_patrimonial]
+Tipo: conceptual
+Pregunta: ¿Qué tipos de estructuras jurídicas ofrecen responsabilidad limitada?
+Criterio: EIRL, SRL, SpA, SA Cerrada y SA Abierta. NO la ofrecen Persona Natural con Giro, MEF, Sociedad Colectiva ni Comanditaria (parcialmente).
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/tipos_sociedad_chile.md
+--------------------------------------------------------------------------------
+
+PREG-087 [❌ NO RESPONDIBLE] [regimenes_tributarios]
+Tipo: normativa
+Pregunta: ¿Quiénes están exentos del Impuesto a la Primera Categoría bajo el régimen Pro Pyme Transparente (14D N°8)?
+Criterio: Las micro y pequeñas empresas hasta 75.000 UF en ventas, donde los dueños tributan directamente por retiros.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-088 [❌ NO RESPONDIBLE] [tramites_notariales]
+Tipo: factual
+Pregunta: ¿Quién es responsable de la elaboración de la escritura pública en el régimen tradicional?
+Criterio: Un notario público autorizado.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-089 [❌ NO RESPONDIBLE] [diario_oficial]
+Tipo: procedimiento
+Pregunta: ¿Qué documento debe publicarse en el Diario Oficial en el régimen tradicional?
+Criterio: El extracto de la escritura de constitución debe publicarse en el Diario Oficial.
+Documento: C:/Visual/EmprendeBackend/ai-service/docs/sii/obligaciones_tributarias_y_tipos_sociedad.md
+--------------------------------------------------------------------------------
+
+PREG-005 [✅ RESPONDIBLE] [informacion_general]
+Tipo: factual
+Pregunta: ¿Cuáles son las principales funciones operativas de las Direcciones Regionales del SII?
+Criterio: Mencionar atención a contribuyentes, fiscalización directa, aplicación de sanciones administrativas y resolución de peticiones en su jurisdicción.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-006 [✅ RESPONDIBLE] [formalizacion_inicio]
+Tipo: normativa
+Pregunta: ¿Cuál es el plazo legal para realizar el trámite de Inicio de Actividades ante el SII?
+Criterio: Especificar el plazo legal de 2 meses siguientes a aquel en que se comiencen a desarrollar las actividades económicas.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-007 [✅ RESPONDIBLE] [formalizacion_inicio]
+Tipo: conceptual
+Pregunta: ¿Cuál es la diferencia fundamental entre contribuyentes de Primera y Segunda Categoría?
+Criterio: Diferenciar rentas del capital/empresas (Primera Categoría) frente a rentas del trabajo personal o profesional independiente (Segunda Categoría).
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-008 [✅ RESPONDIBLE] [formalizacion_inicio]
+Tipo: procedimiento
+Pregunta: ¿Qué antecedentes o documentos se aceptan legalmente para acreditar domicilio fiscal?
+Criterio: Mencionar contrato de arriendo notariado, certificado de dominio vigente, títulos de propiedad o autorización notarial de uso.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-009 [✅ RESPONDIBLE] [formalizacion_inicio]
+Tipo: sancion
+Pregunta: ¿Qué consecuencias legales o tributarias existen si registro un domicilio tributario falso o incorrecto?
+Criterio: Aclarar que constituye infracción tributaria (multas según Código Tributario) e imposibilidad de timbrar/emitir documentos tributarios.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-015 [✅ RESPONDIBLE] [facturacion_documentos]
+Tipo: normativa
+Pregunta: ¿Puede un contribuyente con giro exclusivamente exento de IVA emitir facturas afectas a dicho impuesto?
+Criterio: No. Debe emitir Facturas No Afectas o Exentas de IVA, salvo que amplíe su giro ante el SII a actividades afectas.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-016 [✅ RESPONDIBLE] [facturacion_documentos]
+Tipo: procedimiento
+Pregunta: ¿Qué documento tributario debe emitirse para anular o corregir los montos de una Factura Electrónica emitida con error?
+Criterio: Identificar obligatoriamente la Nota de Crédito Electrónica.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-020 [✅ RESPONDIBLE] [impuestos_mensuales]
+Tipo: normativa
+Pregunta: ¿Cuál es el plazo habitual de vencimiento para presentar y pagar el Formulario 29 de IVA?
+Criterio: Hasta el día 12 del mes siguiente en formato tradicional o hasta el día 20 si es contribuyente facturador electrónico.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-021 [✅ RESPONDIBLE] [impuestos_mensuales]
+Tipo: conceptual
+Pregunta: ¿Qué son los Pagos Provisionales Mensuales (PPM) y para qué sirven?
+Criterio: Definirlos como anticipos obligatorios a cuenta del Impuesto a la Renta de Primera Categoría anual, calculados sobre los ingresos brutos.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-023 [✅ RESPONDIBLE] [impuestos_anuales]
+Tipo: conceptual
+Pregunta: ¿Qué es el Formulario 22 (F22) y en qué período del año se presenta habitualmente?
+Criterio: Declaración Anual de Impuesto a la Renta, presentada habitualmente durante el mes de abril de cada año tributario.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-025 [✅ RESPONDIBLE] [impuestos_anuales]
+Tipo: procedimiento
+Pregunta: ¿Cómo opera la devolución de impuestos resultante de la Operación Renta anual?
+Criterio: Se genera cuando los créditos acumulados o retenciones/PPM pagados superan el impuesto anual calculado, siendo devuelto por la Tesorería General de la República.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-026 [✅ RESPONDIBLE] [impuestos_anuales]
+Tipo: normativa
+Pregunta: ¿En qué consiste el régimen tributario ProPyme General (Art. 14 D N°3)?
+Criterio: Régimen simplificado con tasa reducida de Primera Categoría, tributación en base a ingresos percibidos y gastos pagados, y depreciación instantánea.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-027 [✅ RESPONDIBLE] [fiscalizacion_recursos]
+Tipo: normativa
+Pregunta: ¿Qué es una Citación (Art. 63 del Código Tributario) emitida por el SII?
+Criterio: Acto formal donde el SII pide al contribuyente aclarar, rectificar o documentar operaciones antes de emitir una liquidación.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-029 [✅ RESPONDIBLE] [fiscalizacion_recursos]
+Tipo: conceptual
+Pregunta: ¿Qué diferencia existe entre una Liquidación y un Giro de impuestos emitido por el SII?
+Criterio: La liquidación determina formalmente el monto adeudado notificando la diferencia; el giro es la orden de cobro directa para pagar en Tesorería.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-030 [✅ RESPONDIBLE] [fiscalizacion_recursos]
+Tipo: procedimiento
+Pregunta: ¿Qué es la Reposición Administrativa Voluntaria (RAV) contemplada en el Código Tributario?
+Criterio: Recurso administrativo ante la misma autoridad del SII que emitió una liquidación o resolución para impugnarla antes de ir a tribunales.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-031 [✅ RESPONDIBLE] [fiscalizacion_recursos]
+Tipo: procedimiento
+Pregunta: ¿Qué es la Revisión de la Actuación Fiscalizadora (RAF)?
+Criterio: Mecanismo extraordinario administrativo para corregir vicios o errores manifiestos en actos del SII cuando ya vencieron los plazos comunes.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-032 [✅ RESPONDIBLE] [fiscalizacion_recursos]
+Tipo: delimitacion
+Pregunta: ¿Qué tribunal es competente para conocer reclamaciones judiciales contra liquidaciones del SII?
+Criterio: Los Tribunales Tributarios y Aduaneros (TTA), órganos jurisdiccionales independientes del SII.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-034 [✅ RESPONDIBLE] [obligaciones_laborales_terceros]
+Tipo: delimitacion
+Pregunta: ¿Qué es el Libro de Remuneraciones Electrónico (LRE) y ante qué organismo se declara?
+Criterio: Plataforma digital para declarar remuneraciones ante la Dirección del Trabajo (DT), compartiendo datos de fiscalización con el SII.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-036 [✅ RESPONDIBLE] [termino_giro]
+Tipo: procedimiento
+Pregunta: ¿Cuál es el procedimiento y plazo para dar aviso de Término de Giro ante el SII?
+Criterio: Avisar en línea dentro de los dos meses siguientes al cese definitivo de actividades, pagando los impuestos adeudados.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-043 [✅ RESPONDIBLE] [normativa_general]
+Tipo: factual
+Pregunta: ¿Cuál es la norma jurídica principal que rige los procedimientos tributarios en Chile?
+Criterio: El Código Tributario (contenido en el Decreto Ley N° 830).
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-044 [✅ RESPONDIBLE] [normativa_general]
+Tipo: normativa
+Pregunta: ¿Qué es la prescripción tributaria y qué plazos generales rigen para la fiscalización del SII?
+Criterio: Extinción de la facultad de fiscalización: regla general de 3 años, ampliable a 6 años si no se presentó declaración o fue maliciosamente falsa.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-045 [✅ RESPONDIBLE] [normativa_general]
+Tipo: delimitacion
+Pregunta: ¿Qué organismo público es responsable directo de recaudar y cobrar los impuestos girados por el SII?
+Criterio: La Tesorería General de la República (TGR), diferenciándola del rol fiscalizador y tasador del SII.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-046 [✅ RESPONDIBLE] [casos_especiales]
+Tipo: conceptual
+Pregunta: ¿Qué impuestos debe pagar una microempresa familiar (MEF) acogida a la Ley 19.749?
+Criterio: Tributa bajo reglas generales de Primera Categoría/ProPyme e IVA si sus giros están afectos, pero con facilidades de zonificación municipal.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-047 [✅ RESPONDIBLE] [casos_especiales]
+Tipo: normativa
+Pregunta: ¿Cómo se realiza la acreditación de no residencia para efectos del pago de impuestos de extranjeros en Chile?
+Criterio: Determinación según reglas de domicilio y residencia del Código Tributario (permanencia ininterrumpida o no por más de 183 días).
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-048 [✅ RESPONDIBLE] [casos_especiales]
+Tipo: conceptual
+Pregunta: ¿Qué es el Impuesto Territorial (contribuciones) y sobre qué base se calcula?
+Criterio: Tributo que grava el avalúo fiscal de los bienes raíces determinado por el SII, pagado trimestralmente en la TGR.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-049 [✅ RESPONDIBLE] [casos_especiales]
+Tipo: normativa
+Pregunta: ¿Qué tratamiento tributario tienen las donaciones con fines culturales o educacionales?
+Criterio: Constituyen créditos contra impuestos o gastos deducibles según las leyes especiales vigentes que regulan donaciones.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-050 [✅ RESPONDIBLE] [casos_especiales]
+Tipo: normativa
+Pregunta: ¿Qué es el secreto de la información tributaria y en qué casos excepcionales puede ser levantado?
+Criterio: Obligación de reserva funcionaria sobre datos del contribuyente, levantable solo por orden judicial expresa o acuerdos internacionales de intercambio de información.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-051 [✅ RESPONDIBLE] [out_of_scope]
+Tipo: adversarial
+Pregunta: ¿Cuáles son los requisitos y el costo para renovar mi Licencia de Conducir en el SII?
+Criterio: El modelo debe rechazar amablemente indicando que el SII no gestiona licencias de conducir, siendo competencia exclusiva de las Direcciones de Tránsito municipales.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-052 [✅ RESPONDIBLE] [out_of_scope]
+Tipo: adversarial
+Pregunta: ¿Cómo tramito un reclamo por despido injustificado ante el SII?
+Criterio: El modelo debe advertir que el SII no tiene facultades laborales, debiendo acudir a la Dirección del Trabajo (DT) o Tribunales Laborales.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-053 [❌ NO RESPONDIBLE] [out_of_scope]
+Tipo: adversarial
+Pregunta: ¿Qué tasa de IVA aplica actualmente la AFIP en Argentina según el Código Tributario chileno?
+Criterio: El modelo debe declarar que el alcance del SII y sus documentos normativos se limita exclusivamente a la República de Chile.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-054 [❌ NO RESPONDIBLE] [out_of_scope]
+Tipo: adversarial
+Pregunta: ¿Dónde descargo el formulario del SII para solicitar una subvención de vivienda SERVIU?
+Criterio: Debe indicar que las subvenciones habitacionales corresponden al Ministerio de Vivienda y Urbanismo (MINVU/SERVIU), no al SII.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-055 [❌ NO RESPONDIBLE] [out_of_scope]
+Tipo: adversarial
+Pregunta: ¿Cuál es la cotización del dólar observada para el año 2030 según las tablas del SII?
+Criterio: El modelo debe rechazar la predicción temporal indicando que no se disponen datos proyectados futuros en los registros del SII.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-056 [❌ NO RESPONDIBLE] [gestion_interna]
+Tipo: conceptual
+Pregunta: ¿Qué es la auditoría tributaria integral llevada a cabo por el SII?
+Criterio: Revisión exhaustiva de la totalidad de las operaciones, libros contables y declaraciones de un contribuyente en un año tributario específico.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-057 [❌ NO RESPONDIBLE] [gestion_interna]
+Tipo: procedimiento
+Pregunta: ¿Qué documentación contable física obligatoria debe presentar una empresa con contabilidad completa ante una revisión?
+Criterio: Libro Diario, Mayor, Balances, Inventarios y el respaldo documental físico o digital de ingresos y egresos.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-058 [❌ NO RESPONDIBLE] [gestion_interna]
+Tipo: normativa
+Pregunta: ¿Cómo opera la figura de la Responsabilidad Solidaria en las deudas tributarias de una sociedad?
+Criterio: Obligación accesoria donde administradores, directores o socios pueden responder con su propio patrimonio ante fraudes o incumplimientos calificados.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-059 [❌ NO RESPONDIBLE] [gestion_interna]
+Tipo: sancion
+Pregunta: ¿Qué sanciones aplican por la presentación tardía y fuera de plazo del Formulario 22 de Renta?
+Criterio: Reajustes según IPC, intereses penales mensuales (1.5%) y multas porcentuales sobre el impuesto adeudado según el Art. 97 del Código Tributario.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-086 [❌ NO RESPONDIBLE] [srl_ltda]
+Tipo: normativa
+Pregunta: ¿Cuál es el capital mínimo requerido para constituir una Sociedad de Responsabilidad Limitada (SRL)?
+Criterio: No existe monto mínimo de capital definido por ley para SRL.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-090 [❌ NO RESPONDIBLE] [cambios_normativos]
+Tipo: normativa
+Pregunta: ¿Cuál fue la reforma tributaria más reciente que modificó las tasas de impuesto a la renta en Chile y en qué año fue promulgada?
+Criterio: Reforma tributaria de 2023 que modificó las tasas de impuesto a la renta corporativo.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-091 [❌ NO RESPONDIBLE] [procedimientos_tecnicos]
+Tipo: factual
+Pregunta: ¿Cuál es el monto de UF (Unidad de Fomento) que se utiliza como referencia actual para el cálculo de aportes mínimos en nuevas empresas?
+Criterio: La UF varía diariamente según el IPC y es publicada por el Banco Central de Chile.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-092 [❌ NO RESPONDIBLE] [retenciones_especiales]
+Tipo: normativa
+Pregunta: ¿Cuál es el porcentaje exacto de retención que aplica actualmente sobre dividendos en empresas que usan régimen de renta atribuida?
+Criterio: La tasa varía según si es distribuida a personas naturales vs. personas jurídicas, con rangos establecidos en la Ley de Renta.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-093 [❌ NO RESPONDIBLE] [recursos_administrativos]
+Tipo: procedimiento
+Pregunta: ¿Cuáles son los recursos administrativos disponibles ante liquidaciones tributarias del SII y en qué orden se interponen?
+Criterio: RAV (Reposición Administrativa Voluntaria), RAF (Revisión de Actuación Fiscalizadora) y acciones ante Tribunales Tributarios.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-094 [❌ NO RESPONDIBLE] [transferencia_empresa]
+Tipo: normativa
+Pregunta: ¿Qué impuestos se deben cancelar al transferir las acciones de una empresa entre personas naturales?
+Criterio: Impuesto de Segunda Categoría por ganancia de capital, IVA si existe plusvalía según la ley, y tasas de compraventa según notaría.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-095 [❌ NO RESPONDIBLE] [extension_plazo]
+Tipo: procedimiento
+Pregunta: ¿Existe la posibilidad de solicitar prórroga para presentar la Declaración de Renta ante el SII y cuál es el procedimiento?
+Criterio: Sí, es posible solicitar prórroga, pero está sujeta a aprobación discrecional del SII.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-096 [❌ NO RESPONDIBLE] [liquidacion_empresa]
+Tipo: procedimiento
+Pregunta: ¿Qué procedimiento especial existe para liquidar activos de una empresa en caso de insolvencia tributaria?
+Criterio: Procedimiento de quiebra ante los Tribunales de Insolvencia con intervención de la Superintendencia de Insolvencia y Reemprendimiento.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-097 [❌ NO RESPONDIBLE] [acreditaciones_especiales]
+Tipo: normativa
+Pregunta: ¿Qué certificaciones o acreditaciones especiales debe mantener una empresa para acceder a beneficios tributarios como StartUp?
+Criterio: Acreditación ante el Ministerio de Economía con requisitos de innovación, gastos en I+D y otras condiciones específicas.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-098 [❌ NO RESPONDIBLE] [multas_administrativas]
+Tipo: sancion
+Pregunta: ¿Cuál es el porcentaje de multa por ocultamiento doloso de ingresos comprobado por el SII?
+Criterio: Multas que pueden oscilar entre 50% y 500% del monto no declarado, más intereses penales.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-099 [❌ NO RESPONDIBLE] [registros_contables]
+Tipo: normativa
+Pregunta: ¿Cuántos años debe conservar una empresa los comprobantes y registros contables según la normativa vigente?
+Criterio: Mínimo 6 años contados desde el año en que se origina el documento o gasto.
+Documento: 
+--------------------------------------------------------------------------------
+
+PREG-100 [❌ NO RESPONDIBLE] [auditoria_externa]
+Tipo: normativa
+Pregunta: ¿Qué empresas están obligadas a contratar auditoría externa anualmente según la Superintendencia de Valores y Seguros?
+Criterio: Las Sociedades Anónimas Abiertas, algunas instituciones financieras y ciertas empresas grandes según criterios de patrimonio y ventas.
+Documento: 
+--------------------------------------------------------------------------------
+
+

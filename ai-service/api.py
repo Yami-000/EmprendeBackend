@@ -86,6 +86,10 @@ FORMATO:
         doc = f.get("document", f.get("page_content", ""))
         snippet = doc.replace('\n', ' ')[:1400]
         ctx_lines.append(f"[{i}] Fuente: {src}\n{snippet}\n")
+    # Probado 2026-09-17: mover la regla de abstención a un cierre tras el contexto
+    # subió la alucinación de 34% a 78%. Reforzar "usa el contexto" justo antes de
+    # generar empuja al modelo a forzar una respuesta con los fragmentos a mano.
+    # Ver tests/iteraciones/experimento_prompt_v2.md antes de reintentarlo.
     return base + "\n" + "\n".join(ctx_lines)
 
 

@@ -145,3 +145,11 @@ vite.config.ts.timestamp-*
 # credentials
 credentials/*
 data/
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ChromaDB: base vectorial generada por ingest.py, se regenera con `python ingest.py`
+ai-service/chroma_db/

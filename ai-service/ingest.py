@@ -18,7 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent
 DOCS_DIR = BASE_DIR / "docs" / "sii"
 CHROMA_DIR = BASE_DIR / "chroma_db"
 
-MODEL_NAME = "nomic-embed-text"
+# Debe coincidir exactamente con el modelo que usa api.py para embeber las queries:
+# indexar y consultar con modelos distintos produce vectores incomparables.
+MODEL_NAME = "all-MiniLM-L6-v2"
 
 
 def find_markdown_files(root_dir: Path):
@@ -98,44 +100,29 @@ def split_documents(documents):
 
 
 def create_vector_store(documents):
-    # Try OllamaEmbeddings first; fall back to sentence-transformers if unavailable
-    embeddings = None
-    try:
-        from langchain.embeddings import OllamaEmbeddings
-        embeddings = OllamaEmbeddings(model=MODEL_NAME)
-        logger.info("Using OllamaEmbeddings with model %s", MODEL_NAME)
-    except Exception:
-        logger.warning("OllamaEmbeddings not available in LangChain; trying sentence-transformers fallback")
-        try:
-            from sentence_transformers import SentenceTransformer
+    from sentence_transformers import SentenceTransformer
 
-            st_model = SentenceTransformer("all-MiniLM-L6-v2")
+    st_model = SentenceTransformer(MODEL_NAME)
+    logger.info("Using sentence-transformers %s", MODEL_NAME)
 
-            class STEmbeddings:
-                def embed_documents(self, texts):
-                    embs = st_model.encode(texts, show_progress_bar=False)
-                    return [list(e) for e in embs]
-
-                def embed_query(self, text):
-                    emb = st_model.encode([text], show_progress_bar=False)
-                    return list(emb[0])
-
-            embeddings = STEmbeddings()
-            logger.info("Using sentence-transformers fallback (all-MiniLM-L6-v2)")
-        except Exception:
-            logger.exception("No suitable embeddings available. Install Ollama integration or sentence-transformers.")
-            raise
     CHROMA_DIR.mkdir(parents=True, exist_ok=True)
     try:
         client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-        collection = client.get_or_create_collection(name="sii_markdown")
+        # Recrear la colección: collection.add() acumula, así que sin esto
+        # cada re-ingesta duplicaría todos los chunks.
+        try:
+            client.delete_collection(name="sii_markdown")
+            logger.info("Colección previa eliminada")
+        except Exception:
+            pass
+        collection = client.create_collection(name="sii_markdown")
 
         # documents are plain dicts produced by split_documents
         texts = [d.get('page_content', '') for d in documents]
         metadatas = [d.get('metadata', {}) for d in documents]
         ids = [str(uuid.uuid4()) for _ in texts]
 
-        embeddings_list = embeddings.embed_documents(texts)
+        embeddings_list = st_model.encode(texts, show_progress_bar=False)
         # Ensure embeddings are plain Python floats (avoid numpy types that print verbosely)
         cleaned_embeddings = [[float(x) for x in emb] for emb in embeddings_list]
 
