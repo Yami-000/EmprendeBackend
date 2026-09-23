@@ -25,16 +25,40 @@ asume que sí y fabrica una respuesta.
 - El experimento de prompt v2 empeoró la alucinación a 78%, descartando que el
   problema sea de formulación.
 
+## Entorno de ejecución (verificado 2026-09-22)
+
+| Recurso | Valor |
+|---|---|
+| GPU | NVIDIA GTX 1650, 4096 MiB VRAM (3414 MiB libres) |
+| `llama3.1:latest` | Ya descargado, 8B, **Q4_K_M** — no requiere pull |
+| `qwen2.5:7b` | No descargado, ~4,7 GB — requiere pull |
+| Disco disponible | 206 GB — sin restricción |
+
+Prueba de humo con `llama3.1:latest` (3 llamadas en régimen estable, modelo ya
+cargado en memoria):
+
+```
+ollama ps  ->  58%/42% CPU/GPU   (no entra completo en 4 GB de VRAM)
+eval: ~8 tok/s   ~9-10s por llamada (num_predict=300, ~73 tokens generados)
+```
+
+Es **comparable al baseline** (~10,5 s/pregunta con `llama3.2:3b`, que sí corre
+100% en GPU). El reparto CPU/GPU no lo vuelve inviable para este volumen de
+preguntas; una corrida de 100 debería tomar ~17-20 min, en línea con las
+corridas v1 y v2 (1050 s y 1122 s).
+
 ## Pasos
 
-1. Descargar candidatos: `ollama pull qwen2.5:7b` y `ollama pull llama3.1:8b`.
-   Ambos tienen mejor desempeño documentado en español que `llama3.2:3b`.
+1. `llama3.1:latest` ya está disponible — no requiere pull. Para el segundo
+   candidato: `ollama pull qwen2.5:7b`.
 2. Medir cada uno sin tocar nada más del pipeline:
    ```
-   python scripts/evaluar_banco.py qwen7b   qwen2.5:7b  6 300
-   python scripts/evaluar_banco.py llama8b  llama3.1:8b 6 300
+   python scripts/evaluar_banco.py llama8b llama3.1:latest 6 300
+   python scripts/evaluar_banco.py qwen7b  qwen2.5:7b      6 300
    ```
-3. Registrar latencia y consumo de VRAM junto a las métricas de calidad.
+3. Registrar latencia (`total_duration` de la respuesta de Ollama) junto a las
+   métricas de calidad — no hace falta instrumentar VRAM aparte, `ollama ps`
+   alcanza para confirmar el reparto CPU/GPU.
 4. Comparar contra `resultados_v1.json`.
 
 ## Métricas objetivo
@@ -54,8 +78,12 @@ en el baseline).
 
 ## Riesgos
 
-- **VRAM.** Un modelo de 7–8B puede no caber en la máquina de desarrollo. Si
-  ocurre, medir con cuantización `q4_K_M` antes de descartar.
+- **VRAM.** Confirmado: un modelo de 8B no entra completo en los 4 GB de la GPU
+  de desarrollo (`llama3.1:latest`, ya en Q4_K_M, corre 58%/42% CPU/GPU). No es
+  un riesgo hipotético, es el estado real. No bloquea la medición porque la
+  latencia resultante (~10s/llamada) sigue siendo comparable al baseline, pero
+  sí importa para producción: la máquina donde corra el bot en el futuro debe
+  dimensionarse con esto en mente, o aceptar el reparto CPU/GPU.
 - **Latencia.** Si sube demasiado, evaluar si el bot tolera la espera o si
   conviene reducir `k` para acortar el prompt.
 - **Regresión en terminología chilena.** El system prompt prohíbe explícitamente
@@ -64,7 +92,8 @@ en el baseline).
 
 ## Si ningún modelo alcanza el objetivo
 
-Escalar a un enfoque de dos pasos: una llamada que juzgue si el contexto contiene
-la respuesta y, solo si la respuesta es afirmativa, una segunda que la redacte.
-Duplica la latencia pero desacopla la discriminación de la generación, que es
-precisamente lo que el modelo pequeño no logra hacer en un solo paso.
+Escalar a OP-6 — discriminación en dos pasos
+(`iteracion_1.6_dos_pasos/plan_1.6.md`): una llamada que juzgue si el contexto
+contiene la respuesta y, solo si es afirmativa, una segunda que la redacte.
+Desacopla la discriminación de la generación, que es precisamente lo que el
+modelo pequeño no logra hacer en un solo paso, a costa de duplicar la latencia.
