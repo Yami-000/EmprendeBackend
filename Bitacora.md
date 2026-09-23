@@ -18,6 +18,7 @@
 | 2026-09-17 | `scripts/` | Feature | Añadidos `evaluar_banco.py` (pipeline completo, separa fallos de recuperación de fallos de generación) y `medir_retrieval.py` (recall sin invocar al modelo) | El arnés importa el system prompt desde `api.py` en vez de copiarlo, para no medir una versión divergente |
 | 2026-09-17 | `ai-service/api.py` | Docs | Experimento fallido: mover la regla de abstención tras el contexto subió la alucinación de 34% a 78%. Revertido | Documentado en `tests/iteraciones/experimento_prompt_v2.md`. `api.py` queda en el estado del baseline v1 |
 | 2026-09-17 | `tests/iteraciones/` | Docs | Baseline 1.0 medido y planes reordenados según evidencia: modelo de generación a prioridad alta, chunking a media | De 31 fallos, 22 son de generación y 9 de recuperación |
+| 2026-09-22 | `README.md` | Docs | Reescrito por completo: describía un proyecto anterior ("Krrete-BackEnd" con Firebase Auth, eliminado el 2026-09-06) y citaba un archivo `PROJECT_OVERVIEW.mb` inexistente. Ahora documenta la arquitectura real (Ollama + ai-service FastAPI + bot Node), instalación, variables de entorno y cómo evaluar el RAG | Sin impacto funcional; corrige documentación que llevaba desde mayo sin reflejar el pivot del proyecto |
 
 ## Deuda Técnica Inicial Detectada (Línea Base)
  - [x] Eliminar `credentials/*.json` del repositorio, rotar claves y usar un secret manager (alto riesgo de exposición).
