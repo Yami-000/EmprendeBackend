@@ -117,26 +117,30 @@ memoria del modelo, no del corpus.
 
 ## Lo que falló
 
-Nueve falsos negativos reales del juez, sobre preguntas con el dato explícito en
-el contexto. Ejemplos:
+**Cinco** falsos negativos del juez, sobre preguntas cuyo dato sí estaba íntegro
+en el contexto recuperado. Ejemplo:
 
-- **PREG-076** — *"¿Qué tasa aplica el Régimen General (14A)?"*. El contexto
-  incluía `formularios_tributarios_chile.md`, que dice literal
-  *"Régimen General (14A): 25% (renta atribuida) o 27% (semi-integrado)"*.
 - **PREG-067** — *"¿Costo total del régimen tradicional?"*. El contexto incluía
-  `costos_y_plazos_formalizacion.md` con la fila *"Total estimado | $110.000 – $380.000"*.
+  `costos_y_plazos_formalizacion.md` con la fila *"Total estimado | $110.000 –
+  $380.000"* completa, sin cortes, y el juez dijo `NO` igual.
 
-La causa probable está en el prompt del juez, que combina dos instrucciones muy
-restrictivas:
+La primera lectura de esta corrida contó nueve y los atribuyó al prompt del
+juez, que combina dos instrucciones muy restrictivas:
 
 ```
 - Responde SI solo si el contexto menciona explícitamente el dato pedido...
 - Ante cualquier duda, responde NO.
 ```
 
-Para un modelo de 3B, "ante cualquier duda responde NO" parece dominar sobre el
-resto. El fail-safe hacia la abstención está bien como principio, pero calibrado
-así cuesta 9 respuestas correctas.
+La hipótesis era que en un modelo de 3B *"ante cualquier duda responde NO"*
+domina sobre el resto. **Los experimentos A2 y A3 la refutaron** (ver abajo), y
+la verificación estricta redujo los nueve casos a cinco: los otros cuatro
+llegaban mutilados por el chunking, incluido PREG-076, que esta misma página usa
+como evidencia del corte.
+
+Cinco fallos sobre 50 respondibles dejan al juez con 90% de precisión. El margen
+que queda por calibración es pequeño y no justifica seguir ajustándolo antes de
+arreglar lo que le llega.
 
 ## Corrección a un supuesto del plan
 

@@ -140,8 +140,15 @@ banco de 100 preguntas, y el resultado se registra en
 # Evaluación completa (retrieval + generación), ~20-45 min según el modelo
 python scripts/evaluar_banco.py <etiqueta> [modelo] [k] [num_predict]
 
+# Pipeline de dos pasos: un juez binario decide si el contexto contiene la
+# respuesta y solo entonces se llama al redactor (iteración 1.6)
+python scripts/evaluar_banco.py dospasos_A --dos-pasos --juez llama3.2 --redactor llama3.2
+
 # Solo retrieval, sin invocar al LLM (segundos)
 python scripts/medir_retrieval.py
+
+# Smoke test sobre las primeras N preguntas, sin pagar la corrida completa
+python scripts/evaluar_banco.py prueba --limite 10
 ```
 
 El estado de las líneas de investigación abiertas (qué se probó, qué falta,
