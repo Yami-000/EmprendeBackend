@@ -1,6 +1,6 @@
 # Plan 1.6 — Discriminación en dos pasos
 
-**Prioridad:** 🟡 Media, mueve a Alta tras la iteración 1.3 · **Origen:** OP-6
+**Prioridad:** 🟡 Media, mueve a Alta tras la iteración 1.3 · **Origen:** OP-6 de `ESTADO_INVESTIGACION.md`
 **Depende de:** iteración 1.0 (baseline) e iteración 1.3 (modelo de generación) —
 ver nota de dependencia al final.
 

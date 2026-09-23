@@ -153,12 +153,14 @@ python scripts/evaluar_banco.py prueba --limite 10
 
 El estado de las líneas de investigación abiertas (qué se probó, qué falta,
 qué se descartó y por qué) está en
-[`tests/iteraciones/iteracion_1.0_baseline/analisis_y_bifurcaciones.md`](tests/iteraciones/iteracion_1.0_baseline/analisis_y_bifurcaciones.md).
+[`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md), en la raíz del repositorio.
 
 ## Documentación relacionada
 
 | Documento | Contenido |
 |---|---|
+| [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md) | **Mapa del proyecto.** Líneas de investigación abiertas, qué se confirmó, qué se refutó y con qué evidencia |
+| [`CLAUDE.md`](CLAUDE.md) | Orientación para asistentes de IA: reglas de trabajo, cómo se mide y trampas conocidas |
 | [`CONTEXTO.md`](CONTEXTO.md) | Auditoría técnica detallada: inventario de archivos, configuración de Ollama/ChromaDB, seguridad, roadmap |
 | [`Bitacora.md`](Bitacora.md) | Registro histórico de cambios de arquitectura, con pasos de rollback |
 | [`METODOLOGIA_TESTING.md`](METODOLOGIA_TESTING.md) | Protocolo de evaluación del chatbot y estrategia de branching por iteración |
