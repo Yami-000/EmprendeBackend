@@ -38,7 +38,11 @@ EMB = "all-MiniLM-L6-v2"                      # debe coincidir con ingest.py y a
 ABST = ["no incluye esa informaci", "base de conocimientos", "lo siento",
         "no puedo responder", "no está en el contexto", "no dispongo",
         "no tengo informaci", "no se encuentra en el contexto",
-        "no cuento con", "no aparece en el contexto"]
+        "no cuento con", "no aparece en el contexto",
+        # Detectados en la corrida llama3.1:8b (2026-09-22): modelos más grandes
+        # razonan la ausencia de dato en vez de usar la frase canónica del prompt.
+        "no se especifica", "no se menciona", "no se indica",
+        "no está especificado", "no se detalla", "no proporciona"]
 
 def abstuvo(t):
     b = t.lower()
@@ -118,4 +122,5 @@ def main():
     print()
     print("-> %s" % OUT)
 
-main()
+if __name__ == "__main__":
+    main()
