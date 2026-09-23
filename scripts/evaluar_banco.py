@@ -33,7 +33,7 @@ from sentence_transformers import SentenceTransformer
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AI = os.path.join(RAIZ, "ai-service")
 sys.path.insert(0, AI)
-from api import _build_system_prompt, _build_judge_prompt, FRASE_ABSTENCION
+from api import _build_system_prompt, _build_judge_prompt, FRASE_ABSTENCION, JUEZ_PROMPT_BASES
 
 # Posicionales conservados por compatibilidad: los comandos documentados en
 # README.md y resultado_1.3.md los usan. Las flags nuevas se suman sin romperlos.
@@ -48,6 +48,8 @@ ap.add_argument("--juez", default=None, help="modelo juez (default: el posiciona
 ap.add_argument("--redactor", default=None, help="modelo redactor (default: el posicional modelo)")
 ap.add_argument("--num-predict-juez", type=int, default=5,
                 help="tokens maximos del juez; alcanza para SI/NO")
+ap.add_argument("--juez-prompt", default="estricto", choices=sorted(JUEZ_PROMPT_BASES),
+                help="calibracion del prompt del juez (ver JUEZ_PROMPT_BASES en api.py)")
 ap.add_argument("--limite", type=int, default=None,
                 help="procesar solo las primeras N preguntas (smoke test)")
 args = ap.parse_args()
@@ -121,8 +123,8 @@ def main():
     juez_modelo = args.juez or args.modelo
     redactor_modelo = args.redactor or args.modelo
     if args.dos_pasos:
-        print("modo=DOS PASOS  juez=%s  redactor=%s  k=%d  preguntas=%d"
-              % (juez_modelo, redactor_modelo, args.k, len(d)), flush=True)
+        print("modo=DOS PASOS  juez=%s (%s)  redactor=%s  k=%d  preguntas=%d"
+              % (juez_modelo, args.juez_prompt, redactor_modelo, args.k, len(d)), flush=True)
     else:
         print("modo=un paso  modelo=%s  k=%d  num_predict=%d  preguntas=%d"
               % (args.modelo, args.k, args.num_predict, len(d)), flush=True)
@@ -140,7 +142,8 @@ def main():
 
         if args.dos_pasos:
             juicio_txt, juez_lat = llamar_ollama(
-                juez_modelo, _build_judge_prompt(frags), p["pregunta"], args.num_predict_juez)
+                juez_modelo, _build_judge_prompt(frags, args.juez_prompt),
+                p["pregunta"], args.num_predict_juez)
             dijo_si = parse_juicio(juicio_txt)
             if dijo_si:
                 ans, redactor_lat = llamar_ollama(
@@ -162,6 +165,7 @@ def main():
                     "cobertura": round(len(cub) / len(anc), 2) if anc else None,
                     "respuesta": ans,
                     "modo": "dos_pasos" if args.dos_pasos else "un_paso",
+                    "juez_prompt": args.juez_prompt if args.dos_pasos else None,
                     "juez_respuesta": juicio_txt,
                     "juez_dijo_si": dijo_si,
                     "juez_latencia_s": round(juez_lat, 2) if juez_lat is not None else None,
