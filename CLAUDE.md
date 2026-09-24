@@ -11,6 +11,12 @@ rendimiento **cambiando la arquitectura**, no escalando el modelo. Un sistema
 que corre en hardware modesto es el objetivo del proyecto, no una limitación a
 superar: haría accesible información del SII en máquinas básicas.
 
+## Dónde retomar
+
+El punto de partida acordado está al inicio de
+[`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md), en el bloque
+"Punto de partida de la próxima sesión". Léelo antes que nada.
+
 ## Antes de proponer cambios al pipeline RAG
 
 **Lee [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md).** Contiene las siete
