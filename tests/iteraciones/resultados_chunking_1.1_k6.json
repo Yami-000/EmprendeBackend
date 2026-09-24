@@ -1,0 +1,144 @@
+[
+  {
+    "id": "PREG-001",
+    "pregunta": "¿Qué rol cumple el Servicio de Impuestos Internos (SII) en el proceso de formalización de una empresa?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_empresa_decision.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "RUT",
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El Servicio de Impuestos Internos (SII) es responsable de regularizar la actividad económica de las empresas, otorgar el número tributario (RUT), iniciar actividades y declarar impuestos.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 17.72,
+    "redactor_latencia_s": 16.77
+  },
+  {
+    "id": "PREG-002",
+    "pregunta": "¿Qué canales ofrece el SII para realizar el trámite de Inicio de Actividades?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "planificacion_formalizacion.md",
+      "tipos_empresa_decision.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "1.",
+      "2.",
+      "3.",
+      "4.",
+      "5.",
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "1.",
+      "2.",
+      "RUT",
+      "SII"
+    ],
+    "cobertura": 0.57,
+    "respuesta": "El Servicio de Impuestos Internos (SII) ofrece dos canales para realizar el trámite de Inicio de Actividades:\n\n1.  **En línea**: a través del sitio web www.sii.cl, donde se puede acceder al servicio \"RUT e Inicio de Actividades\" y seguir los pasos necesarios para completar el trámite.\n2.  **Presencialmente**: en la oficina SII correspondiente a la dirección comercial de la empresa, o en línea mediante el portal www.conservadores.cl, donde se puede presentar el formulario 4415 del SII, acompañado de los documentos y credenciales necesarios.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 13.66,
+    "redactor_latencia_s": 16.95
+  },
+  {
+    "id": "PREG-006",
+    "pregunta": "¿Cuál es el plazo legal para realizar el trámite de Inicio de Actividades ante el SII?",
+    "respondible": true,
+    "esperado": [
+      "costos_y_plazos_formalizacion.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_empresa_decision.md"
+    ],
+    "retrieval_hit": false,
+    "abstuvo": true,
+    "anclas": [
+      "SII"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 14.12,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-010",
+    "pregunta": "¿El trámite de Patente Municipal se gestiona directamente en el SII o en otra institución?",
+    "respondible": true,
+    "esperado": [
+      "patente_municipal.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SII",
+      "municipalidad"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 0.5,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.19,
+    "redactor_latencia_s": 0.0
+  }
+]

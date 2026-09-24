@@ -1,67 +1,69 @@
-# Plan 1.1 — Mejora de chunking
+# Plan 1.1 — Chunking
 
-**Prioridad:** 🟡 Media · **Origen:** OP-1 · **Ejecutar después de:** `iteracion_1.3_modelo`
+**Prioridad:** 🔴 Alta · **Origen:** OP-1 de `ESTADO_INVESTIGACION.md`
 
-> Actualizado 2026-09-17. El plan original proponía chunking por tokens como vía
-> principal contra la alucinación. Las mediciones del baseline muestran que el
-> retrieval explica solo 9 de 31 fallos, así que esta iteración pasa a segundo
-> plano detrás de OP-3 (modelo).
+> **Actualizado 2026-09-23.** Este plan ha cambiado de hipótesis dos veces. Se
+> deja el historial visible a propósito: las dos versiones anteriores llevaban a
+> trabajo que no habría servido.
+>
+> - **v1 (original):** chunking por tokens como vía principal contra la
+>   alucinación. Descartada: el baseline mostró que el retrieval explica 9 de 31
+>   fallos y la generación 22.
+> - **v2 (2026-09-17):** "cortar por encabezado markdown en lugar de acumular
+>   hasta 800 caracteres". **Descartada antes de implementar:** `_chunk_text` ya
+>   divide por encabezados (`re.split(r'(?m)(?=^#{1,6}\s)', text)`). Implementarlo
+>   habría sido reescribir algo que existe.
 
-## Objetivo
+## Hipótesis vigente
 
-Reemplazar el chunking por límite de caracteres (800) por un corte que respete la
-estructura del documento, y medir el impacto en recall@k.
+El daño no lo hace la falta de estructura sino el **tamaño del fragmento**. Con
+un tope de 800 caracteres la mayoría de las secciones del corpus no cabe entera,
+así que el dato que pide la pregunta queda partido entre dos fragmentos y el
+recuperador entrega solo una mitad.
 
-## Hipótesis
+## Métrica nueva: `anclaje@k`
 
-El chunking actual acumula secciones hasta llenar 800 caracteres, lo que produce
-dos efectos medidos:
+`recall@k` se mide a nivel de **archivo** y es optimista: cuenta acierto si
+alguno de los k fragmentos viene de un archivo que contiene la respuesta, aunque
+ese fragmento no traiga el dato. Esta iteración introduce `anclaje@k`, que
+acierta solo si la `cita_anclaje` del ground truth aparece **íntegra** en alguno
+de los fragmentos recuperados. Es lo que realmente ve el juez.
 
-1. **Distribución desigual.** `inicio_actividades_formalizacion_sii.md` genera 17
-   chunks de 48 y acapara el 30,3% del top-6; `patente_municipal.md` tiene 1 solo
-   chunk y aparece en el 1,7%.
-2. **Vectores diluidos.** Los archivos cortos quedan como un único chunk que
-   mezcla todos sus temas, lo que los vuelve poco competitivos frente a chunks
-   temáticamente concentrados.
+**Techo de la métrica: 36 de 50.** Las otras 14 preguntas tienen una
+`cita_anclaje` que el banco parafrasea y que no existe literalmente en ningún
+`.md`, así que ninguna técnica de chunking puede darles positivo. No comparar el
+numerador contra 50.
 
-Cortar por encabezado markdown debería dar un chunk por sección y equilibrar la
-competencia entre documentos.
-
-## Techo medido
-
-```
-recall@1  = 44%      Fallos con k=6: PREG-006, 078, 089, 110, 112, 116
-recall@3  = 84%      (+3 a nivel de chunk: PREG-010, 079, 109)
-recall@6  = 88%   <- actual
-recall@10 = 94%
-```
-
-**Máximo recuperable por esta vía: 9 preguntas.** Subir `k` de 6 a 10 ya aporta
-parte de la mejora sin tocar el chunking, y es un cambio de una línea.
+Ambas métricas las reporta `scripts/medir_retrieval.py`, que corre en segundos
+sin invocar al LLM.
 
 ## Pasos
 
-1. Modificar `_chunk_text` en `ai-service/ingest.py` para cortar por encabezado
-   markdown (`^#{1,6}\s`) en lugar de acumular hasta 800 caracteres.
-2. Re-indexar: `python ingest.py` (ya es idempotente, recrea la colección).
-3. Medir solo retrieval, que corre en segundos sin invocar al LLM:
-   `python scripts/medir_retrieval.py`
-4. Si recall@6 mejora, medir end-to-end: `python scripts/evaluar_banco.py chunking`
+1. Medir el estado actual con `medir_retrieval.py`.
+2. Ablación de variantes de chunking sobre colecciones temporales, aislando una
+   variable a la vez.
+3. Adoptar la configuración ganadora en `ai-service/ingest.py` y re-indexar.
+4. Medir end-to-end con `evaluar_banco.py --dos-pasos`, **manteniendo `k=6`**
+   para que la comparación contra la 1.6 aísle el chunking.
 
 ## Métricas objetivo
 
-| Métrica | Actual | Objetivo |
+| Métrica | Antes | Objetivo |
 |---|---:|---:|
-| recall@6 | 88% | ≥ 95% |
-| Ocupación del documento más frecuente en top-6 | 30,3% | ≤ 20% |
-| Fallos de retrieval | 9 | ≤ 3 |
+| recall@6 | 44/50 (88%) | ≥ 95% |
+| anclaje@6 | 22/36 (61%) | ≥ 80% |
+| Abstención indebida (end-to-end) | 25/50 | ≤ 15/50 |
+| Alucinación | 0% | se mantiene en 0% |
 
 ## Criterio de éxito
 
-recall@6 ≥ 95% **sin** que suban los fallos de generación end-to-end.
+`anclaje@6` sube **y** la abstención indebida baja end-to-end, **sin** que la
+especificidad del juez caiga por debajo de 48/50.
 
 ## Riesgo
 
-Más chunks implica fragmentos más cortos y, con el mismo `k`, menos información
-total en el contexto. Con un modelo pequeño esto puede cortar por la mitad la
-información que necesita. Medir `k` = 6, 8 y 10 antes de fijar el valor.
+Fragmentos más grandes significan más contexto por pregunta con el mismo `k`, lo
+que encarece al juez (su costo es 98% lectura de contexto). Y un fragmento que
+excede los **1400 caracteres** a los que `api.py` trunca cada fragmento volvería
+a partir el dato justo antes de que el modelo lo lea: el tope del chunking no
+puede superar ese límite sin subirlo también.
