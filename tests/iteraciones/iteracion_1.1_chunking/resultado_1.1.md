@@ -20,7 +20,7 @@ El costo es tiempo: la corrida es un 44% más lenta.
 | | v1 (1 paso) | 1.6 (2 pasos) | **1.1 (2 pasos + chunking)** | Objetivo |
 |---|---:|---:|---:|---:|
 | retrieval_hit@6 /50 | 44 | 44 | **46** | ≥ 47 |
-| anclaje@6 /36 | 22 | 22 | **25** | ≥ 29 |
+| anclaje@6 /37 | 23 | 23 | **25** | ≥ 30 |
 | Abstención indebida /50 | 12 | 25 | **21** | ≤ 15 |
 | Cobertura de datos | 57% | 47% | **57%** | ≥ 65% |
 | **Alucinación /50** | 17 (34%) | 0 (0%) | **0 (0%)** | ≤ 15% |
@@ -36,14 +36,14 @@ El costo es tiempo: la corrida es un 44% más lenta.
 
 | Condición | Resultado | |
 |---|---|---|
-| `anclaje@6` sube | 22/36 → 25/36 | ✅ |
+| `anclaje@6` sube | 23/37 → 25/37 | ✅ |
 | Abstención indebida baja | 25 → 21 | ✅ |
 | Especificidad ≥ 48/50 | 50/50 | ✅ |
 
 **Cumple.** Es la primera iteración del proyecto que lo hace.
 
 Las *métricas objetivo* del plan, en cambio, no se alcanzan: recall@6 quedó en
-92% contra un objetivo de 95%, `anclaje@6` en 69% contra 80%, y la abstención
+92% contra un objetivo de 95%, `anclaje@6` en 68% contra 80%, y la abstención
 indebida en 21 contra ≤15. La dirección es correcta, la magnitud es insuficiente.
 
 ## Atribución de las 21 abstenciones indebidas
@@ -87,6 +87,10 @@ y cuesta ~10 s por variante porque no invoca al LLM:
 | estructural, sin prefijo | 59 | 43 / **17** | 47 / 25 |
 | estructural, con prefijo | 59 | 43 / **18** | 45 / **22** |
 
+*(Esta tabla se midió con el normalizador previo, sobre un techo de 36. La
+corrección suma como máximo una pregunta a cada celda y no altera la conclusión:
+las variantes estructurales quedan muy por debajo del esquema original.)*
+
 Dos conclusiones que contradicen el diagnóstico previo:
 
 1. **Fragmentar más es peor.** Todas las variantes estructurales caen a 17-18.
@@ -98,13 +102,19 @@ Dos conclusiones que contradicen el diagnóstico previo:
 
 Aislando el tamaño, con todo lo demás igual al esquema original:
 
-| tope | solape | chunks | media | k=6 rec/anc | k=8 rec/anc |
-|---:|---:|---:|---:|---|---|
-| 800 | 150 | 48 | 639 | 44 / 22 | 47 / 25 |
-| 1200 | 0 | 29 | 875 | 45 / 22 | 48 / 29 |
-| 1400 | 0 | 26 | 976 | 44 / 26 | 48 / 29 |
-| **1400** | **200** | **28** | **1014** | **46 / 25** | **48 / 31** |
-| 1600 | 0 | 22 | 1154 | 43 / 23 | 48 / 33 |
+Con el normalizador corregido, sobre un techo de 37:
+
+| tope | solape | chunks | media | k=6 rec/anc | k=8 rec/anc | k=10 rec/anc |
+|---:|---:|---:|---:|---|---|---|
+| 800 | 150 | 48 | 638 | 44 / 23 | 47 / 26 | 47 / 28 |
+| 800 | 200 | 49 | 665 | 46 / 25 | 46 / 28 | 48 / 31 |
+| **1400** | **150** | **28** | **988** | **47 / 27** | **47 / 32** | **48 / 33** |
+| 1400 | 200 | 28 | 1014 | 46 / 25 | 48 / 31 | 48 / 33 |
+
+**`1400 / 150` rinde más que el `1400 / 200` que se adoptó** — dos preguntas más
+a `k=6` y una a `k=8`. La elección se tomó con el normalizador anterior, que
+invertía el orden de esas dos filas. Es un cambio de una constante, pero exige
+otra corrida end-to-end para validarlo, así que queda pendiente junto con `k=8`.
 
 **La causa real era el tamaño.** Con 800 caracteres la mayoría de las secciones
 del corpus no cabía entera y el dato pedido quedaba partido entre dos fragmentos.
@@ -144,15 +154,22 @@ problema.
   temporales en memoria. Existe para que la próxima variante se mida antes de
   implementarse.
 
-### El techo de `anclaje@k` es 36, no 50
+### El techo de `anclaje@k` es 37, no 50
 
-14 de las 50 citas de anclaje del banco están **parafraseadas** y no existen
+13 de las 50 citas de anclaje del banco están **parafraseadas** y no existen
 literalmente en ningún `.md`. Para esas preguntas ninguna técnica de chunking
 puede dar positivo. Comparar el numerador contra 50 subestimaría el retrieval
-en 28 puntos. El script imprime el techo en cada corrida.
+en 26 puntos. El script imprime el techo en cada corrida.
 
 Es deuda del banco, no del pipeline: son preguntas cuyo ground truth se redactó
 resumiendo el documento en vez de citarlo.
+
+> **Corrección posterior al cierre de la iteración.** La primera versión de la
+> métrica reportaba un techo de 36 y una mejora de 22 → 25. El normalizador no
+> ignoraba los marcadores de lista, así que PREG-064 —cuya cita transcribe dos
+> viñetas sin el `- ` inicial— contaba como no verificable pese a estar textual
+> en el corpus. Corregido el normalizador, el techo es 37 y la mejora real es
+> **23 → 25**, algo menor que la reportada. La conclusión no cambia.
 
 ## Lo que queda sobre la mesa
 

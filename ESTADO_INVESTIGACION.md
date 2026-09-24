@@ -22,7 +22,7 @@ ambos roles + chunking de 1400 caracteres**, iteración 1.1:
 
 ```
 RESPONDIBLES (50)     retrieval_hit@6 ........ 46/50 (92%, medido por archivo)
-                      anclaje@6 .............. 25/36 (69%, medido por chunk)
+                      anclaje@6 .............. 25/37 (68%, medido por chunk)
                       abstuvo indebidamente .. 21/50
                       cobertura de datos ..... 57%
 
@@ -94,10 +94,12 @@ nuevo es retrabajo.
   costó una corrida entera poder atribuir el efecto. La 1.1 repitió el error con
   cinco variables juntas; la ablación (`scripts/ablacion_chunking.py`, ~10 s por
   variante) las separó y mostró que cuatro de las cinco estorbaban.
-- **`anclaje@k` tiene techo 36, no 50.** 14 de las 50 citas del banco están
+- **`anclaje@k` tiene techo 37, no 50.** 13 de las 50 citas del banco están
   parafraseadas y no existen literales en ningún `.md`, así que ninguna técnica
   de chunking puede darles positivo. Comparar contra 50 subestima el retrieval en
-  28 puntos.
+  26 puntos. El normalizador debe ignorar tildes **y marcadores de lista**: sin
+  lo segundo el techo daba 36 y PREG-064 contaba como no verificable pese a estar
+  textual en el corpus.
 - **El tope del chunking está acoplado al truncado de `api.py`** (1400
   caracteres por fragmento). Subir uno sin el otro anula la mejora: el recorte
   vuelve a partir el dato justo antes de que el modelo lo lea.
@@ -120,7 +122,7 @@ El cambio adoptado son dos constantes en `ingest.py`: `CHUNK_SIZE` 800 → 1400 
 ```
                  antes    después
 recall@6         44/50     46/50
-anclaje@6        22/36     25/36
+anclaje@6        23/37     25/37
 abstención ind.  25/50     21/50
 alucinación       0/50      0/50
 ```
@@ -133,9 +135,14 @@ Dos hipótesis previas quedaron **refutadas** en el camino (ver la tabla de
 callejones sin salida): el chunking estructural por sección, y la eliminación
 del solape.
 
-**Lo que queda:** `k=8` sube el anclaje de 25/36 a 31/36 según la medición de
-retrieval, con un cambio de una línea. Pero encarece al juez, que ya está en
-12,3 s por pregunta. Medir end-to-end antes de adoptarlo.
+**Lo que queda, ambos de una constante y sin medir end-to-end:**
+
+- `k=8` sube el anclaje de 25/37 a 31/37.
+- `CHUNK_OVERLAP` 200 → **150** sube a 27/37 con `k=6` y a 32/37 con `k=8`. Se
+  adoptó 200 con un normalizador que invertía el orden de las dos opciones.
+
+Los dos encarecen o mantienen el costo del juez, que ya está en 12,3 s por
+pregunta. Medir antes de adoptar.
 
 ### OP-6 — Discriminación en dos pasos ✅ **CONFIRMADA**
 

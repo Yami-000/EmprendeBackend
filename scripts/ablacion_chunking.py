@@ -37,13 +37,20 @@ args = ap.parse_args()
 
 
 def norm(t):
-    """Normaliza para comparar: sin tildes, sin mayusculas, espaciado colapsado.
+    """Normaliza: sin tildes, sin mayusculas, espaciado colapsado, sin vinetas.
 
-    El banco guarda varias citas sin tildes mientras el corpus las lleva; una
-    comparacion literal daria falsos negativos.
+    El banco guarda varias citas sin tildes mientras el corpus las lleva, y
+    varias transcriben dos lineas de una lista sin el '- ' inicial. Sin ignorar
+    ambas cosas la comparacion daria falsos negativos: PREG-064 contaba como no
+    verificable pese a estar textual en el corpus.
+
+    Debe mantenerse identica a la de medir_retrieval.py o las dos herramientas
+    reportarian techos distintos.
     """
     t = unicodedata.normalize("NFKD", t or "")
     t = "".join(c for c in t if not unicodedata.combining(c))
+    t = re.sub(r"(?m)^\s*[-*+]\s+", "", t)
+    t = re.sub(r"(?m)^\s*\d+[.)]\s+", "", t)
     return re.sub(r"\s+", " ", t).strip().lower()
 
 
