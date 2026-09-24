@@ -22,7 +22,7 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOCS = os.path.join(RAIZ, "ai-service", "docs", "sii")
+DOCS_DEF = os.path.join(RAIZ, "ai-service", "docs", "sii")
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
 EMB = "all-MiniLM-L6-v2"                   # debe coincidir con ingest.py y api.py
 TRUNCADO_API = 1400                        # api.py recorta cada fragmento a esto
@@ -33,17 +33,28 @@ ap.add_argument("--topes", default="800,1200,1400,1600",
 ap.add_argument("--solapes", default="0,150,200",
                 help="solapes a probar, separados por coma")
 ap.add_argument("--ks", default="6,8,10", help="valores de k a reportar")
+ap.add_argument("--docs", default=None,
+                help="corpus alternativo (ej. ai-service/docs/sii_piloto) para "
+                     "comparar una reescritura contra el corpus vigente sin tocarlo")
 args = ap.parse_args()
+DOCS = os.path.join(RAIZ, args.docs) if args.docs else DOCS_DEF
 
 
 def norm(t):
-    """Normaliza para comparar: sin tildes, sin mayusculas, espaciado colapsado.
+    """Normaliza: sin tildes, sin mayusculas, espaciado colapsado, sin vinetas.
 
-    El banco guarda varias citas sin tildes mientras el corpus las lleva; una
-    comparacion literal daria falsos negativos.
+    El banco guarda varias citas sin tildes mientras el corpus las lleva, y
+    varias transcriben dos lineas de una lista sin el '- ' inicial. Sin ignorar
+    ambas cosas la comparacion daria falsos negativos: PREG-064 contaba como no
+    verificable pese a estar textual en el corpus.
+
+    Debe mantenerse identica a la de medir_retrieval.py o las dos herramientas
+    reportarian techos distintos.
     """
     t = unicodedata.normalize("NFKD", t or "")
     t = "".join(c for c in t if not unicodedata.combining(c))
+    t = re.sub(r"(?m)^\s*[-*+]\s+", "", t)
+    t = re.sub(r"(?m)^\s*\d+[.)]\s+", "", t)
     return re.sub(r"\s+", " ", t).strip().lower()
 
 

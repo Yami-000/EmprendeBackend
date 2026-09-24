@@ -11,7 +11,14 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-23, tras cerrar la iteración 1.1.
+**Última actualización:** 2026-09-24, tras el piloto de reescritura del corpus.
+
+> ## ⏭️ Punto de partida de la próxima sesión
+>
+> **OP-7 — el grafo.** El piloto dejó las aristas ya declaradas en dos
+> documentos (`Nodo`, `Requiere antes`, `Habilita después`) pero sin usar. El
+> plan está escrito en `tests/iteraciones/iteracion_1.7_nodos/plan_1.7.md`.
+> Rama a crear desde `main`: `iteracion_1.7_nodos`.
 
 ---
 
@@ -22,7 +29,7 @@ ambos roles + chunking de 1400 caracteres**, iteración 1.1:
 
 ```
 RESPONDIBLES (50)     retrieval_hit@6 ........ 46/50 (92%, medido por archivo)
-                      anclaje@6 .............. 25/36 (69%, medido por chunk)
+                      anclaje@6 .............. 25/37 (68%, medido por chunk)
                       abstuvo indebidamente .. 21/50
                       cobertura de datos ..... 57%
 
@@ -54,7 +61,8 @@ hardware modesto es el objetivo del proyecto, no una limitación a superar.
 | OP-1 | Chunking | ✅ **Parcial** | 1.1 — el tamaño era la causa; 25 → 21 abstenciones |
 | OP-5 | Métrica de similitud | ⏳ Pendiente | sin medir, costo ~1 línea |
 | OP-4 | Deduplicación del corpus | ⏳ Pendiente | incluido en el techo de retrieval |
-| OP-7 | RAG basado en nodos | 🔵 Exploratoria | sin medir, costo alto |
+| OP-7 | RAG basado en nodos | ⏭️ **Siguiente** | aristas ya declaradas; el costo bajó mucho |
+| — | Reescritura estructurada del corpus | ◐ **Media** | piloto: mejora el retrieval, no al juez |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
 ---
@@ -94,10 +102,12 @@ nuevo es retrabajo.
   costó una corrida entera poder atribuir el efecto. La 1.1 repitió el error con
   cinco variables juntas; la ablación (`scripts/ablacion_chunking.py`, ~10 s por
   variante) las separó y mostró que cuatro de las cinco estorbaban.
-- **`anclaje@k` tiene techo 36, no 50.** 14 de las 50 citas del banco están
+- **`anclaje@k` tiene techo 37, no 50.** 13 de las 50 citas del banco están
   parafraseadas y no existen literales en ningún `.md`, así que ninguna técnica
   de chunking puede darles positivo. Comparar contra 50 subestima el retrieval en
-  28 puntos.
+  26 puntos. El normalizador debe ignorar tildes **y marcadores de lista**: sin
+  lo segundo el techo daba 36 y PREG-064 contaba como no verificable pese a estar
+  textual en el corpus.
 - **El tope del chunking está acoplado al truncado de `api.py`** (1400
   caracteres por fragmento). Subir uno sin el otro anula la mejora: el recorte
   vuelve a partir el dato justo antes de que el modelo lo lea.
@@ -120,7 +130,7 @@ El cambio adoptado son dos constantes en `ingest.py`: `CHUNK_SIZE` 800 → 1400 
 ```
                  antes    después
 recall@6         44/50     46/50
-anclaje@6        22/36     25/36
+anclaje@6        23/37     25/37
 abstención ind.  25/50     21/50
 alucinación       0/50      0/50
 ```
@@ -133,9 +143,14 @@ Dos hipótesis previas quedaron **refutadas** en el camino (ver la tabla de
 callejones sin salida): el chunking estructural por sección, y la eliminación
 del solape.
 
-**Lo que queda:** `k=8` sube el anclaje de 25/36 a 31/36 según la medición de
-retrieval, con un cambio de una línea. Pero encarece al juez, que ya está en
-12,3 s por pregunta. Medir end-to-end antes de adoptarlo.
+**Lo que queda, ambos de una constante y sin medir end-to-end:**
+
+- `k=8` sube el anclaje de 25/37 a 31/37.
+- `CHUNK_OVERLAP` 200 → **150** sube a 27/37 con `k=6` y a 32/37 con `k=8`. Se
+  adoptó 200 con un normalizador que invertía el orden de las dos opciones.
+
+Los dos encarecen o mantienen el costo del juez, que ya está en 12,3 s por
+pregunta. Medir antes de adoptar.
 
 ### OP-6 — Discriminación en dos pasos ✅ **CONFIRMADA**
 
@@ -200,9 +215,62 @@ del retrieval. Explica mejor el problema histórico de
 Se solapa con OP-1: conviene medir el chunking estructural primero y re-evaluar
 cuánto queda de este efecto después.
 
-### OP-7 — RAG basado en nodos 🔵 **HIPÓTESIS EXPLORATORIA**
+### Reescritura estructurada del corpus ◐ **CONFIRMADA A MEDIAS**
 
-Rama: `iteracion_1.7_nodos` · Plan: pendiente
+Rama: `corpus_esquema_piloto` · Resultado: `corpus_esquema_piloto/resultado_piloto.md`
+
+Idea de Yami: estandarizar los `.md` con un esquema fijo (institución,
+requisitos previos, de qué trata, siguiente paso) y declarar en el documento su
+pertenencia a un nodo del grafo.
+
+Piloto sobre **2 de los 13 documentos**, en un corpus paralelo:
+
+```
+                  k=6 rec/anc    k=8 rec/anc
+corpus vigente      46 / 25        48 / 31
+corpus piloto       47 / 26        48 / 33
+```
+
+- ✅ **Mejora el retrieval, de forma atribuible.** PREG-063 y PREG-064 pasan de
+  estar fuera del top-6 a las posiciones 4 y 1, con el dato llegando íntegro, y
+  ninguna otra pregunta se mueve. PREG-064 era uno de los cuatro fallos que la
+  1.1 dio por irrecuperables con chunking o con `k`.
+- ❌ **No mueve al juez.** Ninguna de las cuatro preguntas objetivo cambia de
+  veredicto, ni siquiera las dos donde el dato pasó a llegar.
+
+**Lo que de verdad movió la aguja no fue la estructura sino el vocabulario.** Con
+el tope de 1400 las secciones se vuelven a juntar en el mismo fragmento, así que
+dividir en más partes no cambió nada; el efecto vino de los encabezados y frases
+puente que usan los términos de las preguntas (*"SpA — Sociedad por Acciones, la
+opción de startups"*).
+
+**Restricciones para extenderlo a los 13 documentos:**
+
+1. **Los nombres de archivo no se pueden cambiar.** El ground truth referencia
+   los documentos por basename y `recall@k` compara basenames. Partir un archivo
+   en varios invalidaría la medición de las preguntas que lo citan. La
+   reestructuración debe ser interna al archivo.
+2. **Las líneas con datos se conservan palabra por palabra.** 37 de las 50 citas
+   de anclaje son texto literal del corpus; reescribirlas deja el banco sin
+   instrumento de medición.
+3. **Hay citas que exigen adyacencia** entre dos líneas, en un orden concreto
+   (PREG-064).
+
+Dos adaptaciones al esquema original, ya validadas en el piloto: **dos tipos de
+documento** (`trámite` y `referencia`), porque solo 3 de las 50 preguntas son de
+procedimiento; y la tercera parte partida en **"Qué es"** y **"Datos"**, porque
+40 de las 50 citas son cifras, plazos y formularios.
+
+### OP-7 — RAG basado en nodos ⏭️ **SIGUIENTE PASO**
+
+Rama: `iteracion_1.7_nodos` (crear desde `main`) · Plan: `iteracion_1.7_nodos/plan_1.7.md`
+
+> **Por qué pasa de exploratoria a siguiente.** El costo que la hacía cara era
+> extraer entidades y relaciones del corpus. El piloto de reescritura mostró que
+> **las aristas se pueden declarar a mano en el documento** — ya están escritas
+> en `patente_municipal.md` y `tipos_sociedad_chile.md` del corpus piloto. Deja
+> de ser un proyecto de NLP y pasa a ser trabajo de redacción más una expansión
+> del retrieval.
 
 Representar el corpus como un grafo de entidades y relaciones en lugar de una
 colección plana de fragmentos, y resolver la consulta recorriendo el grafo en vez
@@ -221,10 +289,14 @@ dato vive en una tabla de instituciones que el embedding denso no privilegia
 frente a prosa temáticamente parecida. Una arista de grafo responde eso por
 estructura, no por similitud.
 
-**Riesgo:** la línea de mayor costo del conjunto. Requiere extraer entidades y
-relaciones, decidir el modelo de grafo y reescribir la capa de recuperación.
-Acotarla a un subconjunto del corpus como prueba de concepto antes de
-comprometerse.
+**Cuánto puede rendir.** El techo lo fija el juez: con el dato íntegro en el
+contexto aprueba **21 de 25 (84%)**. Cada pregunta cuyo dato el grafo logre
+entregar se convierte en respuesta el 84% de las veces. No más que eso.
+
+**Riesgo.** Ya no es la extracción sino la **consulta**: mapear una pregunta a un
+nodo es otra tarea que el modelo de 3B puede errar. Por eso el plan empieza por
+usar el grafo para *expandir* el resultado del retrieval vectorial, no para
+reemplazarlo.
 
 **Nota.** De la línea descartada sobre motores vectoriales, el único componente
 con valor medible era la **recuperación híbrida densa + léxica (BM25)**,

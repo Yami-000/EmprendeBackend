@@ -50,14 +50,19 @@ def recuperados(q, k):
 
 
 def norm(t):
-    """Compara ignorando tildes, mayusculas y espaciado.
+    """Compara ignorando tildes, mayusculas, espaciado y marcadores de lista.
 
     El banco guarda varias citas sin tildes ('Declaracion') mientras el corpus
-    las lleva ('Declaracion' con tilde), asi que una comparacion literal daria
-    falsos negativos.
+    las lleva, asi que una comparacion literal daria falsos negativos.
+
+    Las vinetas tambien: varias citas transcriben dos lineas de una lista sin
+    el '- ' inicial. Sin ignorarlo, PREG-064 contaba como no verificable pese a
+    estar textual en el corpus.
     """
     t = unicodedata.normalize("NFKD", t or "")
     t = "".join(c for c in t if not unicodedata.combining(c))
+    t = re.sub(r"(?m)^\s*[-*+]\s+", "", t)
+    t = re.sub(r"(?m)^\s*\d+[.)]\s+", "", t)
     return re.sub(r"\s+", " ", t).strip().lower()
 
 
