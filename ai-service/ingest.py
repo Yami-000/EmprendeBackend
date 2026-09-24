@@ -45,8 +45,24 @@ def load_documents(files):
 
 import re
 
+# Iteración 1.1. Medido con scripts/medir_retrieval.py sobre el banco:
+# con 800 la mayoría de las secciones no cabía entera y el dato pedido llegaba
+# partido entre dos fragmentos. Subir el tope a 1400 sube la proporción de
+# preguntas cuyo dato llega ÍNTEGRO al contexto de 22/36 a 31/36 con k=8.
+#
+# 1400 no es arbitrario: es el límite al que api.py trunca cada fragmento al
+# armar el prompt. Con este tope ningún fragmento del corpus actual lo supera
+# (máximo real 1378), así que el truncado no vuelve a partir el dato justo
+# antes de que el modelo lo lea. Si se sube CHUNK_SIZE hay que subir también
+# ese truncado, o el recorte anula la mejora.
+#
+# Se probó y descartó una reescritura estructural (un fragmento por sección de
+# markdown, sin solape): empeoró el anclaje a 18/36. Ver resultado_1.1.md.
+CHUNK_SIZE = 1400
+CHUNK_OVERLAP = 200
 
-def _chunk_text(text: str, chunk_size: int = 800, chunk_overlap: int = 150):
+
+def _chunk_text(text: str, chunk_size: int = CHUNK_SIZE, chunk_overlap: int = CHUNK_OVERLAP):
     if not text:
         return []
     # Split by markdown headings or double newlines to preserve structure
@@ -90,7 +106,7 @@ def split_documents(documents):
         try:
             text = doc.get('page_content') or doc.get('content') or ''
             logger.debug("Doc text length: %d", len(text) if text else 0)
-            chunks = _chunk_text(text, chunk_size=800, chunk_overlap=150)
+            chunks = _chunk_text(text, chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
             logger.debug("Chunks generated for doc %s: %d", doc.get('metadata', {}).get('source'), len(chunks))
             for c in chunks:
                 split_docs.append({"page_content": c, "metadata": doc.get('metadata', {})})
