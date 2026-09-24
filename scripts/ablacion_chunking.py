@@ -22,7 +22,7 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOCS = os.path.join(RAIZ, "ai-service", "docs", "sii")
+DOCS_DEF = os.path.join(RAIZ, "ai-service", "docs", "sii")
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
 EMB = "all-MiniLM-L6-v2"                   # debe coincidir con ingest.py y api.py
 TRUNCADO_API = 1400                        # api.py recorta cada fragmento a esto
@@ -33,7 +33,11 @@ ap.add_argument("--topes", default="800,1200,1400,1600",
 ap.add_argument("--solapes", default="0,150,200",
                 help="solapes a probar, separados por coma")
 ap.add_argument("--ks", default="6,8,10", help="valores de k a reportar")
+ap.add_argument("--docs", default=None,
+                help="corpus alternativo (ej. ai-service/docs/sii_piloto) para "
+                     "comparar una reescritura contra el corpus vigente sin tocarlo")
 args = ap.parse_args()
+DOCS = os.path.join(RAIZ, args.docs) if args.docs else DOCS_DEF
 
 
 def norm(t):
