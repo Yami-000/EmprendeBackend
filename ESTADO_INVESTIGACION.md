@@ -68,6 +68,7 @@ nuevo es retrabajo.
 | **Contaminación del índice con documentos de la CMF** | Nunca estuvieron indexados. `ingest.py` solo lee `docs/sii/`. El daño estaba en el ground truth, no en ChromaDB | `Bitacora.md` 2026-09-17 |
 | **Chunks duplicados en ChromaDB** | 0 duplicados. La sospecha venía de que `collection.add()` acumulaba entre ingestas; ya es idempotente | `Bitacora.md` 2026-09-17 |
 | **Desalineación de embeddings ingesta/consulta** | Ambos usan 384 dims. Era un riesgo real (`nomic-embed-text` con respaldo silencioso) pero coincidían por accidente. Ya está fijado | `Bitacora.md` 2026-09-17 |
+| **Añadir división por encabezados markdown al chunking** | Ya está implementada: `_chunk_text` hace `re.split(r'(?m)(?=^#{1,6}\s)', text)`. El daño lo hacen la acumulación hasta 800 caracteres y el solape crudo `chunk[-150:]` | ver OP-1 |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
 
 ### Advertencias de método
@@ -93,9 +94,16 @@ nuevo es retrabajo.
 
 Rama: `iteracion_1.1_chunking` · Plan: `iteracion_1.1_chunking/plan_1.1.md`
 
-`_chunk_text` en `ingest.py` acumula por **caracteres** (`chunk_size=800`,
-`chunk_overlap=150`) y corta frases a la mitad. La 1.6 dio la evidencia directa
-que antes faltaba:
+`_chunk_text` en `ingest.py` **sí divide por encabezados markdown** — ese no es
+el problema, y proponer añadirlo es retrabajo. El daño lo hacen los otros dos
+pasos: acumula secciones consecutivas hasta 800 caracteres, y toma el solape
+como **rebanada cruda** del fragmento anterior (`chunk[-150:]`).
+
+Medido sobre el índice actual: **30 de 48 fragmentos (62%) empiezan a mitad de
+frase**, con una cola de 150 caracteres arrancada de otra sección. Incluye
+tablas markdown partidas sin su encabezado de columnas.
+
+La 1.6 dio la evidencia de su efecto:
 
 - 19 de las 25 abstenciones indebidas son atribuibles a retrieval y chunking;
   solo 5 al juez.
@@ -110,10 +118,11 @@ que antes faltaba:
 El techo de 9 preguntas que la 1.0 asignó a esta vía se calculó con
 `retrieval_hit` a nivel de archivo. **El techo real es mayor.**
 
-**Propuesta:** cortar por encabezados markdown en vez de por longitud, de modo
-que cada chunk sea una unidad semántica completa (un trámite, una tabla, un
-requisito). Medir con `scripts/medir_retrieval.py` — segundos, sin invocar al
-modelo — antes de comprometerse a una corrida end-to-end de 20 min.
+**Propuesta:** respetar el límite de encabezado como frontera de fragmento (una
+sección = un fragmento, sin mezclar) y sustituir el solape por caracteres por
+uno que no parta unidades — repetir el encabezado de la sección, o ninguno.
+Medir con `scripts/medir_retrieval.py` — segundos, sin invocar al modelo — antes
+de comprometerse a una corrida end-to-end de 20 min.
 
 ### OP-6 — Discriminación en dos pasos ✅ **CONFIRMADA**
 

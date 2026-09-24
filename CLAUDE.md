@@ -63,9 +63,12 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   por accidente.
 - **Tras un `pull` hay que reconstruir el índice**: `cd ai-service && python ingest.py`.
   `chroma_db/` no está versionado.
-- **`CONTEXTO.md` tiene información desactualizada** del 2026-09-06 (menciona
-  `nomic-embed-text`, dice que no hay timeouts ni `num_ctx`). Verifica contra el
-  código antes de confiar en él.
+- **El orden del system prompt no es arbitrario.** Mover la regla de abstención
+  tras el contexto subió la alucinación de 34% a 78%. Hay un comentario de
+  advertencia en `api.py`.
+- **El chunking ya divide por encabezados markdown.** Lo que rompe los
+  fragmentos es el solape por caracteres (`chunk[-150:]`), que hace que el 62%
+  empiece a mitad de frase. Ver la sección 5 de `CONTEXTO.md`.
 
 ## Idioma
 
