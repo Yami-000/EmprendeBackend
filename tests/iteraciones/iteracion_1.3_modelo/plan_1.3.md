@@ -1,6 +1,6 @@
 # Plan 1.3 — Modelo de generación
 
-**Prioridad:** 🔴 Alta · **Origen:** OP-3 de `iteracion_1.0_baseline/analisis_y_bifurcaciones.md`
+**Prioridad:** 🔴 Alta · **Origen:** OP-3 de `ESTADO_INVESTIGACION.md`
 
 ## Objetivo
 

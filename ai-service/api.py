@@ -18,6 +18,15 @@ CHROMA_COLLECTION = "sii_markdown"
 OLLAMA_URL = "http://localhost:11434/api/chat"
 OLLAMA_MODEL = "llama3.2"
 
+# Respuesta canónica cuando el contexto no contiene la información pedida.
+# Vive aquí como constante porque la usan dos rutas distintas: la regla #3 del
+# system prompt (el modelo la emite) y el pipeline de dos pasos (se devuelve
+# directo cuando el juez dictamina que no hay respaldo, sin llamar al redactor).
+FRASE_ABSTENCION = (
+    "Lo siento, mi base de conocimientos actual no incluye esa información "
+    "específica sobre las normativas del SII."
+)
+
 app = FastAPI(title="ai-service RAG API")
 
 
@@ -61,7 +70,7 @@ async def _embed_text(text: str) -> List[float]:
 
 
 def _build_system_prompt(fragments: List[Dict[str, Any]]) -> str:
-    base = """Eres 'Ecia', asistente tributario y legal especializado EXCLUSIVAMENTE en normativa chilena vigente.
+    base = f"""Eres 'Ecia', asistente tributario y legal especializado EXCLUSIVAMENTE en normativa chilena vigente.
 
 TERMINOLOGÍA OBLIGATORIA — usa SOLO estos términos chilenos:
 - Identificación personal: "Cédula de Identidad" (NUNCA "DNI", "pasaporte" como documento estándar, ni "NIT")
@@ -73,7 +82,7 @@ TERMINOLOGÍA OBLIGATORIA — usa SOLO estos términos chilenos:
 REGLAS ABSOLUTAS:
 1. USA ÚNICAMENTE la información del 'Contexto recuperado'. Nada más.
 2. PROHIBIDO inventar o extrapolar de otros países. No existen en Chile: "matrícula mercantil", "DNI", "NIT", "RUC", "Cámara de Comercio" como ente formalizador, "hacienda pública".
-3. Si la respuesta NO está en el contexto, di EXACTAMENTE: "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII."
+3. Si la respuesta NO está en el contexto, di EXACTAMENTE: "{FRASE_ABSTENCION}"
 4. NUNCA inventes costos, plazos, formularios ni instituciones.
 
 FORMATO:
@@ -90,6 +99,58 @@ FORMATO:
     # subió la alucinación de 34% a 78%. Reforzar "usa el contexto" justo antes de
     # generar empuja al modelo a forzar una respuesta con los fragmentos a mano.
     # Ver tests/iteraciones/experimento_prompt_v2.md antes de reintentarlo.
+    return base + "\n" + "\n".join(ctx_lines)
+
+
+# Variantes del prompt del juez. Se mantienen ambas porque el experimento las
+# compara: cambiar la calibración del juez es la variable bajo estudio en la
+# iteración 1.6, y sobrescribir una perdería la posibilidad de reproducirla.
+JUEZ_PROMPT_BASES = {
+    # A1 (2026-09-22): especificidad 50/50 pero 9 falsos negativos sobre datos
+    # que sí estaban en el contexto. Sospecha: "ante cualquier duda responde NO"
+    # domina sobre el resto en un modelo de 3B.
+    "estricto": """Eres un verificador estricto. Tu única tarea es decidir si el CONTEXTO de abajo contiene la información necesaria para responder la PREGUNTA de forma completa y específica.
+
+Reglas:
+- Responde con UNA sola palabra: SI o NO.
+- Responde SI solo si el contexto menciona explícitamente el dato pedido (cifra, plazo, nombre de institución, definición, procedimiento), no solo un tema relacionado o parecido.
+- Responde NO si el contexto trata un tema similar pero no contiene el dato específico que pide la pregunta.
+- Ante cualquier duda, responde NO.
+- No expliques tu respuesta. No agregues nada más que SI o NO.""",
+
+    # A2 (2026-09-23): quita el sesgo hacia negar y nombra explícitamente las
+    # formas en que el dato puede aparecer. Varios falsos negativos de A1
+    # (PREG-076 "25% / 27%", PREG-067 "$110.000 – $380.000") tenían el dato
+    # dentro de una tabla markdown.
+    "flexible": """Eres un verificador. Tu única tarea es decidir si el CONTEXTO de abajo contiene información suficiente para responder la PREGUNTA.
+
+Reglas:
+- Responde con UNA sola palabra: SI o NO.
+- Responde SI si el dato que pide la pregunta aparece en el contexto, aunque esté redactado con otras palabras, dentro de una tabla, o repartido entre varios fragmentos.
+- Responde NO únicamente si el contexto no contiene ese dato: porque trata otro tema, o porque menciona el tema sin dar la información pedida.
+- No expliques tu respuesta. No agregues nada más que SI o NO.""",
+}
+
+
+def _build_judge_prompt(fragments: List[Dict[str, Any]], variante: str = "estricto") -> str:
+    """Prompt del juez binario del pipeline de dos pasos (iteración 1.6).
+
+    Decide si el contexto contiene la respuesta, sin redactarla. Deliberadamente
+    NO incluye las reglas de terminología chilena de _build_system_prompt: esas
+    aplican a la redacción, y un prompt más corto reduce la superficie de fallo
+    de la única decisión que importa aquí.
+
+    El fail-safe ante ambigüedad NO vive aquí sino en el parseo de la respuesta
+    (parse_juicio): instruir al modelo a dudar hacia NO resultó demasiado
+    agresivo en A1.
+    """
+    base = JUEZ_PROMPT_BASES[variante]
+    ctx_lines = ["\nCONTEXTO:"]
+    for i, f in enumerate(fragments, 1):
+        src = f.get("metadata", {}).get("source", "")
+        doc = f.get("document", f.get("page_content", ""))
+        snippet = doc.replace('\n', ' ')[:1400]
+        ctx_lines.append(f"[{i}] Fuente: {src}\n{snippet}\n")
     return base + "\n" + "\n".join(ctx_lines)
 
 

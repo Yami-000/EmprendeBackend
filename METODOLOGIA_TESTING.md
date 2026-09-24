@@ -32,7 +32,6 @@ tests/
 └── iteraciones/
     ├── iteracion_1.0_baseline/
     │   ├── resultado_1.0.md
-    │   └── analisis_y_bifurcaciones.md
     ├── iteracion_1.1_chunking/
     │   ├── plan_1.1.md
     │   └── resultado_1.1.md
@@ -48,7 +47,7 @@ tests/
 
 6) Plantillas y artefactos esperados
 - Cada `resultado_X.Y.md` debe contener: métricas globales (promedios), tabla por caso (Fidelity, Relevancia, Recall, Latencia), lista de timeouts y recomendaciones operacionales (OP-N).
-- `analisis_y_bifurcaciones.md` documenta oportunidades y ramas hijas propuestas con número de cambio aislado.
+- `ESTADO_INVESTIGACION.md` (raíz del repositorio) documenta las líneas de investigación abiertas, su estado y los callejones sin salida ya medidos. Vive fuera de `tests/iteraciones/` a propósito: debe estar disponible en todas las ramas, no solo en la de la iteración que lo generó.
 
 7) Requisitos SRE/Infra
 - Añadir endpoints `/health` y `/metrics` (Prometheus) si no existen; instrumentar latencias en Node y FastAPI.

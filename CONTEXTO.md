@@ -1,243 +1,311 @@
 # CONTEXTO TÉCNICO DEL SISTEMA
 
-## 1. Visión General y Stack Tecnológico Real
-
-- Propósito central del sistema: Chatbot conversacional que responde consultas sobre normativa (principalmente SII / normativa chilena) usando un pipeline RAG (recuperación + LLM) y exponiendo un servicio HTTP (FastAPI) que consume un vectorstore (ChromaDB) y un motor LLM (Ollama). El canal principal de entrada activo es un bot de Telegram que orquesta consultas y guarda historial en una base de datos relacional.
-- Lenguajes: JavaScript/Node.js (backend + bot) y Python (servicio RAG y herramientas de ingestión).
-- Tecnologías detectadas (manifests y código):
-  - Node.js: `express`, `telegraf`, `sequelize`, `sqlite3`, `pg`, `dotenv`, `axios`, `uuid`, `firebase`, `bcryptjs` (ver `package.json`).
-  - Python: `fastapi`, `uvicorn`, `langchain`, `chromadb`, `ollama`, `sentence-transformers`, `httpx`, `pydantic` (ver `ai-service/requirements.txt`).
-  - Embeddings / ML: `sentence-transformers` (modelo `all-MiniLM-L6-v2` usado como fallback), y referencia a `nomic-embed-text` en el ingest (`ai-service/ingest.py`).
-  - Vector DB: ChromaDB (persistencia en `ai-service/chroma_db`).
-  - LLM: Ollama (cliente HTTP desde `ai-service/api.py`).
-  - DB relacional: Postgres (Supabase) por defecto vía `sequelize`; fallback a SQLite in-memory en desarrollo (`src/config/db.js`).
-
-## 2. Inventario Exhaustivo de Archivos y Responsabilidades
-
-| Ruta Relativa del Archivo | Responsabilidad Principal | Módulos / Servicios que Importa | Archivos / Componentes que lo Consumen |
-|---|---|---|---|
-| Prompt/Auditoria.md | Prompt de auditoría (este archivo) que describe la Fase 1 y entregables. | Ninguno | Operación humana / IA que ejecuta la auditoría |
-| package.json | Manifest de Node.js; dependencias y scripts `start`/`dev`. | N/A | `src/index.js` al arrancar el servidor Node/JS |
-| ai-service/requirements.txt | Manifest de dependencias Python para `ai-service`. | N/A | Entorno Python / despliegue del servicio RAG |
-| ai-service/api.py | Servicio FastAPI que expone `/chat` y orquesta: embedding (SentenceTransformer), recuperación (ChromaDB) y llamada a Ollama. | `chromadb`, `fastapi`, `sentence_transformers`, `httpx`, `ollama` (cliente HTTP), `asyncio` | Consumido por clientes HTTP (por ejemplo `src/bot.js` vía `RAG_URL`) |
-| ai-service/ingest.py | Script de ingestión: lee `docs/sii/*.md`, los chunkea, genera embeddings (OllamaEmbeddings o sentence-transformers fallback) y escribe en ChromaDB persistente. | `chromadb`, `sentence_transformers`, `langchain` (intento de `OllamaEmbeddings`) | Utilizado para crear/actualizar `ai-service/chroma_db` (vector store) |
-| ai-service/convert_docx.py | Convierte `.docx` en `docs/` a `.md` en `docs/sii/`. | `docx` (python-docx) | Operación de pre-procesamiento de contenido documental |
-| ai-service/chroma_db/ | Persistencia del vectorstore (archivos generados por ChromaDB). | N/A | Accedido por `ai-service/api.py` y `ai-service/ingest.py` |
-| src/index.js | Punto de entrada Node: conecta DB y arranca servidor HTTP y bot de Telegram. | `./server.js`, `./config/db.js`, `./bot.js` | Orquesta inicio de la aplicación Node |
-| src/server.js | Servidor HTTP Express, middleware CORS mínimo y ruta `/health`. | `express` | Consumido por `src/index.js` para exponer health endpoint |
-| src/config/db.js | Configuración de conexión a DB (Sequelize). Intenta Postgres (Supabase) y cae a SQLite in-memory en `development`. | `sequelize`, `dotenv` | Consumido por `src/index.js` y `src/models/index.js` |
-| src/bot.js | Bot de Telegram (Telegraf): recibe mensajes, guarda/hace lookup de historial en DB, y hace POST al servicio RAG (`RAG_URL`). | `telegraf`, `axios`, `dotenv`, `./models/index.js` | Ejecutado por `src/index.js`; clientes: usuarios de Telegram |
-| src/models/*.js | Modelos Sequelize `Usuario`, `Chat`, `Mensaje`. | `sequelize` | Consumidos por `src/bot.js` y por cualquier lógica que manipule conversaciones |
-| ai-service/docs/ (docs/sii/*.md) | Documentación normativa que sirve como contenido fuente para RAG. | N/A | Ingestada por `ai-service/ingest.py` y recuperada por `ai-service/api.py` vía ChromaDB |
-| ai-service/debug_*.py | Scripts de depuración y pruebas (varios) | Varia por script | Operaciones de diagnóstico manual |
-| chroma_db/chroma.sqlite3 | Archivo SQLite usado por ChromaDB en este workspace. | N/A | Leído por `ai-service/api.py` cuando `PersistentClient(path=...)` está configurado |
-| credentials/emprende-...firebase-adminsdk-*.json | Credenciales Firebase (Service Account). | N/A | Posible uso por integraciones Firebase en código o despliegue |
-
-> Nota: el inventario anterior prioriza los archivos que participan en el pipeline RAG, el bot Telegram y la persistencia. Hay muchos `docs/*.md` utilizados como corpus; se recomienda un inventario adicional si se requiere archivo-a-archivo.
-
-## 3. Configuración del Motor LLM (Ollama)
-
-- Modelos detectados en el repositorio:
-  - Inferencia (servicio RAG): `OLLAMA_MODEL = "llama3.2"` (definido en `ai-service/api.py`).
-  - Embeddings / ingest: `MODEL_NAME = "nomic-embed-text"` (definido en `ai-service/ingest.py`).
-  - Fallback embeddings: `sentence-transformers` modelo `all-MiniLM-L6-v2` (usado en `ai-service/api.py` y `ai-service/ingest.py` como fallback).
-
-- Parámetros de inferencia detectados (extraídos de llamadas a Ollama en `ai-service/api.py`):
-  - `temperature`: 0.0 (fijado explícitamente en el cuerpo enviado a Ollama).
-  - `top_p`: 0.1 (fijado explícitamente).
-  - `num_predict` (equivalente a longitud de predicción en Ollama): 300 (fijado explícitamente como `num_predict`).
-  - `stream`: True (streaming habilitado en `ai-service/api.py`).
-  - `OLLAMA_URL`: `http://localhost:11434/api/chat` (definido en `ai-service/api.py`).
-  - Cliente HTTP: `httpx.AsyncClient(timeout=None)` → no hay timeout aplicado en el cliente Python (timeout explícito = None).
-
-- Parámetros NO DETECTADOS EN EL REPOSITORIO:
-  - `num_ctx` (context window / contexto máximo en tokens): [NO DETECTADO EN EL REPOSITORIO] — por defecto Ollama usa 2048 tokens; en este código no hay ninguna variable que fije explícitamente `num_ctx`.
-  - Timeouts globales o reintentos de Ollama: no se detecta manejo de reintentos ni timeout distinto de `None` (ver `httpx.AsyncClient(timeout=None)`).
-
-## 4. Gestión de Estado y Sesión en Telegram
-
-- Mecanismo de seguimiento del `chat_id` / historial:
-  - El historial se persiste en una base de datos relacional mediante los modelos Sequelize `Usuario`, `Chat` y `Mensaje` (ver `src/models/*.js`).
-  - `src/bot.js` intenta cargar los `HISTORY_LIMIT` mensajes recientes desde `Mensaje` y, tras la respuesta del asistente, guarda el mensaje del asistente en la tabla `Mensaje`.
-
-- Dónde vive el historial (según configuración):
-  - Por diseño la DB principal es Postgres (Supabase) usando variables de entorno (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`) en `src/config/db.js`.
-  - En `development` si la conexión a Postgres falla, el código cae a una instancia SQLite en memoria (`storage: ':memory:'`) como fallback. Esto significa que en entornos de desarrollo sin Postgres, el historial se pierde al reiniciar el proceso.
-
-- Impacto técnico ante reinicio del backend:
-  - Si la aplicación está conectada a Postgres (producción/Supabase correctamente configurado), el contexto conversacional persiste entre reinicios y no se pierde el historial.
-  - Si no hay acceso a Postgres y se usa el fallback SQLite in-memory (el comportamiento por defecto en `development`), entonces TODO el historial almacenado en memoria se perderá al reiniciar el servicio → pérdida del contexto del usuario.
-  - Además, `ai-service/api.py` mantiene pocos elementos en memoria: el SentenceTransformer `_st_model` y la conexión a ChromaDB en variables globales; si el servicio se reinicia, estos objetos se re-inicializan y la caché/estado local se pierde (aunque ChromaDB persistida en disco permite reconstruir la recuperación si el vectorstore existe).
+> **Alcance de este documento.** Describe el estado del código tal como está
+> hoy, verificado contra el árbol de trabajo. Lo que está *en investigación*
+> —qué se probó, qué se refutó, qué sigue— vive en
+> [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md), no aquí.
+>
+> **Última verificación:** 2026-09-23, contra el código en `main` + rama 1.6.
 
 ---
 
-### Observaciones críticas y recomendaciones rápidas (Fase 1)
-- Detectado desajuste en endpoints/puertos entre componentes: `ai-service/api.py` usa `OLLAMA_URL` en puerto `11434` y `src/bot.js` por defecto apunta a `http://localhost:11400/chat` (variable `RAG_URL`). Esto sugiere dos rutas/puertos distintos para el servicio RAG; validar y unificar `RAG_URL`/`OLLAMA_URL`.
-- `num_ctx` no está fijado explícitamente en el código: comprobar límites de contexto del modelo Ollama y definirlo si se requiere contexto extendido.
-- No se detectan políticas de reintento ni timeouts razonables para llamadas a Ollama o para el servicio RAG (ambos usan `timeout=None`/`timeout: 0`), lo cual puede bloquear recursos en fallos de red; recomendamos definir timeouts y reintentos.
-- Hay código residual de frontend mencionado en el prompt; no se detectó frontend moderno en `src/` (parece server+bot only) → revisar ramas/otros directorios para identificar y eliminar código muerto.
+## 1. Visión general y stack
 
-## 5. Mapeo Profundo del Pipeline RAG Actual
+**Ecia** es un chatbot que responde consultas sobre formalización de PYMEs y
+trámites del SII (normativa chilena) mediante un pipeline RAG. El canal de
+entrada activo es un bot de Telegram.
 
-- Fuente de Documentos:
-  - Ruta primaria detectada: `ai-service/docs/sii/` (ingest.py define `DOCS_DIR = BASE_DIR / "docs" / "sii"`). El repositorio contiene numerosos `.md` en `ai-service/docs/` y `docs/` en la raíz; `ingest.py` itera sobre `rglob('*.md')` dentro de `docs/sii`.
-  - Lectura: `ingest.py` usa `Path.read_text(encoding='utf-8')` para cargar el contenido entero de cada `.md` y descarta archivos vacíos.
-  - Filtros: No se detectan filtros avanzados por metadata, fechas ni patrones — sólo extensión `.md` y una comprobación básica de contenido vacío.
+```
+Telegram ──> src/bot.js ──HTTP──> ai-service/api.py ──> ChromaDB (recuperación)
+                 │                        │
+                 │                        └──HTTP──> Ollama (generación)
+                 └──> Sequelize ──> Postgres | SQLite (historial)
+```
 
-- Ciclo de Ingesta:
-  - La ingesta es un proceso offline/por separado: `ai-service/ingest.py` es un script CLI independiente que debe ejecutarse manualmente (o por cron/CI) para reconstruir/actualizar el vectorstore.
-  - `ai-service/api.py` en `startup_event` NO ejecuta la ingesta; sólo inicializa `SentenceTransformer` y abre `chromadb.PersistentClient(path=...)` y obtiene/crea la colección. Por tanto el indexado es persistente y dependiente de la ejecución previa de `ingest.py`.
-  - Conclusión: Los documentos no se re-indexan por mensaje de Telegram ni en cada arranque; queda bajo responsabilidad de un job de ingesta explícito.
+| Capa | Tecnología |
+|---|---|
+| Bot + API HTTP | Node.js **ESM** (`"type": "module"`), `express`, `telegraf` |
+| Servicio RAG | Python, `fastapi` + `uvicorn` |
+| Vector store | ChromaDB persistente en `ai-service/chroma_db/` |
+| Embeddings | `sentence-transformers`, `all-MiniLM-L6-v2` (384 dims) |
+| LLM | Ollama, `llama3.2` (3B) |
+| Historial | `sequelize` → Postgres (Supabase), fallback SQLite en archivo |
 
-- Chunking y Tokenización:
-  - `ingest.py` implementa `_chunk_text` con `chunk_size=800` y `chunk_overlap=150` (caracteres), y divide preferentemente en encabezados Markdown (`^#{1,6}\s`) antes de usar saltos de línea dobles.
-  - No se realiza tokenización basada en tokens de modelo; los parámetros usan longitud en caracteres. Por tanto, equivalencia tokens↔caracteres no está calibrada.
+**Dependencias Node activas:** `express`, `telegraf`, `axios`, `sequelize`,
+`pg`, `pg-hstore`, `sqlite3`, `dotenv`, `joi`, `uuid`, `bcryptjs`,
+`@supabase/supabase-js`.
+**Declaradas pero sin referencias en `src/`:** `mammoth`, `@langchain/classic`,
+`@langchain/core`, `@opentelemetry/api`.
 
-- Embeddings y Búsqueda Vectorial:
-  - Embeddings en ingesta: intenta `langchain.embeddings.OllamaEmbeddings(model=MODEL_NAME)` con `MODEL_NAME = "nomic-embed-text"`; si falla, cae al fallback `sentence-transformers` (`all-MiniLM-L6-v2`).
-  - Embeddings en runtime (consulta): `ai-service/api.py` usa `SentenceTransformer("all-MiniLM-L6-v2")` con `_st_model.encode(...)` para generar el vector de consulta.
-  - Vector store: `chromadb.PersistentClient(path=str(CHROMA_DIR))` y colección `sii_markdown`.
-  - Top-k: en `chat_endpoint` el código llama a `_query_chroma(query_vec, k=6)` → `k=6` (top-6) detectado.
-  - Métrica de similitud: [NO DETECTADO EN EL REPOSITORIO] — la colección se crea sin parámetros explícitos de similitud/metric; por tanto no hay confirmación en código si Chroma usa `cosine`, `dot` u otra métrica.
-
-- Cuellos de Botella detectados:
-  - Ingesta por lotes puede agotar memoria si se vectorizan muchos documentos sin batching; `embed_documents` suele devolver todos los embeddings en memoria antes de persistir.
-  - `SentenceTransformer` se carga en el hilo de arranque (`startup_event`) y mantiene el modelo en memoria — útil para latencia, pero consume RAM.
-  - `ai-service/api.py` usa `httpx.AsyncClient(timeout=None)` y `ollama_body['stream']=True` → llamadas largas/pendientes pueden quedarse abiertas y consumir conexiones si Ollama cuelga.
-  - `bot.js` usa `axios` con `timeout: 0` (sin timeout) y edita mensajes de Telegram en intervalos; streaming de respuestas muy largas puede causar límites con la API de Telegram o inconsistencias en ediciones.
-  - El fallback a SQLite en memoria para la DB (si Postgres falla) produce pérdida de contexto al reiniciar y afecta experiencia conversacional y trazabilidad.
-
-## 6. Auditoría de Código Muerto (Frontend Descartado)
-
-- Inventario Residual detectado:
-  - No se detectan archivos de frontend activos (`index.html`, `public/`, `build/`, `dist/`, carpetas `client/`, ni proyectos `react`/`vite`/`next`) en el árbol `src/` o en la raíz del repo.
-  - Evidencias de frontend histórico: `.gitignore` contiene entradas relacionadas con Next/Vite/Svelte (`.next`, `.vitepress/dist`, `.svelte-kit/`, etc.) → indica que hubo un frontend en algún punto o plantilla base.
-  - Dependencias posiblemente no utilizadas: `firebase`, `firebase-admin` aparecen en `package.json` pero no hay `import`/`require` activos en `src/` o `ai-service/` (no se detectaron referencias en el código actual). Esto sugiere dependencias candidatas para remover tras validación.
-  - Credenciales incluidas en repo: `credentials/emprende-73e05-firebase-adminsdk-fbsvc-dc2b367ca8.json` → archivo de credenciales sensible (Service Account) presente en el repositorio: RIESGO DE SEGURIDAD.
-
-- Puntos de Acoplamiento Backend-Frontend:
-  - CORS: `src/server.js` usa `CORS_ORIGINS`/`CORS_ORIGIN` (variables de entorno) — esto es típico para permitir un frontend remoto; sin embargo no existe un middleware que sirva artefactos estáticos actualmente.
-  - Endpoints expuestos: sólo `/health` en `src/server.js`; no hay rutas de servir assets que indiquen acoplamiento directo.
-  - Variables de entorno y dependencias en `package.json` (por ejemplo Firebase, Supabase) pueden haber sido usadas por el frontend previamente.
-
-- Plan de Desacoplamiento Seguro (pasos resumidos):
-  1. Añadir tests/registro: ejecutar un pass de integración que arranque el backend en entorno de staging y verifique rutas críticas (`/health`, bot, ingesta) funcionando.
-  2. Eliminar referencias en el código: buscar y eliminar importaciones reales de `firebase`/frontend. Ya no detectadas; marcar como candidato para prueba.
-  3. Mover `credentials/*.json` fuera del repo e introducir secret manager (env var `GOOGLE_APPLICATION_CREDENTIALS` o secrets en CI/CD). Rotar claves si ya estuvieron públicas.
-  4. Probar `npm install --production` y arrancar en staging: confirmar que la app funciona sin `firebase` ni paquetes frontend. Ejecutar smoke tests.
-  5. Si todo OK, quitar deps de `package.json`, actualizar `README` y `Bitacora.md`, y hacer PR que documente la eliminación y pasos de rollback.
-
-## 7. Seguridad, Resiliencia y Manejo de Errores
-
-- Gestión de Secretos:
-  - Variables cargadas vía `dotenv` (`dotenv.config()` en `src/index.js` y `src/bot.js`). Variables detectadas en el código:
-    - `TELEGRAM_BOT_TOKEN` (usado en `src/bot.js`) — obligatoria para el bot.
-    - `RAG_URL` (usado en `src/bot.js`, default `http://localhost:11400/chat`).
-    - `PORT` (usado en `src/index.js`, default `4000`).
-    - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` (usados en `src/config/db.js`).
-    - `NODE_ENV` (controla fallback a SQLite in-memory).
-    - `CORS_ORIGINS` / `CORS_ORIGIN` (usado en `src/server.js`).
-  - Hallazgo crítico: `credentials/emprende-...firebase-adminsdk-*.json` está presente en el repo — exponerlo es un riesgo alto; se recomienda eliminarlo del repo, rotar las credenciales y colocar la clave en un secret manager.
-
-- Manejo de Caídas y Timeouts:
-  - `ai-service/api.py` usa `httpx.AsyncClient(timeout=None)` y `ollama` streaming → sin timeout. `bot.js` usa `axios` con `timeout: 0`. Ambos patrones significan que conexiones colgadas pueden mantener recursos indefinidamente.
-  - Excepciones: `ai-service/api.py` atrapa errores en `startup_event` y continúa con `_collection = None`, devolviendo HTTP 500 en peticiones. `bot.js` captura errores DB y continua sin historial — esto es resiliente, pero puede ocultar fallos.
-  - Recomendación: aplicar timeouts sensatos (ej. 30–120 s para llamadas LLM), reintentos exponenciales y circuit breaker para evitar saturación de conexiones.
-
-- Vulnerabilidades de Prompting (Prompt Injection):
-  - `ai-service/_build_system_prompt` concatena fragmentos recuperados (`page_content`) directamente en el `system` prompt enviado al LLM. Si los `.md` contienen líneas con formato instructivo ("Instrucciones del sistema:") o contenido malicioso, el LLM podría ejecutar o priorizar esas instrucciones.
-  - Riesgo adicional: documentos del corpus no son validados ni sanitizados; un atacante con capacidad de modificar los `.md` en el vectorstore (o inyectar documentos) puede manipular la conducta del asistente.
-  - Mitigaciones mínimas recomendadas:
-    1. Escapar o eliminar secciones que parezcan instrucciones dirigidas al modelo (líneas que comiencen con `You are`, `System:`, `Assistant:` o similares).
-    2. Enviar los fragmentos como datos referenciados (ej. `Contexto recuperado: [FUENTE: ...] >>>`), no como texto interpretativo que pueda incluir directivas.
-    3. Limitar el `system` prompt a reglas y un wrapper declarativo; mover la recuperación de documentos a `user` o a un documento separado con un prefijo claro como "SÓLO CONTEXTO" y luego instruir al modelo a no seguir instrucciones encontradas en el contexto.
-    4. Firmar/verificar integridad de documentos de confianza o usar control de acceso antes de ingestar fuentes externas.
-
-- Matriz de Variables de Entorno (detected)
-
-| Nombre | Tipo | Valor por Defecto (si aplica) | Obligatoria |
-|---|---:|---|---:|
-| TELEGRAM_BOT_TOKEN | string | [NO] | Sí (si se activa el bot de Telegram) |
-| RAG_URL | string | http://localhost:11400/chat | No (se puede ejecutar sin) |
-| PORT | número | 4000 | No |
-| DB_HOST | string | [NO] | Sí (si se desea Postgres); fallback a SQLite in-memory en `development` |
-| DB_PORT | número | 5432 | No |
-| DB_NAME | string | [NO] | Sí (para Postgres) |
-| DB_USER | string | [NO] | Sí (para Postgres) |
-| DB_PASSWORD | string | [NO] | Sí (para Postgres) |
-| NODE_ENV | string | development | No |
-| CORS_ORIGINS / CORS_ORIGIN | string | '*' | No |
+**Dependencias Python** (`ai-service/requirements.txt`): `fastapi`, `uvicorn`,
+`chromadb`, `sentence-transformers`, `httpx`, `pydantic`, `ollama`, `langchain`.
+⚠️ `langchain` y `ollama` figuran en el manifest pero **ningún módulo del
+pipeline los importa**: `ingest.py` usa `chromadb` y `sentence-transformers`
+directamente, y `api.py` habla con Ollama por HTTP con `httpx`.
 
 ---
 
-Fin de las secciones añadidas para la Fase 2.
+## 2. Inventario de archivos
 
-## 8. Roadmap de Refactorización Priorizado
+### Pipeline RAG (Python)
 
-Este roadmap está priorizado en tres fases ejecutables y comprobables. Cada paso incluye acciones concretas y comandos sugeridos.
+| Ruta | Responsabilidad |
+|---|---|
+| `ai-service/api.py` | FastAPI. Expone `POST /chat` con respuesta en streaming (SSE). Orquesta embedding → recuperación → Ollama |
+| `ai-service/ingest.py` | Script CLI offline. Lee `docs/sii/*.md`, los fragmenta, embebe y **recrea** la colección de ChromaDB |
+| `ai-service/convert_docx.py` | Convierte `.docx` a `.md`. Pre-procesamiento, fuera del flujo de ejecución |
+| `ai-service/debug_*.py` | Cuatro scripts de diagnóstico manual (`chunk`, `inspect`, `retrieval`, `run`) |
+| `ai-service/chroma_db/` | Persistencia del vector store. **No versionado** |
 
-Fase 1 — Limpieza Quirúrgica del Frontend (rápido, bajo riesgo)
-- Objetivo: eliminar restos del frontend y credenciales expuestas.
-- Pasos concretos:
-  1. Remover credenciales sensibles del repo (rotar luego en el proveedor):
-     - Comando sugerido:
-       ```bash
-       git rm --cached credentials/emprende-73e05-firebase-adminsdk-fbsvc-dc2b367ca8.json
-       echo "credentials/" >> .gitignore
-       git commit -m "chore(secrets): remover credenciales del repo"
-       ```
-     - Luego: rotar la Service Account en Google Cloud / Firebase y almacenar la nueva clave en un secret manager (GitHub Secrets / Azure Key Vault / Vault).
-  2. Validar que `firebase` y `firebase-admin` no sean requeridos en runtime. En un entorno de staging, ejecutar:
-       ```bash
-       npm uninstall firebase firebase-admin || true
-       npm install --no-save # comprobar que la app arranca sin esas deps
-       ```
-  3. Eliminar directorios de frontend obsoletos si existen (`public/`, `build/`, `.next`, `dist/`). Comprobar con `git status` y `git rm -r` tras validación.
+### Backend Node
 
-Fase 2 — Robustecimiento Operativo (mediano plazo)
-- Objetivo: mejorar resiliencia y manejo de errores en producción.
-- Pasos concretos:
-  1. Añadir timeouts y reintentos:
-     - En `ai-service/api.py`, cambiar `httpx.AsyncClient(timeout=None)` por `httpx.AsyncClient(timeout=60)` y envolver llamadas a Ollama con reintentos exponenciales (ej. `httpx.Retry` o backoff manual).
-     - En `src/bot.js`, ajustar `axios` para usar `timeout: 60000` y aplicar un retry limitado al realizar la petición a `RAG_URL`.
-  2. Implementar circuit-breaker: evitar abrir muchas conexiones simultáneas a Ollama si detectamos fallos persistentes.
-  3. Forzar persistencia en disco del vectorstore y pruebas de integridad: comprobar `ai-service/chroma_db/` y asegurar que `ai-service/ingest.py` se ejecute en CI al actualizar docs.
+| Ruta | Responsabilidad |
+|---|---|
+| `src/index.js` | Punto de entrada. Conecta la DB, levanta HTTP y arranca el bot |
+| `src/server.js` | Express. CORS configurable y `GET /health`. Única ruta expuesta |
+| `src/bot.js` | Bot Telegraf. Carga historial, hace `POST` a `RAG_URL`, persiste la respuesta |
+| `src/config/db.js` | Sequelize. Postgres, con fallback a SQLite en archivo |
+| `src/models/*.js` | `Usuario`, `Chat`, `Mensaje` |
+| `src/validations/*.js` | Esquemas `joi` |
 
-Fase 3 — Modernización del RAG (mayor esfuerzo)
-- Objetivo: rendimiento y seguridad en el pipeline de búsqueda y generación.
-- Pasos concretos:
-  1. Reescribir la tokenización/chunking para usar límites en tokens (no solo caracteres) y parametrizar `chunk_size` en tokens. Instrumentar un mapeo tokens↔caracteres usando el tokenizer del modelo o `tiktoken` equivalente.
-  2. Establecer `num_ctx` y estrategia de ventana deslizante: evaluar modelos y definir `num_ctx` en la configuración de Ollama, documentarlo en `CONTEXTO.md`.
-  3. Fortalecer la construcción de prompts: sanitizar fragments (remover instrucciones implícitas), prefijar con `SÓLO CONTEXTO:` y añadir validaciones de integridad (hashes o firmas) para fuentes de confianza.
-  4. Evaluar Vector DB alternativos (Qdrant, Faiss, Milvus) y benchmarking; si se mantiene ChromaDB, crear tests de performance y ajustes de metric (cosine/dot).
+### Evaluación
 
-KPIs y pruebas sugeridas:
-- Tiempo p95 de respuesta para consultas simples < 2s (sin contar streaming de generación).
-- Tasa de fallo por petición < 0.5% en 30 días.
-- Integridad: 100% de documentos sensibles fuera del repo; claves rotadas.
+| Ruta | Responsabilidad |
+|---|---|
+| `scripts/evaluar_banco.py` | Arnés end-to-end. Separa fallos de recuperación de fallos de generación. Importa los prompts **desde `api.py`** para no medir una copia divergente |
+| `scripts/medir_retrieval.py` | Recall@k sin invocar al LLM (segundos) |
+| `tests/dataset/` | Banco de 100 preguntas: las 50 primeras respondibles, las 50 siguientes sin respaldo |
+
+### Código muerto detectado
+
+Los siguientes archivos **no son importados por ningún módulo alcanzable desde
+`src/index.js`**, y las dependencias que necesitarían (`firebase`,
+`firebase-admin`) ya se eliminaron de `package.json` el 2026-09-06 — si algo los
+importara, fallaría en tiempo de ejecución:
+
+```
+src/config/firebaseAdmin.js       src/config/firestoreHelpers.js
+src/config/firebaseAuth.js        src/config/firestoreMensajes.js
+src/config/supabase.js            src/graphql/resolvers.js
+src/validations/firebaseAuthValidation.js   src/graphql/schemas.js
+```
+
+Son residuo del proyecto anterior ("Krrete-BackEnd"). Candidatos a eliminación
+tras verificar en staging.
 
 ---
 
-Fin del Roadmap de Refactorización.
+## 3. Configuración del motor LLM
 
-## Cambios aplicados (resumen)
+Definida en `ai-service/api.py`:
 
-- Seguridad y limpieza inmediata:
-  - `credentials/` agregado a `.gitignore` y archivo de credenciales removido del árbol de trabajo (`credentials/emprende-...json`).
-  - Dependencias `firebase` y `firebase-admin` eliminadas de `package.json` (se recomienda ejecutar `npm prune` y reinstalar en staging).
+| Parámetro | Valor | Dónde |
+|---|---|---|
+| `OLLAMA_MODEL` | `llama3.2` (3B) | constante de módulo |
+| `OLLAMA_URL` | `http://localhost:11434/api/chat` | constante de módulo |
+| `temperature` | `0.0` | `options` de la llamada |
+| `top_p` | `0.1` | `options` |
+| `num_predict` | `300` | `options` |
+| `num_ctx` | `4096` | `options` |
+| `stream` | `True` | cuerpo de la petición |
+| timeout HTTP | `60` s | `httpx.AsyncClient(timeout=60)` |
 
-- Persistencia en desarrollo:
-  - Fallback SQLite actualizado a archivo persistente `./data/dev.sqlite`. La carpeta `data/` se crea automáticamente al inicializar la DB en modo `development`.
+**Embeddings:** `all-MiniLM-L6-v2` en `ingest.py` **y** en `api.py`. La
+constante en `ingest.py` lleva un comentario explícito de que ambos deben
+coincidir: indexar y consultar con modelos distintos produce vectores
+incomparables. Antes del 2026-09-17 `ingest.py` intentaba `nomic-embed-text`
+(768 dims) con respaldo silencioso a MiniLM (384) — coincidían por accidente.
 
-- Resiliencia y parámetros del pipeline:
-  - `ai-service/api.py`: `httpx.AsyncClient` usa `timeout=60` y se añadió `num_ctx: 4096` en las `options` enviadas a Ollama.
-  - `src/bot.js`: la petición a `RAG_URL` usa `timeout: 60000` y ahora tiene manejo de error amigable al usuario cuando el backend no responde.
-  - Documentación recomendada: arrancar el servicio RAG con `uvicorn ai-service.api:app --host 0.0.0.0 --port 11400` y ajustar `RAG_URL` si el servicio escucha en otro host/puerto.
+---
 
-## Testing y Metodología
+## 4. Estado y sesión en Telegram
 
-- Se añadió `METODOLOGIA_TESTING.md` con el protocolo de evaluación (métricas, fases, branching strategy y topología de archivos) para institucionalizar pruebas del chatbot.
-- Se creó la estructura de `tests/` con dataset de ejemplo `tests/dataset/banco_preguntas.json` y plantillas de iteración en `tests/iteraciones/` para registrar resultados, planes y bifurcaciones experimentales.
-- Objetivo: ejecutar benchmarks automatizados y evolucionar mediante ramas hijas siguiendo la Regla de Oro (aislamiento de variables).
+- El historial se persiste con Sequelize en los modelos `Usuario`, `Chat` y
+  `Mensaje`. `src/bot.js` carga los últimos `HISTORY_LIMIT = 6` mensajes y
+  guarda la respuesta del asistente.
+- La DB principal es Postgres (Supabase) vía `DB_HOST`, `DB_NAME`, `DB_USER`,
+  `DB_PASSWORD`. En `development`, si la conexión falla, cae a **SQLite en
+  archivo** (`./data/dev.sqlite`), no en memoria: el historial sobrevive a los
+  reinicios. La carpeta `data/` se crea automáticamente.
+- `ai-service/api.py` mantiene en memoria el `SentenceTransformer` y la conexión
+  a ChromaDB. Al reiniciar se re-inicializan; el índice persiste en disco.
 
+---
 
+## 5. Pipeline RAG en detalle
+
+### Corpus
+
+`ingest.py` define `DOCS_DIR = BASE_DIR / "docs" / "sii"` e itera con
+`rglob("*.md")`. Indexa **13 archivos** que producen **48 fragmentos**.
+
+⚠️ **`ai-service/docs/` contiene 79 `.md` adicionales que NO se indexan** —
+documentos financieros de la CMF (acciones, bonos, calculadoras de ahorro)
+ajenos al dominio del SII. Están fuera de `docs/sii/`, así que nunca entraron a
+ChromaDB. Esta distinción causó un error de ground truth que tardó semanas en
+detectarse: 24 de 52 preguntas citaban archivos no indexados.
+
+### Ciclo de ingesta
+
+Proceso **offline y manual**. `api.py` no ingesta en el arranque; solo abre la
+colección existente. Tras un `pull` hay que ejecutar `python ingest.py` una vez,
+porque `chroma_db/` no está versionado.
+
+La ingesta es **idempotente**: `create_vector_store` hace `delete_collection`
+antes de `create_collection`. Antes, `collection.add()` acumulaba y cada
+re-ingesta duplicaba los 48 fragmentos.
+
+### Fragmentación — 🔴 problema activo
+
+`_chunk_text(chunk_size=800, chunk_overlap=150)`, en caracteres:
+
+1. Divide por encabezados markdown — `re.split(r'(?m)(?=^#{1,6}\s)', text)`. Si
+   no hay encabezados, por doble salto de línea.
+2. **Acumula** secciones consecutivas hasta llegar a 800 caracteres, de modo que
+   un fragmento puede mezclar varias secciones distintas.
+3. El solape se toma como **rebanada cruda de caracteres** del fragmento
+   anterior: `overlap_text = chunk[-150:]`.
+
+El paso 3 es el que causa daño. Medido sobre el índice actual:
+
+```
+30 de 48 fragmentos (62%) empiezan a mitad de frase
+```
+
+Empiezan con una cola de 150 caracteres arrancada del fragmento previo, que
+suele pertenecer a otra sección. Ejemplos reales del índice:
+
+```
+"del tipo de empresa\nSe define la estructura legal previamente..."
+"escritura |\n| Inicio de Actividades en SII | Gratuito | Dentro de 2 meses..."
+```
+
+El segundo muestra una **tabla markdown partida por la mitad**, sin encabezado
+de columnas. Es el mecanismo detrás del caso PREG-076 documentado en
+`ESTADO_INVESTIGACION.md`.
+
+**Nota importante para quien trabaje esta línea:** el corte por encabezados ya
+existe. Lo que hay que arreglar es el solape por caracteres y la acumulación de
+secciones, no añadir una división estructural que ya está.
+
+La distribución de fragmentos también es muy desigual:
+
+| Archivo | Fragmentos |
+|---|---:|
+| `inicio_actividades_formalizacion_sii.md` | 17 |
+| `obligaciones_tributarias_y_tipos_sociedad.md` | 9 |
+| `documentacion_formalizacion.md` | 3 |
+| `formularios_tributarios_chile.md` | 3 |
+| `tipos_sociedad_chile.md` | 3 |
+
+No hay tokenización por tokens de modelo; todos los parámetros son longitudes en
+caracteres y la equivalencia tokens↔caracteres no está calibrada.
+
+### Recuperación
+
+- Vector store: `chromadb.PersistentClient`, colección `sii_markdown`.
+- Top-k: `_query_chroma(query_vec, k=6)` en `chat_endpoint`.
+- **Métrica de similitud: no especificada.** La colección se crea sin
+  `hnsw:space`, así que ChromaDB usa **L2** por defecto. `encode()` **no
+  normaliza** salvo que se le pase `normalize_embeddings=True`, y sin normalizar
+  L2 y coseno no producen el mismo ranking. Es deuda técnica abierta — línea
+  OP-5 en `ESTADO_INVESTIGACION.md`.
+
+### Generación
+
+`_build_system_prompt` construye el prompt con reglas de terminología chilena
+(Cédula de Identidad y no DNI, RUT y no NIT, etc.), cuatro reglas absolutas y el
+contexto recuperado al final, cada fragmento truncado a 1400 caracteres.
+
+⚠️ **El orden de las secciones del prompt no es arbitrario.** Mover la regla de
+abstención a un cierre después del contexto subió la alucinación de 34% a 78%.
+Hay un comentario de advertencia en el código; leer
+`tests/iteraciones/experimento_prompt_v2.md` antes de reordenarlo.
+
+`api.py` también expone `_build_judge_prompt` y `JUEZ_PROMPT_BASES`, del
+pipeline de dos pasos de la iteración 1.6. **El endpoint `/chat` sigue siendo de
+un paso**: el pipeline de dos pasos vive por ahora solo en el arnés de
+evaluación. Llevarlo a producción es trabajo pendiente.
+
+---
+
+## 6. Seguridad y resiliencia
+
+### Secretos
+
+Cargados con `dotenv`. **Ya no hay credenciales en el repositorio**: el archivo
+de Service Account de Firebase se removió el 2026-09-06 y `credentials/` está en
+`.gitignore`. Se recomendó rotar esa clave en el proveedor.
+
+| Variable | Defecto | Obligatoria |
+|---|---|---|
+| `TELEGRAM_BOT_TOKEN` | — | Sí, para el bot |
+| `RAG_URL` | `http://localhost:11400/chat` | No |
+| `PORT` | `4000` | No |
+| `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | — | Sí para Postgres; si no, fallback SQLite |
+| `DB_PORT` | `5432` | No |
+| `NODE_ENV` | `development` | No |
+| `CORS_ORIGINS` / `CORS_ORIGIN` | `*` | No |
+
+### Timeouts
+
+Ambos lados **tienen timeout**: `httpx.AsyncClient(timeout=60)` en `api.py` y
+`timeout: 60000` en la llamada de `axios` desde `bot.js`, con mensaje de error
+amigable si el backend no responde. No hay reintentos ni circuit breaker.
+
+### Desajuste de puertos
+
+`bot.js` apunta por defecto a `http://localhost:11400/chat`, así que el servicio
+RAG debe levantarse en ese puerto:
+
+```bash
+uvicorn ai-service.api:app --host 0.0.0.0 --port 11400
+```
+
+`OLLAMA_URL` (`:11434`) es otra cosa: es Ollama, no el servicio RAG. No
+confundirlos.
+
+### Prompt injection
+
+`_build_system_prompt` concatena los fragmentos recuperados directamente en el
+prompt de sistema, sin sanitizar. Un `.md` con texto en forma de instrucción
+podría influir en el modelo.
+
+**Riesgo actual bajo**: el corpus es de elaboración propia y controlada, y no se
+observaron casos en las evaluaciones. Pasa a relevante si se ingestan documentos
+de terceros. Es la línea OP-2 en `ESTADO_INVESTIGACION.md`, con prioridad baja
+por esa razón.
+
+### Manejo de errores
+
+- `api.py` atrapa fallos en `startup_event` y continúa con `_collection = None`,
+  devolviendo HTTP 500 en las peticiones. Si Ollama falla o responde con error,
+  el stream devuelve los fragmentos recuperados como respaldo.
+- `bot.js` captura errores de DB y continúa sin historial: resiliente, pero
+  puede ocultar fallos.
+
+---
+
+## 7. Deuda técnica abierta
+
+| # | Asunto | Estado |
+|---|---|---|
+| 1 | Solape por caracteres que parte el 62% de los fragmentos | 🔴 Alta — OP-1 |
+| 2 | Métrica de similitud del índice sin especificar (L2 por defecto, vectores sin normalizar) | 🟡 OP-5 |
+| 3 | Código muerto del proyecto anterior en `src/config/` y `src/graphql/` | 🟡 Limpieza pendiente |
+| 4 | `langchain`, `ollama` y cuatro paquetes npm declarados sin uso | 🟢 Limpieza de manifests |
+| 5 | Pipeline de dos pasos solo en el arnés, no en `/chat` | 🟡 Portar a producción |
+| 6 | Sanitización de fragments contra prompt injection | 🟢 Baja — OP-2 |
+| 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
+
+---
+
+## 8. Documentación relacionada
+
+| Documento | Contenido |
+|---|---|
+| [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md) | Mapa de las líneas de investigación y callejones sin salida ya medidos |
+| [`CLAUDE.md`](CLAUDE.md) | Reglas de trabajo para asistentes de IA |
+| [`Bitacora.md`](Bitacora.md) | Registro cronológico de cambios con pasos de rollback |
+| [`METODOLOGIA_TESTING.md`](METODOLOGIA_TESTING.md) | Protocolo de evaluación y estrategia de ramas |
+| [`README.md`](README.md) | Instalación, arranque y uso |
