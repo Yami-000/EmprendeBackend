@@ -11,27 +11,33 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-23, tras cerrar la iteración 1.6.
+**Última actualización:** 2026-09-23, tras cerrar la iteración 1.1.
 
 ---
 
 ## Estado actual del sistema
 
 Mejor configuración medida — **pipeline de dos pasos con `llama3.2` (3B) en
-ambos roles**, iteración 1.6:
+ambos roles + chunking de 1400 caracteres**, iteración 1.1:
 
 ```
-RESPONDIBLES (50)     retrieval_hit@6 ........ 44/50 (88%, medido por archivo)
-                      abstuvo indebidamente .. 25/50
-                      cobertura de datos ..... 47%
+RESPONDIBLES (50)     retrieval_hit@6 ........ 46/50 (92%, medido por archivo)
+                      anclaje@6 .............. 25/36 (69%, medido por chunk)
+                      abstuvo indebidamente .. 21/50
+                      cobertura de datos ..... 57%
 
 NO RESPONDIBLES (50)  ALUCINO ................   0/50 (0%)
 
 JUEZ                  especificidad .......... 50/50 (100%)
-                      precisión real ......... 45/50 (90%)
+                      precisión real ......... 46/50 (92%)
 
-Duración .............................. 19,6 min
+Duración .............................. 28,2 min   (juez 12,3 s/pregunta)
 ```
+
+**Tensión abierta:** cada mejora de calidad se ha pagado en latencia. El juez
+pasó de 6,4 s a 12,3 s al agrandar los fragmentos, porque el 98% de su costo es
+leer contexto. Una consulta respondida cuesta ~28 s en una GTX 1650. Para un bot
+de Telegram eso ya es mucho, y `k=8` lo encarecería otra vez.
 
 **Dirección estratégica:** hacer rendir al modelo de 3B cambiando la
 arquitectura, no sustituirlo por uno más grande. Un sistema que corre en
@@ -45,7 +51,7 @@ hardware modesto es el objetivo del proyecto, no una limitación a superar.
 |---|---|---|---|
 | OP-3 | Modelo de generación | ❌ **Refutada** | 1.3 — escalar a 7-8B no baja la alucinación |
 | OP-6 | Discriminación en dos pasos | ✅ **Confirmada** | 1.6 — alucinación 34% a 0% |
-| OP-1 | Chunking estructural | 🔴 **Prioridad alta** | 1.6 — 19 de 25 fallos vienen de aquí |
+| OP-1 | Chunking | ✅ **Parcial** | 1.1 — el tamaño era la causa; 25 → 21 abstenciones |
 | OP-5 | Métrica de similitud | ⏳ Pendiente | sin medir, costo ~1 línea |
 | OP-4 | Deduplicación del corpus | ⏳ Pendiente | incluido en el techo de retrieval |
 | OP-7 | RAG basado en nodos | 🔵 Exploratoria | sin medir, costo alto |
@@ -68,7 +74,8 @@ nuevo es retrabajo.
 | **Contaminación del índice con documentos de la CMF** | Nunca estuvieron indexados. `ingest.py` solo lee `docs/sii/`. El daño estaba en el ground truth, no en ChromaDB | `Bitacora.md` 2026-09-17 |
 | **Chunks duplicados en ChromaDB** | 0 duplicados. La sospecha venía de que `collection.add()` acumulaba entre ingestas; ya es idempotente | `Bitacora.md` 2026-09-17 |
 | **Desalineación de embeddings ingesta/consulta** | Ambos usan 384 dims. Era un riesgo real (`nomic-embed-text` con respaldo silencioso) pero coincidían por accidente. Ya está fijado | `Bitacora.md` 2026-09-17 |
-| **Añadir división por encabezados markdown al chunking** | Ya está implementada: `_chunk_text` hace `re.split(r'(?m)(?=^#{1,6}\s)', text)`. El daño lo hacen la acumulación hasta 800 caracteres y el solape crudo `chunk[-150:]` | ver OP-1 |
+| **Chunking estructural: un fragmento por sección markdown** | Implementado y medido en la 1.1: el anclaje cae de 22/36 a 18/36. Fragmentar más es PEOR. `_chunk_text` ya dividía por encabezados desde antes | `iteracion_1.1_chunking/resultado_1.1.md` |
+| **Quitar el solape del chunking** | Neutro (22/36 → 22/36) a k=6 y negativo a k=10. El solape hace que los fragmentos empiecen a mitad de frase, pero su efecto neto es positivo: duplica los bordes y da una segunda oportunidad al dato | `iteracion_1.1_chunking/resultado_1.1.md` |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
 
 ### Advertencias de método
@@ -84,45 +91,51 @@ nuevo es retrabajo.
   la línea completa de la cita aparezca íntegra cambió el diagnóstico de la 1.6
   de 9 falsos negativos del juez a 5.
 - **Un experimento, una variable.** El prompt v2 cambió dos cosas a la vez y
-  costó una corrida entera poder atribuir el efecto.
+  costó una corrida entera poder atribuir el efecto. La 1.1 repitió el error con
+  cinco variables juntas; la ablación (`scripts/ablacion_chunking.py`, ~10 s por
+  variante) las separó y mostró que cuatro de las cinco estorbaban.
+- **`anclaje@k` tiene techo 36, no 50.** 14 de las 50 citas del banco están
+  parafraseadas y no existen literales en ningún `.md`, así que ninguna técnica
+  de chunking puede darles positivo. Comparar contra 50 subestima el retrieval en
+  28 puntos.
+- **El tope del chunking está acoplado al truncado de `api.py`** (1400
+  caracteres por fragmento). Subir uno sin el otro anula la mejora: el recorte
+  vuelve a partir el dato justo antes de que el modelo lo lea.
 
 ---
 
 ## Detalle por línea
 
-### OP-1 — Chunking estructural 🔴 **PRIORIDAD ALTA**
+### OP-1 — Chunking ✅ **CONFIRMADA PARCIALMENTE**
 
-Rama: `iteracion_1.1_chunking` · Plan: `iteracion_1.1_chunking/plan_1.1.md`
+Rama: `iteracion_1.1_chunking` · Plan y resultado en esa carpeta
 
-`_chunk_text` en `ingest.py` **sí divide por encabezados markdown** — ese no es
-el problema, y proponer añadirlo es retrabajo. El daño lo hacen los otros dos
-pasos: acumula secciones consecutivas hasta 800 caracteres, y toma el solape
-como **rebanada cruda** del fragmento anterior (`chunk[-150:]`).
+**La causa era el tamaño del fragmento, no la estructura.** Con un tope de 800
+caracteres la mayoría de las secciones del corpus no cabía entera y el dato
+pedido quedaba partido entre dos fragmentos.
 
-Medido sobre el índice actual: **30 de 48 fragmentos (62%) empiezan a mitad de
-frase**, con una cola de 150 caracteres arrancada de otra sección. Incluye
-tablas markdown partidas sin su encabezado de columnas.
+El cambio adoptado son dos constantes en `ingest.py`: `CHUNK_SIZE` 800 → 1400 y
+`CHUNK_OVERLAP` 150 → 200.
 
-La 1.6 dio la evidencia de su efecto:
+```
+                 antes    después
+recall@6         44/50     46/50
+anclaje@6        22/36     25/36
+abstención ind.  25/50     21/50
+alucinación       0/50      0/50
+```
 
-- 19 de las 25 abstenciones indebidas son atribuibles a retrieval y chunking;
-  solo 5 al juez.
-- **PREG-076** es el caso testigo. El fragmento recuperado empezaba en
-  `"...régimen de renta atribuida; 27% para régimen semi-integrado"`: el corte se
-  llevó el `25%` y el sujeto de la oración. Ningún componente posterior puede
-  reconstruir eso.
-- La distribución de chunks es muy desigual:
-  `inicio_actividades_formalizacion_sii.md` genera 17 chunks y acapara el 30,3%
-  del top-6, mientras `patente_municipal.md` tiene 1 solo y aparece en el 1,7%.
+Primera iteración del proyecto que cumple su criterio de éxito. Recuperó **3 de
+los 11** fallos a nivel de chunk, que es exactamente donde se esperaba que
+actuara, sin mover las otras categorías de fallo.
 
-El techo de 9 preguntas que la 1.0 asignó a esta vía se calculó con
-`retrieval_hit` a nivel de archivo. **El techo real es mayor.**
+Dos hipótesis previas quedaron **refutadas** en el camino (ver la tabla de
+callejones sin salida): el chunking estructural por sección, y la eliminación
+del solape.
 
-**Propuesta:** respetar el límite de encabezado como frontera de fragmento (una
-sección = un fragmento, sin mezclar) y sustituir el solape por caracteres por
-uno que no parta unidades — repetir el encabezado de la sección, o ninguno.
-Medir con `scripts/medir_retrieval.py` — segundos, sin invocar al modelo — antes
-de comprometerse a una corrida end-to-end de 20 min.
+**Lo que queda:** `k=8` sube el anclaje de 25/36 a 31/36 según la medición de
+retrieval, con un cambio de una línea. Pero encarece al juez, que ya está en
+12,3 s por pregunta. Medir end-to-end antes de adoptarlo.
 
 ### OP-6 — Discriminación en dos pasos ✅ **CONFIRMADA**
 
