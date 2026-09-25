@@ -205,6 +205,84 @@ def split_documents(documents):
     return split_docs
 
 
+# Iteración 1.8. Palabras clave por documento, derivadas del propio corpus.
+#
+# POR QUÉ EXISTEN: all-MiniLM-L6-v2 solo lee los primeros 256 tokens de cada
+# fragmento y los fragmentos tienen mediana 402, así que un tercio del corpus no
+# influye en el retrieval. El prefijo es un presupuesto escaso, y medido contra
+# el banco las palabras clave son lo que mejor lo aprovecha:
+#
+#   prefijo                          recall@6   anclaje@6
+#   ninguno                            46/50      25/37
+#   cabeceras del grafo (1.7)          48/50      26/37
+#   palabras clave                     48/50      29/37   <- adoptado
+#   ambos                              47/50      28/37
+#
+# POR QUÉ SE DERIVAN Y NO SE ESCRIBEN A MANO: elegirlas mirando el banco de
+# preguntas sería ajustar al conjunto de prueba. Estas salen solo del corpus.
+N_CLAVES = 5
+
+_VACIAS = set("""de la el en y a los las un una que se del al por con para su sus
+es son como o mas más no ni lo le les este esta estos estas ser sobre entre
+cuando donde cual cuales debe deben puede pueden tiene tienen hay si sin tras
+cada todo toda todos todas segun según desde hasta ante antes despues después
+tambien también solo sólo muy fin parte caso casos forma manera proceso etapa
+etapas paso pasos requiere requieren mediante realizarse implica necesario
+correctamente seleccionar informa comenzará cumple datos""".split())
+
+
+def _palabras_clave(textos, n=N_CLAVES):
+    """Devuelve {clave_de_documento: [palabras]}, alternando dos fuentes.
+
+    - TF-IDF contra el resto del corpus: términos que distinguen al documento.
+    - Marcadas por el autor: encabezados markdown y **negritas**.
+
+    Se alternan porque por separado rinden peor que juntas (27/37 y 27/37 contra
+    29/37 de la unión): el TF-IDF aporta términos sueltos y las marcadas aportan
+    frases, y las preguntas usan de las dos formas.
+    """
+    import collections, math
+
+    N = max(len(textos), 1)
+
+    def top(cand, peso):
+        df = collections.Counter()
+        for v in cand.values():
+            df.update({x.lower() for x in v})
+        out = {}
+        for k, v in cand.items():
+            tf = collections.Counter(x.lower() for x in v)
+            orig = {x.lower(): x for x in v}
+            tot = sum(tf.values()) or 1
+            p = {w: peso(c, tot) * math.log(N / df[w]) for w, c in tf.items() if df[w] < N}
+            out[k] = [orig[w] for w, _ in sorted(p.items(), key=lambda kv: -kv[1])[:n]]
+        return out
+
+    sueltas = top({k: [w for w in re.findall(r"[a-záéíóúñü]{4,}", t.lower())
+                       if w not in _VACIAS] for k, t in textos.items()},
+                  lambda c, tot: c / float(tot))
+
+    marcadas_cand = {}
+    for k, t in textos.items():
+        c = re.findall(r"(?m)^#{1,6}\s+(.+)$", t) + re.findall(r"\*\*([^*]{3,60})\*\*", t)
+        c = [t.strip().split("\n")[0].lstrip("# ").strip()] + c
+        c = [re.sub(r"[:(].*$", "", x).strip(" .·—-") for x in c]
+        marcadas_cand[k] = [x for x in c if 3 <= len(x) <= 46]
+    marcadas = top(marcadas_cand, lambda c, tot: float(c))
+
+    out = {}
+    for k in textos:
+        vistas, res = set(), []
+        for x in [y for par in zip(sueltas[k], marcadas[k] + [""] * n) for y in par]:
+            if x and x.lower() not in vistas:
+                vistas.add(x.lower())
+                res.append(x)
+            if len(res) >= n:
+                break
+        out[k] = res
+    return out
+
+
 def create_vector_store(documents):
     from sentence_transformers import SentenceTransformer
 
@@ -228,7 +306,21 @@ def create_vector_store(documents):
         metadatas = [d.get('metadata', {}) for d in documents]
         ids = [str(uuid.uuid4()) for _ in texts]
 
-        embeddings_list = st_model.encode(texts, show_progress_bar=False)
+        # Iteración 1.8: el texto que se INDEXA no es el que se GUARDA.
+        #
+        # El indexado lleva delante las palabras clave del documento, para que
+        # caigan dentro de la ventana de 256 tokens del embedder. El guardado es
+        # el fragmento limpio, que es lo que leerá el juez: así el vocabulario
+        # trabaja en el recuperador sin meter ruido en el contexto del modelo.
+        # A nivel de retrieval ambas variantes miden igual (48/50 y 29/37); se
+        # elige esta porque no altera lo que el modelo ve.
+        indexables = []
+        for d, t in zip(documents, texts):
+            pal = d.get("metadata", {}).get("claves", "")
+            sep = chr(10) * 2
+            indexables.append(("Palabras clave: " + pal + sep + t) if pal else t)
+
+        embeddings_list = st_model.encode(indexables, show_progress_bar=False)
         # Ensure embeddings are plain Python floats (avoid numpy types that print verbosely)
         cleaned_embeddings = [[float(x) for x in emb] for emb in embeddings_list]
 
@@ -261,6 +353,15 @@ def main():
         return
 
     validar_grafo(docs)
+
+    # Las palabras clave se derivan del texto COMPLETO de cada documento, antes
+    # de fragmentar: hacerlo sobre los fragmentos concatenados contaria dos veces
+    # el solape y cambiaria los terminos elegidos.
+    claves = _palabras_clave({d["metadata"]["source"]: d["page_content"] for d in docs})
+    for d in docs:
+        d["metadata"]["claves"] = ", ".join(claves.get(d["metadata"]["source"], []))
+        logger.info("claves %-46s %s",
+                    os.path.basename(d["metadata"]["source"]), d["metadata"]["claves"])
 
     chunks = split_documents(docs)
     if not chunks:

@@ -1,7 +1,5 @@
 # Documentación Requerida para Formalizar en Chile
 
-**Habilita después:** constitucion_empresa_simplificada, constitucion_empresa_tradicional
-
 ## Documento de identidad en Chile
 En Chile el documento de identidad se llama **Cédula de Identidad** (no "DNI").
 

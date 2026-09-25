@@ -1,8 +1,5 @@
 # Tipos de Empresa y Sociedad en Chile
 
-**Requiere antes:** tipos_empresa_decision
-**Habilita después:** constitucion_empresa_simplificada, constitucion_empresa_tradicional
-
 ## Persona Natural (sin separación patrimonial)
 - **Persona Natural con Giro:** usa el RUT personal. Sin separación entre patrimonio personal y del negocio.
 - **Microempresa Familiar (MEF):** se opera desde el domicilio. Límite: 2.400 UF anuales. Solo puede tener socios familiares directos.

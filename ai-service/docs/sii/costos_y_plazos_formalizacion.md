@@ -1,8 +1,5 @@
 # Costos y Plazos de Formalización en Chile
 
-**Requiere antes:** tipos_empresa_decision
-**Habilita después:** constitucion_empresa_simplificada, constitucion_empresa_tradicional
-
 ## Régimen Simplificado (Tu Empresa en un Día)
 - **Costo total: $0 — completamente gratuito**
 - Solo se paga si se firma ante notario con Firma Electrónica Avanzada (opcional, costo variable por notaría)

@@ -1,8 +1,5 @@
 Inicio de actividades ante el Servicio de Impuestos Internos
 
-**Requiere antes:** constitucion_empresa_simplificada, constitucion_empresa_tradicional
-**Habilita después:** patente_municipal, obligaciones_tributarias_y_tipos_sociedad
-
 El inicio de actividades es el trámite mediante el cual una empresa informa que comenzará a operar económicamente.
 Este paso es obligatorio para todas las empresas, independientemente de su tipo o forma de constitución.
 Características principales:
