@@ -11,50 +11,48 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-25, al abrir la vía B1 de la 1.9. Las métricas
-de abajo son las de la 1.8, que es la última corrida completa; la Fase 0 de la
-1.9 no gastó corrida.
+**Última actualización:** 2026-09-25, tras refutar la vía B1 de la 1.9. Las
+métricas de abajo son las de la 1.8, que sigue siendo la última corrida completa:
+la Fase 0 y la B1 se resolvieron con pruebas dirigidas.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Corriendo la vía B1 de la 1.9: un juez más grande.** Rama
-> `iteracion_1.9_B1_juez_grande`, creada desde `main` el 2026-09-25. Plan en
-> `tests/iteraciones/iteracion_1.9_B1_juez_grande/plan_B1.md`.
+> **B1 quedó refutada el 2026-09-25.** Un juez `qwen2.5:7b` da **18/29**, el mismo
+> número que el 3B, y **8 de los 11 falsos `NO` son los mismos**. Detalle en
+> `tests/iteraciones/iteracion_1.9_B1_juez_grande/resultado_B1.md`.
 >
-> ```
-> juez qwen2.5:7b  +  redactor llama3.2 (3B)
-> ```
+> **Lo que eso deja establecido:** el problema del juez **no es capacidad del
+> modelo**. Si un 3B y un 7B rechazan las mismas 8 preguntas teniendo el dato
+> delante, lo que falla es la tarea que se le pide o cómo le llega el dato. Eso
+> ordena lo que queda.
 >
-> **Qué queda por hacer:** correr las dos puertas. La 1 es sensibilidad sobre las
-> 29 preguntas cuyo dato llega íntegro (~10 min, corte en 22/29 sobre un control
-> de 18/29); la 2, solo si pasa la 1, es especificidad sobre las 50 sin respaldo
-> (corte en 48/50). El arnés ya está listo: `--ids` en `evaluar_banco.py` y los
-> dos scripts `subconjunto_*.py`.
+> **Siguiente paso: OP-5** (métrica de similitud). Es un cambio de una línea
+> —`hnsw:space` no está especificado, así que ChromaDB usa L2 sobre vectores sin
+> normalizar— y `medir_retrieval.py` lo evalúa en segundos sin tocar el LLM.
+> Objetivo: recall@6 ≥ 90% (actual 96% por archivo, 78% de anclaje). Desbloquea
+> **B3** (umbral de similitud antes del juez), que es la única candidata que
+> podría *bajar* la latencia en vez de subirla.
 >
-> **El control no se vuelve a correr.** Los veredictos por pregunta de la 1.8
-> están en `tests/iteraciones/resultados_claves_1.8_k6.json`: 18/29 `SI` y estos
-> 11 falsos `NO` — PREG-010, 064, 065, 067, 068, 073, 075, 080, 084, 088, 115.
+> **Después: B2** (descomponer la pregunta, no el contexto). Es la lectura directa
+> del núcleo duro de 8: si no es capacidad, es la tarea. Ojo con la expectativa —
+> solo 3 de las 8 son preguntas compuestas (PREG-010, 064, 115), así que B2
+> explicaría parte y no todo.
 >
-> **Por qué B1 no está refutada por la 1.3:** la 1.3 midió escalar en
-> **generación de un paso**, y el experimento B de la 1.6 midió el reparto
-> contrario (juez 3B + redactor 8B). Nadie ha medido un juez grande.
+> **La vía A ganó valor.** La B1 mostró que PREG-083, 106 y 114 tenían el `SI` del
+> juez y **cobertura 0,00**: el redactor recibía luz verde y no extraía el dato.
+> Hoy no se distingue un `SI` productivo de uno estéril, y eso es justo lo que la
+> cita sobre el camino `SI` instrumentaría. Ver el plan de la 1.9.
 >
-> **Si B1 funciona pero cuesta el doble de latencia**, el resultado no es adoptar
-> `qwen2.5:7b` de juez: es evidencia de que juzgar sí tiene techo de capacidad, y
-> eso redirige el esfuerzo a darle al 3B una tarea más fácil (B2) en vez de un
-> modelo más grande.
->
-> **Después de B1:** **OP-5** (métrica de similitud, cambio de una línea, que
-> desbloquea B3) y **B2** (descomponer la pregunta, no el contexto — A3
-> descompuso el contexto, nadie la pregunta).
+> **Medir la sensibilidad cruzada con la cobertura, no sola.** Contar un `SI` como
+> acierto cuando no produce respuesta útil infla la métrica del juez.
 >
 > **Restricción que no se negocia:** nada entra si la especificidad baja de 48/50
 > o la alucinación sube de 0%.
 >
-> **Por qué urge:** el anclaje subió 25 → 26 → 29 en tres iteraciones y la
-> sensibilidad del juez bajó 30 → 28 → 25. Siete hipótesis sobre su
-> comportamiento están sin confirmar. Mientras su veredicto no sea verificable,
-> las mejoras de retrieval no se pueden convertir ni medir.
+> **Herramienta nueva disponible:** `evaluar_banco.py --ids` corre un subconjunto
+> por ID, y `subconjunto_dato_integro.py` / `subconjunto_sin_respaldo.py` los
+> generan. Una prueba dirigida de 29 preguntas tarda ~15 min en vez de 20-45.
+> La B1 se resolvió sin pagar una corrida completa.
 
 ## 🚨 Dos restricciones que invalidan supuestos previos
 
@@ -71,7 +69,11 @@ cosméticos del contexto.** Medido entre la 1.1 y la 1.7: en 49 de 50 preguntas 
 disponibilidad del dato no cambió y el juez cambió de opinión en 6. Con
 `temperature=0.0`, así que no es aleatoriedad entre ejecuciones. **Las
 diferencias menores a ~6 preguntas en las métricas end-to-end no son
-distinguibles de esta sensibilidad.** Decidir con `recall@k` y `anclaje@k`, que
+distinguibles de esta sensibilidad.** La B1 le dio una segunda confirmación
+independiente: cambiar el juez de `llama3.2` a `qwen2.5:7b` con el **mismo
+contexto** movió exactamente 6 veredictos (3 en cada dirección) sin mover el
+total. La banda aparece tanto entre contextos con el mismo modelo como entre
+modelos con el mismo contexto. Decidir con `recall@k` y `anclaje@k`, que
 son deterministas, y usar la corrida end-to-end como confirmación declarando la
 banda.
 
@@ -123,7 +125,7 @@ hardware modesto es el objetivo del proyecto, no una limitación a superar.
 
 | # | Línea | Estado | Evidencia |
 |---|---|---|---|
-| OP-3 | Modelo de generación | ❌ **Refutada** | 1.3 — escalar a 7-8B no baja la alucinación |
+| OP-3 | Modelo de generación | ❌ **Refutada** | 1.3 — escalar a 7-8B no baja la alucinación; B1 — tampoco ayuda escalar solo el juez |
 | OP-6 | Discriminación en dos pasos | ✅ **Confirmada** | 1.6 — alucinación 34% a 0% |
 | OP-1 | Chunking | ✅ **Parcial** | 1.1 — el tamaño era la causa; 25 → 21 abstenciones |
 | OP-5 | Métrica de similitud | ⏳ Pendiente | sin medir, costo ~1 línea |
@@ -131,7 +133,7 @@ hardware modesto es el objetivo del proyecto, no una limitación a superar.
 | OP-7 | RAG basado en nodos | ◐ **Parcial** | 1.7 — declarar las aristas sirve, recorrerlas no |
 | — | Palabras clave derivadas del corpus | ✅ **Confirmada** | 1.8 — anclaje 25 → 29, el mejor retrieval del proyecto |
 | — | Reescritura estructurada del corpus | ◐ **Media** | piloto: mejora el retrieval, no al juez |
-| — | Estabilidad del juez | 🔴 **Bloqueante** | 7 hipótesis sin confirmar; domina toda mejora |
+| — | Estabilidad del juez | 🔴 **Bloqueante** | domina toda mejora. B1 descarta que sea capacidad del modelo: 8 de los 11 falsos `NO` los comparten un 3B y un 7B |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
 ---
@@ -147,6 +149,8 @@ nuevo es retrabajo.
 | **Reformular el system prompt (v2)** | Mover la regla de abstención a un cierre tras el contexto subió la alucinación de 34% a **78%** | `experimento_prompt_v2.md` |
 | **Recalibrar el prompt del juez (A2)** | Quitar el sesgo *"ante cualquier duda responde NO"* recupera **1 de 9** casos | `iteracion_1.6_dos_pasos/resultado_1.6.md` |
 | **Juzgar fragmento por fragmento (A3)** | Descomponer el contexto en 6 juicios de ~220 tokens recupera **2 de 9** | `iteracion_1.6_dos_pasos/resultado_1.6.md` |
+| **Un modelo más grande solo para juzgar (B1)** | `qwen2.5:7b` de juez da **18/29**, el mismo número que el 3B, y 8 de los 11 falsos `NO` son los mismos. Cuesta 2,3x de latencia (13,1 → 30,1 s). Si dos modelos con 2,3x de diferencia rechazan las mismas 8 preguntas teniendo el dato delante, no es capacidad | `iteracion_1.9_B1_juez_grande/resultado_B1.md` |
+| **El formato de la cita explica los falsos `NO`** | La tasa de `NO` es plana entre formatos: negrita 43%, tabla 33%, prosa 33%, encabezado 50%, viñeta 0%, con 1-7 casos por celda. Coincidencia sobre n minúsculo | `iteracion_1.9_B1_juez_grande/resultado_B1.md` |
 | **Juez 3B + redactor 8B (experimento B)** | Descartado sin correr: el redactor ya responde en 25 de las 26 veces que se le habilita. El problema no está ahí | `iteracion_1.6_dos_pasos/resultado_1.6.md` |
 | **Contaminación del índice con documentos de la CMF** | Nunca estuvieron indexados. `ingest.py` solo lee `docs/sii/`. El daño estaba en el ground truth, no en ChromaDB | `Bitacora.md` 2026-09-17 |
 | **Chunks duplicados en ChromaDB** | 0 duplicados. La sospecha venía de que `collection.add()` acumulaba entre ingestas; ya es idempotente | `Bitacora.md` 2026-09-17 |

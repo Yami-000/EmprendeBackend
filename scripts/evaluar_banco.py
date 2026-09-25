@@ -63,10 +63,18 @@ if args.ids and args.limite:
 
 
 def leer_ids(spec):
-    """Lista de IDs desde '@archivo' (uno por linea) o 'A,B,C'."""
+    """Lista de IDs desde '@archivo' (uno por linea) o 'A,B,C'.
+
+    Se procesa linea por linea y no partiendo todo el texto por espacios: los
+    scripts subconjunto_*.py encabezan su salida con lineas de comentario, y
+    partir por espacios convertia cada palabra del comentario en un ID.
+    """
     crudo = io.open(spec[1:], encoding="utf-8-sig").read() if spec.startswith("@") else spec
-    partes = crudo.replace(",", " ").replace(";", " ").split()
-    return [x for x in partes if not x.startswith("#")]
+    ids = []
+    for linea in crudo.splitlines():
+        linea = linea.split("#", 1)[0]
+        ids.extend(linea.replace(",", " ").replace(";", " ").split())
+    return ids
 
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
 OUT = os.path.join(RAIZ, "tests", "iteraciones", "resultados_%s.json" % args.etiqueta)
