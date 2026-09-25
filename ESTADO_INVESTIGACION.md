@@ -13,22 +13,29 @@ documentadas abajo con el número que las refutó.
 
 **Última actualización:** 2026-09-24, tras cerrar la iteración 1.7.
 
-> ## ⏭️ En curso: iteración 1.9 — juez con cita verificable
+> ## ⏭️ Punto de partida de la próxima sesión
 >
-> Sustituir el `SI`/`NO` por la transcripción del fragmento donde está el dato, y
-> comprobar por código que esa cita exista. Plan en
-> `tests/iteraciones/iteracion_1.9_juez_con_cita/plan_1.9.md`, rama
-> `iteracion_1.9_juez_con_cita`.
+> **Iteración 1.9, con dos vías aprobadas por Yami el 2026-09-24.** Plan completo
+> en `tests/iteraciones/iteracion_1.9_juez_con_cita/plan_1.9.md`. Se continúa en
+> la rama `iteracion_1.9_juez_con_cita`, que está al día con `main`.
 >
-> **⚠️ El diseño original quedó descartado en la Fase 0.** El modelo transcribe
-> bien (10/10), pero **nunca dice NO**: 10 fugas de 10 en preguntas sin respaldo,
-> y 6 de esas citas son válidas pero irrelevantes. Verificar que una cita exista
-> no sustituye al juicio. Llevaría la especificidad de 50/50 a 0/50.
+> **Vía A — la cita audita el camino `SI`.** El binario sigue decidiendo (conserva
+> la especificidad 50/50) y, solo cuando dice `SI`, una segunda llamada pide la
+> línea citada. Hace auditable ese `SI` por código. Es instrumentación: no sube la
+> sensibilidad.
 >
-> **Rediseño pendiente de decisión de Yami:** que la cita **audite** el camino
-> `SI` del binario en vez de reemplazarlo. Conserva la especificidad y hace
-> medible la decisión, pero no sube la sensibilidad. Ver
-> `iteracion_1.9_juez_con_cita/resultado_fase0.md`.
+> **Vía B — atacar la sensibilidad.** Empezar por **B1: un modelo más grande solo
+> para juzgar** (`qwen2.5:7b` de juez + `llama3.2` de redactor). Es un hueco real
+> en la evidencia: la 1.3 midió que escalar no ayuda **en generación de un paso**,
+> y nadie ha medido un juez más grande. Prueba dirigida de ~7 min sobre las 29
+> preguntas cuyo dato llega íntegro.
+>
+> Después: **OP-5** (métrica de similitud, cambio de una línea) que desbloquea
+> B3, y **B2** (descomponer la pregunta, no el contexto — A3 descompuso el
+> contexto, nadie la pregunta).
+>
+> **Restricción que no se negocia:** nada entra si la especificidad baja de 48/50
+> o la alucinación sube de 0%.
 >
 > **Por qué urge:** el anclaje subió 25 → 26 → 29 en tres iteraciones y la
 > sensibilidad del juez bajó 30 → 28 → 25. Siete hipótesis sobre su
