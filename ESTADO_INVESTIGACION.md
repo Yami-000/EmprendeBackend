@@ -13,12 +13,20 @@ documentadas abajo con el número que las refutó.
 
 **Última actualización:** 2026-09-24, tras cerrar la iteración 1.7.
 
-> ## ⏭️ Punto de partida de la próxima sesión
+> ## ⏭️ En curso: iteración 1.9 — juez con cita verificable
 >
-> **Juez con cita verificable.** Sustituir el `SI`/`NO` por la transcripción del
-> fragmento donde está el dato, y comprobar por código que esa cita exista. Es
-> el único camino que ataca la inestabilidad del juez, que hoy domina cualquier
-> mejora medible. Acordado con Yami el 2026-09-24.
+> Sustituir el `SI`/`NO` por la transcripción del fragmento donde está el dato, y
+> comprobar por código que esa cita exista. Plan en
+> `tests/iteraciones/iteracion_1.9_juez_con_cita/plan_1.9.md`, rama
+> `iteracion_1.9_juez_con_cita`.
+>
+> **No es una octava hipótesis sobre el juez: es dejar de necesitar confiar en
+> él.** Siete hipótesis sobre su comportamiento están sin confirmar, y el
+> problema de fondo es que un `SI` no se puede verificar.
+>
+> La Fase 0 del plan es una puerta: si el modelo de 3B no transcribe
+> literalmente, el enfoque no sirve y hay que saberlo antes de pagar una corrida
+> de 30 minutos.
 >
 > **Por qué urge:** el anclaje subió 25 → 26 → 29 en tres iteraciones y la
 > sensibilidad del juez bajó 30 → 28 → 25. Siete hipótesis sobre su
