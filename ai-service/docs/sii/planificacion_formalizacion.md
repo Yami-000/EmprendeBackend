@@ -1,7 +1,5 @@
 Planificación del proceso de formalización
 
-**Habilita después:** tipos_empresa_decision
-
 El proceso de formalización requiere preparación previa. Antes de iniciar los trámites, es necesario organizar información, definir decisiones clave y anticipar recursos.
 Una planificación adecuada se basa en los siguientes elementos:
 

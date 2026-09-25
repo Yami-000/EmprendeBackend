@@ -1,8 +1,5 @@
 Constitución de empresa en modalidad simplificada
 
-**Requiere antes:** tipos_empresa_decision, documentacion_formalizacion
-**Habilita después:** inicio_actividades_sii
-
 La constitución de una empresa en modalidad simplificada se realiza a través de una plataforma digital que permite crear una empresa de forma rápida y sin costo.
 El proceso sigue una secuencia clara:
 

@@ -1,7 +1,5 @@
 # Formularios y Obligaciones Tributarias en Chile
 
-**Requiere antes:** obligaciones_tributarias_y_tipos_sociedad
-
 ## Formularios del SII
 
 | Formulario | Nombre | Periodicidad | Plazo | Contenido |

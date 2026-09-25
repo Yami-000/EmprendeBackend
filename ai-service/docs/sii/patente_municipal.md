@@ -1,8 +1,5 @@
 Patente municipal
 
-**Requiere antes:** inicio_actividades_sii
-**Habilita después:** permisos_complementarios
-
 La patente municipal es una autorización obligatoria que permite a un negocio operar en una comuna determinada.
 Es requerida cuando la empresa utiliza un local, oficina o instalación física.
 Características:
