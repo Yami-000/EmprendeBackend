@@ -15,10 +15,27 @@ documentadas abajo con el número que las refutó.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Juez con cita verificable.** Sustituir el `SI`/`NO` por la transcripción del
-> fragmento donde está el dato, y comprobar por código que esa cita exista. Es
-> el único camino que ataca la inestabilidad del juez, que hoy domina cualquier
-> mejora medible. Acordado con Yami el 2026-09-24.
+> **Iteración 1.9, con dos vías aprobadas por Yami el 2026-09-24.** Plan completo
+> en `tests/iteraciones/iteracion_1.9_juez_con_cita/plan_1.9.md`. Se continúa en
+> la rama `iteracion_1.9_juez_con_cita`, que está al día con `main`.
+>
+> **Vía A — la cita audita el camino `SI`.** El binario sigue decidiendo (conserva
+> la especificidad 50/50) y, solo cuando dice `SI`, una segunda llamada pide la
+> línea citada. Hace auditable ese `SI` por código. Es instrumentación: no sube la
+> sensibilidad.
+>
+> **Vía B — atacar la sensibilidad.** Empezar por **B1: un modelo más grande solo
+> para juzgar** (`qwen2.5:7b` de juez + `llama3.2` de redactor). Es un hueco real
+> en la evidencia: la 1.3 midió que escalar no ayuda **en generación de un paso**,
+> y nadie ha medido un juez más grande. Prueba dirigida de ~7 min sobre las 29
+> preguntas cuyo dato llega íntegro.
+>
+> Después: **OP-5** (métrica de similitud, cambio de una línea) que desbloquea
+> B3, y **B2** (descomponer la pregunta, no el contexto — A3 descompuso el
+> contexto, nadie la pregunta).
+>
+> **Restricción que no se negocia:** nada entra si la especificidad baja de 48/50
+> o la alucinación sube de 0%.
 >
 > **Por qué urge:** el anclaje subió 25 → 26 → 29 en tres iteraciones y la
 > sensibilidad del juez bajó 30 → 28 → 25. Siete hipótesis sobre su
@@ -124,6 +141,8 @@ nuevo es retrabajo.
 | **Quitar el solape del chunking** | Neutro (22/36 → 22/36) a k=6 y negativo a k=10. El solape hace que los fragmentos empiecen a mitad de frase, pero su efecto neto es positivo: duplica los bordes y da una segunda oportunidad al dato | `iteracion_1.1_chunking/resultado_1.1.md` |
 | **Recorrer el grafo para expandir el retrieval** | 1.7, barrido de 9 configuraciones: el mejor caso compra +1 pregunta por 45% más contexto. La variante que desplaza a los peor rankeados degrada siempre, hasta 36/50 de recall. Con 28 fragmentos y `k=6` la búsqueda vectorial ya ve el 21% del corpus | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Que el top-6 se volviera más diverso y confundiera al juez** | 1.8: la diversidad *bajó* de 4,96 a 4,50 documentos distintos por consulta. Y el contexto no creció: 2028 → 2074 tokens | `iteracion_1.8_palabras_clave/resultado_1.8.md` |
+| **Sustituir el `SI`/`NO` del juez por una cita verificable** | Fase 0 de la 1.9: el juez con cita **nunca dice NO**, 10 fugas de 10 en preguntas sin respaldo. Y 6 de esas 10 citas son válidas pero irrelevantes, así que verificar que la cita exista no protege. Llevaría la especificidad de 50/50 a 0/50 | `iteracion_1.9_juez_con_cita/resultado_fase0.md` |
+| **Poner un ejemplo concreto en el prompt del juez** | El modelo de 3B lo copia como respuesta en vez de leer el contexto: 3 de 10 citas eran literalmente el ejemplo del prompt. Quitarlo sube las citas válidas de 60% a 100% | `iteracion_1.9_juez_con_cita/resultado_fase0.md` |
 | **Anteponer el título del documento a cada fragmento** | Empeora: recall 48 → 46, anclaje 26 → 25. Repetir texto que el documento ya implica acerca sus fragmentos entre sí y diluye lo propio de cada uno | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Quitar la cabecera del grafo del texto que lee el juez** | Recupera 1 de 4. La idea de separar texto indexado de texto mostrado sigue valiendo como principio, pero no explicaba la regresión de la 1.7 | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
