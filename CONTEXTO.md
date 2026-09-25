@@ -110,6 +110,13 @@ Definida en `ai-service/api.py`:
 | `stream` | `True` | cuerpo de la petición |
 | timeout HTTP | `60` s | `httpx.AsyncClient(timeout=60)` |
 
+**⚠️ Ventana del embedder: 256 tokens.** `all-MiniLM-L6-v2` tiene
+`max_seq_length = 256`, y los fragmentos actuales tienen mediana 402 tokens y
+máximo 496: **24 de 28 exceden la ventana y un 33% del corpus no influye en el
+retrieval**. Lo que está más allá del token 256 solo lo lee el juez, no el
+recuperador. Es la restricción que gobierna cualquier cambio de `CHUNK_SIZE` o de
+vocabulario del corpus.
+
 **Embeddings:** `all-MiniLM-L6-v2` en `ingest.py` **y** en `api.py`. La
 constante en `ingest.py` lleva un comentario explícito de que ambos deben
 coincidir: indexar y consultar con modelos distintos produce vectores

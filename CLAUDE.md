@@ -62,6 +62,13 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
 
 ## Trampas conocidas
 
+- **El embedder solo lee 256 tokens.** `all-MiniLM-L6-v2` tiene
+  `max_seq_length = 256` y los fragmentos tienen mediana 402: un tercio del
+  corpus es invisible para el retrieval. Lo que se agregue al corpus para mejorar
+  la recuperación tiene que caer dentro de esa ventana.
+- **El juez es inestable en ~6 de 50 preguntas** ante cambios cosméticos del
+  contexto, con `temperature=0`. Decidir con `recall@k` y `anclaje@k`, que son
+  deterministas; el end-to-end solo confirma, y con banda de ±6.
 - **`retrieval_hit@k` se mide por archivo, no por chunk** — es optimista. Ver
   las advertencias de método en `ESTADO_INVESTIGACION.md`.
 - **El modelo de embeddings debe coincidir** entre `ingest.py` y `api.py`

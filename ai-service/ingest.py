@@ -1,5 +1,6 @@
 import logging
 import os
+import unicodedata
 from pathlib import Path
 
 import chromadb
@@ -11,7 +12,10 @@ except Exception:
 import uuid
 # Use simple dicts for documents to avoid langchain.schema dependency
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")
+# INFO, no DEBUG: en DEBUG las librerias HTTP vuelcan cada cabecera de la
+# descarga del modelo y sepultan las lineas que importan (archivos, fragmentos,
+# validacion del grafo).
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -36,14 +40,96 @@ def load_documents(files):
             if not text or not text.strip():
                 logger.warning("Archivo vacío o sin contenido útil: %s", file_path)
                 continue
-            doc = {"page_content": text, "metadata": {"source": str(file_path)}}
+            meta = {"source": str(file_path)}
+            meta.update(_parse_grafo(text, Path(file_path).stem))
+            doc = {"page_content": text, "metadata": meta}
             documents.append(doc)
         except Exception as exc:
             logger.error("Error al cargar %s: %s", file_path, exc)
     return documents
 
 
+class AristaColgante(Exception):
+    """Una arista apunta a un nodo que ningún documento declara."""
+
+
+def validar_grafo(documents):
+    """Comprueba que toda arista apunte a un nodo existente.
+
+    Las aristas se escriben a mano en los documentos, así que un id mal tecleado
+    es un error esperable. Debe romper la ingesta de forma visible: un grafo con
+    aristas colgantes degrada en silencio y el fallo aparecería mucho después,
+    como preguntas que dejan de recuperar a su vecino sin razón aparente.
+    """
+    nodos = {d["metadata"]["nodo"] for d in documents}
+    colgantes = []
+    for d in documents:
+        m = d["metadata"]
+        for campo in ("requiere_antes", "habilita_despues"):
+            for destino in [x for x in m.get(campo, "").split(",") if x]:
+                if destino not in nodos:
+                    colgantes.append("%s: %s -> %s" % (
+                        os.path.basename(m["source"]), campo, destino))
+    if colgantes:
+        raise AristaColgante(
+            "Aristas que apuntan a nodos inexistentes:\n  " + "\n  ".join(colgantes)
+            + "\n\nNodos declarados: " + ", ".join(sorted(nodos)))
+    aristas = sum(len([x for x in d["metadata"].get(c, "").split(",") if x])
+                  for d in documents for c in ("requiere_antes", "habilita_despues"))
+    logger.info("Grafo validado: %d nodos, %d aristas", len(nodos), aristas)
+
+
 import re
+
+# Iteración 1.7. Campos de grafo que un documento puede declarar en su cabecera:
+#
+#   **Nodo:** patente_municipal
+#   **Requiere antes:** inicio_actividades_sii, certificado_de_zonificacion
+#   **Habilita después:** operacion_del_local
+#
+# Se escriben a mano. Ese es justamente el punto: extraer entidades y relaciones
+# automáticamente era lo que hacía cara esta línea, y declararlas cuesta una
+# cabecera por documento.
+_CAMPOS_GRAFO = {
+    "nodo": "nodo",
+    "requiere antes": "requiere_antes",
+    "habilita despues": "habilita_despues",
+}
+_CAMPO_RE = re.compile(r"^\s*\*\*([^:*]+):\*\*\s*(.+?)\s*$", re.MULTILINE)
+
+
+def _sin_tildes(t):
+    return "".join(c for c in unicodedata.normalize("NFKD", t)
+                   if not unicodedata.combining(c))
+
+
+def _parse_grafo(text, stem, lineas_cabecera=15):
+    """Extrae los campos de grafo de la cabecera del documento.
+
+    El id del nodo cae por defecto al nombre del archivo sin extensión, de modo
+    que un documento sin cabecera sigue siendo un nodo válido y las aristas de
+    otros pueden apuntarle. Solo hay que declarar `Nodo:` cuando se quiere un id
+    distinto del nombre del archivo.
+
+    ChromaDB solo admite escalares en la metadata, así que las listas viajan
+    como cadenas separadas por comas.
+    """
+    cabecera = "\n".join(text.split("\n")[:lineas_cabecera])
+    out = {"nodo": stem, "requiere_antes": "", "habilita_despues": ""}
+    for etiqueta, valor in _CAMPO_RE.findall(cabecera):
+        clave = _CAMPOS_GRAFO.get(_sin_tildes(etiqueta).strip().lower())
+        if not clave:
+            continue
+        if clave == "nodo":
+            out["nodo"] = valor.strip()
+        else:
+            # "ninguno" y las glosas tras un guión no son nodos.
+            destinos = [v.strip() for v in valor.split("—")[0].split(",")]
+            destinos = [v for v in destinos
+                        if v and _sin_tildes(v).lower() not in ("ninguno", "ninguna", "-")]
+            out[clave] = ",".join(destinos)
+    return out
+
 
 # Iteración 1.1. Medido con scripts/medir_retrieval.py sobre el banco:
 # con 800 la mayoría de las secciones no cabía entera y el dato pedido llegaba
@@ -109,7 +195,11 @@ def split_documents(documents):
             chunks = _chunk_text(text, chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
             logger.debug("Chunks generated for doc %s: %d", doc.get('metadata', {}).get('source'), len(chunks))
             for c in chunks:
-                split_docs.append({"page_content": c, "metadata": doc.get('metadata', {})})
+                # dict(...) copia por fragmento: ademas de evitar que todos
+                # compartan el mismo objeto, arrastra los campos de grafo
+                # (nodo, requiere_antes, habilita_despues) a cada uno.
+                split_docs.append({"page_content": c,
+                                   "metadata": dict(doc.get('metadata', {}))})
         except Exception as exc:
             logger.error("Error al segmentar documento %s: %s", getattr(doc, 'metadata', {}).get('source'), exc)
     return split_docs
@@ -169,6 +259,8 @@ def main():
     if not docs:
         logger.error("No se pudo cargar ningún documento válido.")
         return
+
+    validar_grafo(docs)
 
     chunks = split_documents(docs)
     if not chunks:
