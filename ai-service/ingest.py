@@ -12,7 +12,10 @@ except Exception:
 import uuid
 # Use simple dicts for documents to avoid langchain.schema dependency
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")
+# INFO, no DEBUG: en DEBUG las librerias HTTP vuelcan cada cabecera de la
+# descarga del modelo y sepultan las lineas que importan (archivos, fragmentos,
+# validacion del grafo).
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent

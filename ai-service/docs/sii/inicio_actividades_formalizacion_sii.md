@@ -1,5 +1,8 @@
 # Inicio de Actividades y Formalización de Negocios en Chile (SII)
 
+**Requiere antes:** tipos_empresa_decision
+**Habilita después:** patente_municipal, obligaciones_tributarias_y_tipos_sociedad
+
 ## Definición de Formalización
 
 La formalización es el conjunto de trámites y procedimientos necesarios para que una iniciativa de emprendimiento se constituya como una entidad propia y cumpla con las normativas y regulaciones laborales, sanitarias, municipales y tributarias.

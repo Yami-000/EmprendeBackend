@@ -1,5 +1,8 @@
 # Obligaciones Tributarias y Tipos de Sociedad en Chile
 
+**Requiere antes:** inicio_actividades_sii
+**Habilita después:** formularios_tributarios_chile
+
 ## Tipos de Empresa en Chile
 
 ### Como Persona Natural

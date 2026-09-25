@@ -1,5 +1,8 @@
 Constitución de empresa en régimen tradicional
 
+**Requiere antes:** tipos_empresa_decision, documentacion_formalizacion
+**Habilita después:** inicio_actividades_sii
+
 La constitución de una empresa también puede realizarse mediante un proceso tradicional, que implica trámites presenciales y documentación formal.
 Las etapas son las siguientes:
 

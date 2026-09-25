@@ -1,5 +1,8 @@
 Decisión del tipo de empresa
 
+**Requiere antes:** planificacion_formalizacion
+**Habilita después:** tipos_sociedad_chile, constitucion_empresa_simplificada, constitucion_empresa_tradicional
+
 Uno de los primeros pasos en la formalización es definir el tipo de empresa que se va a crear. Esta decisión determina la estructura legal, la forma de responsabilidad y la manera de operar.
 Existen dos grandes opciones:
 

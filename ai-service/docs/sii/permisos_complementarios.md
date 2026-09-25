@@ -1,5 +1,7 @@
 Permisos complementarios para operar
 
+**Requiere antes:** patente_municipal
+
 Además de la patente municipal, algunos negocios requieren permisos adicionales según su actividad y ubicación.
 Estos permisos aseguran que la operación cumple con normas técnicas, sanitarias y urbanas.
 Ejemplos de permisos:
