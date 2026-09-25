@@ -15,12 +15,15 @@ documentadas abajo con el número que las refutó.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Iteración 1.8 — palabras clave en el corpus.** Idea de Yami. El plan está en
-> `tests/iteraciones/iteracion_1.8_palabras_clave/plan_1.8.md`. Rama a crear
-> desde `main`: `iteracion_1.8_palabras_clave`.
+> **Juez con cita verificable.** Sustituir el `SI`/`NO` por la transcripción del
+> fragmento donde está el dato, y comprobar por código que esa cita exista. Es
+> el único camino que ataca la inestabilidad del juez, que hoy domina cualquier
+> mejora medible. Acordado con Yami el 2026-09-24.
 >
-> Después: sustituir el `SI`/`NO` del juez por una **cita verificable** del
-> fragmento. Acordado con Yami el 2026-09-24 por la inestabilidad del juez.
+> **Por qué urge:** el anclaje subió 25 → 26 → 29 en tres iteraciones y la
+> sensibilidad del juez bajó 30 → 28 → 25. Siete hipótesis sobre su
+> comportamiento están sin confirmar. Mientras su veredicto no sea verificable,
+> las mejoras de retrieval no se pueden convertir ni medir.
 
 ## 🚨 Dos restricciones que invalidan supuestos previos
 
@@ -46,25 +49,33 @@ banda.
 ## Estado actual del sistema
 
 **Pipeline de dos pasos con `llama3.2` (3B) en ambos roles, chunking de 1400
-caracteres y aristas declaradas en la cabecera** (iteraciones 1.6, 1.1 y 1.7):
+caracteres y palabras clave derivadas en el texto indexado** (iteraciones 1.6,
+1.1 y 1.8):
 
 ```
 MÉTRICAS DETERMINISTAS  (deciden)
   retrieval_hit@6 ........ 48/50 (96%, medido por archivo)
-  anclaje@6 .............. 26/37 (70%, medido por chunk)
+  anclaje@6 .............. 29/37 (78%, medido por chunk)
 
 MÉTRICAS END-TO-END     (confirman, con banda de ±6 preguntas)
-  abstuvo indebidamente .. 24/50
-  cobertura de datos ..... 50%
+  abstuvo indebidamente .. 25/50
+  cobertura de datos ..... 48%
   ALUCINACIÓN ............  0/50 (0%)
   especificidad del juez . 50/50 (100%)
 
-Duración .............................. 29,9 min   (juez 13,1 s/pregunta)
+Duración .............................. 28,1 min   (juez 12,7 s/pregunta)
 ```
 
-Las cifras end-to-end de la 1.1 (abstención 21, cobertura 57%) y de la 1.7
-(24 y 50%) **no son distinguibles entre sí**: la diferencia cae dentro de la
-banda de ruido del juez. Las deterministas sí mejoraron de forma reproducible.
+**Las dos mitades del pipeline van en direcciones distintas.** La recuperación
+avanzó de verdad: de `recall` 44/50 y `anclaje` 22/37 en el baseline a 48/50 y
+29/37, con mediciones deterministas. La generación está bloqueada: la
+sensibilidad del juez bajó 30 → 28 → 25 en las mismas tres iteraciones, y cuando
+el dato le llega íntegro aprueba 18 de 29 (62%) contra 21 de 25 (84%) en la 1.1.
+
+**El modo de fallo es el correcto para el dominio:** cero falsos positivos, así
+que la alucinación se mantiene en 0% y la especificidad en 50/50. El sistema
+calla de más, no inventa. Para normativa tributaria es preferible, pero limita
+su utilidad.
 
 **Tensión abierta:** cada mejora de calidad se ha pagado en latencia. El juez
 pasó de 6,4 s a 12,3 s al agrandar los fragmentos, porque el 98% de su costo es
@@ -87,7 +98,9 @@ hardware modesto es el objetivo del proyecto, no una limitación a superar.
 | OP-5 | Métrica de similitud | ⏳ Pendiente | sin medir, costo ~1 línea |
 | OP-4 | Deduplicación del corpus | ⏳ Pendiente | incluido en el techo de retrieval |
 | OP-7 | RAG basado en nodos | ◐ **Parcial** | 1.7 — declarar las aristas sirve, recorrerlas no |
+| — | Palabras clave derivadas del corpus | ✅ **Confirmada** | 1.8 — anclaje 25 → 29, el mejor retrieval del proyecto |
 | — | Reescritura estructurada del corpus | ◐ **Media** | piloto: mejora el retrieval, no al juez |
+| — | Estabilidad del juez | 🔴 **Bloqueante** | 7 hipótesis sin confirmar; domina toda mejora |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
 ---
@@ -110,6 +123,7 @@ nuevo es retrabajo.
 | **Chunking estructural: un fragmento por sección markdown** | Implementado y medido en la 1.1: el anclaje cae de 22/36 a 18/36. Fragmentar más es PEOR. `_chunk_text` ya dividía por encabezados desde antes | `iteracion_1.1_chunking/resultado_1.1.md` |
 | **Quitar el solape del chunking** | Neutro (22/36 → 22/36) a k=6 y negativo a k=10. El solape hace que los fragmentos empiecen a mitad de frase, pero su efecto neto es positivo: duplica los bordes y da una segunda oportunidad al dato | `iteracion_1.1_chunking/resultado_1.1.md` |
 | **Recorrer el grafo para expandir el retrieval** | 1.7, barrido de 9 configuraciones: el mejor caso compra +1 pregunta por 45% más contexto. La variante que desplaza a los peor rankeados degrada siempre, hasta 36/50 de recall. Con 28 fragmentos y `k=6` la búsqueda vectorial ya ve el 21% del corpus | `iteracion_1.7_nodos/resultado_1.7.md` |
+| **Que el top-6 se volviera más diverso y confundiera al juez** | 1.8: la diversidad *bajó* de 4,96 a 4,50 documentos distintos por consulta. Y el contexto no creció: 2028 → 2074 tokens | `iteracion_1.8_palabras_clave/resultado_1.8.md` |
 | **Anteponer el título del documento a cada fragmento** | Empeora: recall 48 → 46, anclaje 26 → 25. Repetir texto que el documento ya implica acerca sus fragmentos entre sí y diluye lo propio de cada uno | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Quitar la cabecera del grafo del texto que lee el juez** | Recupera 1 de 4. La idea de separar texto indexado de texto mostrado sigue valiendo como principio, pero no explicaba la regresión de la 1.7 | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
