@@ -73,7 +73,9 @@ directamente, y `api.py` habla con Ollama por HTTP con `httpx`.
 | Ruta | Responsabilidad |
 |---|---|
 | `scripts/evaluar_banco.py` | Arnés end-to-end. Separa fallos de recuperación de fallos de generación. Importa los prompts **desde `api.py`** para no medir una copia divergente |
-| `scripts/medir_retrieval.py` | Recall@k sin invocar al LLM (segundos) |
+| `scripts/medir_retrieval.py` | Recall@k y anclaje@k sin invocar al LLM (segundos). El informe vive en `reporte()` bajo `__main__`, para que otros scripts importen `verificables` y `anclaje_presente` sin disparar la impresión |
+| `scripts/subconjunto_dato_integro.py` | IDs cuyo dato de anclaje llega íntegro al juez. Sobre ese subconjunto la sensibilidad del juez se mide sin fallos de retrieval de por medio |
+| `scripts/subconjunto_sin_respaldo.py` | IDs sin respaldo en el corpus, leídos de `md_origen`. Mitad de control: mide alucinación y especificidad |
 | `tests/dataset/` | Banco de 100 preguntas: las 50 primeras respondibles, las 50 siguientes sin respaldo |
 
 ### Código muerto detectado

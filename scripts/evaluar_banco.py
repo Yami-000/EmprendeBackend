@@ -52,7 +52,21 @@ ap.add_argument("--juez-prompt", default="estricto", choices=sorted(JUEZ_PROMPT_
                 help="calibracion del prompt del juez (ver JUEZ_PROMPT_BASES en api.py)")
 ap.add_argument("--limite", type=int, default=None,
                 help="procesar solo las primeras N preguntas (smoke test)")
+ap.add_argument("--ids", default=None,
+                help="procesar solo estos IDs: lista con comas, o @archivo con "
+                     "un ID por linea. Para pruebas dirigidas a un subconjunto "
+                     "(ver scripts/subconjunto_dato_integro.py). Excluye --limite.")
 args = ap.parse_args()
+
+if args.ids and args.limite:
+    ap.error("--ids y --limite son excluyentes: el subconjunto ya define el alcance")
+
+
+def leer_ids(spec):
+    """Lista de IDs desde '@archivo' (uno por linea) o 'A,B,C'."""
+    crudo = io.open(spec[1:], encoding="utf-8-sig").read() if spec.startswith("@") else spec
+    partes = crudo.replace(",", " ").replace(";", " ").split()
+    return [x for x in partes if not x.startswith("#")]
 
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
 OUT = os.path.join(RAIZ, "tests", "iteraciones", "resultados_%s.json" % args.etiqueta)
@@ -103,6 +117,11 @@ def llamar_ollama(modelo, system_prompt, pregunta, num_predict):
     return texto, time.time() - t0
 
 
+def pct(n, total):
+    """Porcentaje tolerante a total=0: --ids puede dejar una mitad vacia."""
+    return 100.0 * n / total if total else 0.0
+
+
 def anclas(gt):
     """Datos verificables de la respuesta esperada: cifras, siglas, instituciones."""
     txt = (gt.get("respuesta_esperada") or "") + " " + (gt.get("cita_anclaje") or "")
@@ -114,6 +133,13 @@ def anclas(gt):
 
 def main():
     d = json.load(io.open(BANCO, encoding="utf-8-sig"))
+    if args.ids:
+        pedidos = leer_ids(args.ids)
+        indice = {p["id"]: p for p in d}
+        faltan = [i for i in pedidos if i not in indice]
+        if faltan:
+            sys.exit("IDs que no estan en el banco: %s" % ", ".join(faltan))
+        d = [indice[i] for i in pedidos]
     if args.limite:
         d = d[:args.limite // 2] + d[50:50 + (args.limite - args.limite // 2)]
     m = SentenceTransformer(EMB)
@@ -188,28 +214,29 @@ def main():
     print("RESULTADO  [%s]  %s" % (args.etiqueta, etq))
     print("=" * 62)
     print("RESPONDIBLES (%d)" % len(R))
-    print("  retrieval_hit@%-2d ............ %2d  (%3.0f%%)" % (args.k, hit, 100.0 * hit / len(R)))
-    print("  abstuvo indebidamente ...... %2d  (%3.0f%%)" % (ab_r, 100.0 * ab_r / len(R)))
+    print("  retrieval_hit@%-2d ............ %2d  (%3.0f%%)" % (args.k, hit, pct(hit, len(R))))
+    print("  abstuvo indebidamente ...... %2d  (%3.0f%%)" % (ab_r, pct(ab_r, len(R))))
     print("  cobertura de datos ......... %3.0f%%" % (100 * sum(cob) / len(cob) if cob else 0))
     print("NO RESPONDIBLES (%d)" % len(N))
-    print("  abstuvo (correcto) ......... %2d  (%3.0f%%)" % (ab_n, 100.0 * ab_n / len(N)))
-    print("  ALUCINO .................... %2d  (%3.0f%%)" % (aluc, 100.0 * aluc / len(N)))
+    print("  abstuvo (correcto) ......... %2d  (%3.0f%%)" % (ab_n, pct(ab_n, len(N))))
+    print("  ALUCINO .................... %2d  (%3.0f%%)" % (aluc, pct(aluc, len(N))))
     print()
     print("  fallos de generacion ....... %2d   (abstencion indebida + alucinacion)" % (ab_r + aluc))
     print("  fallos de retrieval ........ %2d" % (len(R) - hit))
 
     if args.dos_pasos:
-        sens = sum(1 for x in R if x["juez_dijo_si"]) / len(R)
-        espe = sum(1 for x in N if not x["juez_dijo_si"]) / len(N)
+        n_si = sum(1 for x in R if x["juez_dijo_si"])
+        n_no = sum(1 for x in N if not x["juez_dijo_si"])
         lat_juez = [x["juez_latencia_s"] for x in res if x["juez_latencia_s"] is not None]
         lat_red = [x["redactor_latencia_s"] for x in res if x["redactor_latencia_s"]]
         print()
         print("JUEZ")
         print("  sensibilidad  (SI en respondibles) ..... %2d/%d  (%3.0f%%)"
-              % (sum(1 for x in R if x["juez_dijo_si"]), len(R), 100 * sens))
+              % (n_si, len(R), pct(n_si, len(R))))
         print("  especificidad (NO en no respondibles) .. %2d/%d  (%3.0f%%)"
-              % (sum(1 for x in N if not x["juez_dijo_si"]), len(N), 100 * espe))
-        print("  latencia media juez .................... %.1fs" % (sum(lat_juez) / len(lat_juez)))
+              % (n_no, len(N), pct(n_no, len(N))))
+        print("  latencia media juez .................... %.1fs"
+              % (sum(lat_juez) / len(lat_juez) if lat_juez else 0.0))
         if lat_red:
             print("  latencia media redactor (camino SI) .... %.1fs" % (sum(lat_red) / len(lat_red)))
             print("  camino NO (sin 2da llamada) ............ %d de %d preguntas"

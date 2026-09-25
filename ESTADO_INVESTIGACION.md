@@ -11,28 +11,42 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-24, tras cerrar la iteración 1.7.
+**Última actualización:** 2026-09-25, al abrir la vía B1 de la 1.9. Las métricas
+de abajo son las de la 1.8, que es la última corrida completa; la Fase 0 de la
+1.9 no gastó corrida.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Iteración 1.9, con dos vías aprobadas por Yami el 2026-09-24.** Plan completo
-> en `tests/iteraciones/iteracion_1.9_juez_con_cita/plan_1.9.md`. Se continúa en
-> la rama `iteracion_1.9_juez_con_cita`, que está al día con `main`.
+> **Corriendo la vía B1 de la 1.9: un juez más grande.** Rama
+> `iteracion_1.9_B1_juez_grande`, creada desde `main` el 2026-09-25. Plan en
+> `tests/iteraciones/iteracion_1.9_B1_juez_grande/plan_B1.md`.
 >
-> **Vía A — la cita audita el camino `SI`.** El binario sigue decidiendo (conserva
-> la especificidad 50/50) y, solo cuando dice `SI`, una segunda llamada pide la
-> línea citada. Hace auditable ese `SI` por código. Es instrumentación: no sube la
-> sensibilidad.
+> ```
+> juez qwen2.5:7b  +  redactor llama3.2 (3B)
+> ```
 >
-> **Vía B — atacar la sensibilidad.** Empezar por **B1: un modelo más grande solo
-> para juzgar** (`qwen2.5:7b` de juez + `llama3.2` de redactor). Es un hueco real
-> en la evidencia: la 1.3 midió que escalar no ayuda **en generación de un paso**,
-> y nadie ha medido un juez más grande. Prueba dirigida de ~7 min sobre las 29
-> preguntas cuyo dato llega íntegro.
+> **Qué queda por hacer:** correr las dos puertas. La 1 es sensibilidad sobre las
+> 29 preguntas cuyo dato llega íntegro (~10 min, corte en 22/29 sobre un control
+> de 18/29); la 2, solo si pasa la 1, es especificidad sobre las 50 sin respaldo
+> (corte en 48/50). El arnés ya está listo: `--ids` en `evaluar_banco.py` y los
+> dos scripts `subconjunto_*.py`.
 >
-> Después: **OP-5** (métrica de similitud, cambio de una línea) que desbloquea
-> B3, y **B2** (descomponer la pregunta, no el contexto — A3 descompuso el
-> contexto, nadie la pregunta).
+> **El control no se vuelve a correr.** Los veredictos por pregunta de la 1.8
+> están en `tests/iteraciones/resultados_claves_1.8_k6.json`: 18/29 `SI` y estos
+> 11 falsos `NO` — PREG-010, 064, 065, 067, 068, 073, 075, 080, 084, 088, 115.
+>
+> **Por qué B1 no está refutada por la 1.3:** la 1.3 midió escalar en
+> **generación de un paso**, y el experimento B de la 1.6 midió el reparto
+> contrario (juez 3B + redactor 8B). Nadie ha medido un juez grande.
+>
+> **Si B1 funciona pero cuesta el doble de latencia**, el resultado no es adoptar
+> `qwen2.5:7b` de juez: es evidencia de que juzgar sí tiene techo de capacidad, y
+> eso redirige el esfuerzo a darle al 3B una tarea más fácil (B2) en vez de un
+> modelo más grande.
+>
+> **Después de B1:** **OP-5** (métrica de similitud, cambio de una línea, que
+> desbloquea B3) y **B2** (descomponer la pregunta, no el contexto — A3
+> descompuso el contexto, nadie la pregunta).
 >
 > **Restricción que no se negocia:** nada entra si la especificidad baja de 48/50
 > o la alucinación sube de 0%.
