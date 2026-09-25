@@ -11,35 +11,60 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-24, tras el piloto de reescritura del corpus.
+**Última actualización:** 2026-09-24, tras cerrar la iteración 1.7.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **OP-7 — el grafo.** El piloto dejó las aristas ya declaradas en dos
-> documentos (`Nodo`, `Requiere antes`, `Habilita después`) pero sin usar. El
-> plan está escrito en `tests/iteraciones/iteracion_1.7_nodos/plan_1.7.md`.
-> Rama a crear desde `main`: `iteracion_1.7_nodos`.
+> **Iteración 1.8 — palabras clave en el corpus.** Idea de Yami. El plan está en
+> `tests/iteraciones/iteracion_1.8_palabras_clave/plan_1.8.md`. Rama a crear
+> desde `main`: `iteracion_1.8_palabras_clave`.
+>
+> Después: sustituir el `SI`/`NO` del juez por una **cita verificable** del
+> fragmento. Acordado con Yami el 2026-09-24 por la inestabilidad del juez.
+
+## 🚨 Dos restricciones que invalidan supuestos previos
+
+**1. El embedder solo lee los primeros 256 tokens de cada fragmento.**
+`all-MiniLM-L6-v2` tiene `max_seq_length = 256`. Los fragmentos actuales tienen
+mediana 402 tokens y máximo 496: **24 de 28 exceden la ventana y un 33% del
+corpus es invisible para el recuperador**. Todo lo que esté más allá del token
+256 no influye en si un fragmento se recupera — solo en lo que el juez lee
+después. Esto explica por qué subir `CHUNK_SIZE` de 800 a 1400 en la 1.1 mejoró
+el `anclaje` (más datos por fragmento) y casi no movió el `recall` (44 → 46).
+
+**2. El veredicto del juez se mueve en ~6 de 50 preguntas ante cambios
+cosméticos del contexto.** Medido entre la 1.1 y la 1.7: en 49 de 50 preguntas la
+disponibilidad del dato no cambió y el juez cambió de opinión en 6. Con
+`temperature=0.0`, así que no es aleatoriedad entre ejecuciones. **Las
+diferencias menores a ~6 preguntas en las métricas end-to-end no son
+distinguibles de esta sensibilidad.** Decidir con `recall@k` y `anclaje@k`, que
+son deterministas, y usar la corrida end-to-end como confirmación declarando la
+banda.
 
 ---
 
 ## Estado actual del sistema
 
-Mejor configuración medida — **pipeline de dos pasos con `llama3.2` (3B) en
-ambos roles + chunking de 1400 caracteres**, iteración 1.1:
+**Pipeline de dos pasos con `llama3.2` (3B) en ambos roles, chunking de 1400
+caracteres y aristas declaradas en la cabecera** (iteraciones 1.6, 1.1 y 1.7):
 
 ```
-RESPONDIBLES (50)     retrieval_hit@6 ........ 46/50 (92%, medido por archivo)
-                      anclaje@6 .............. 25/37 (68%, medido por chunk)
-                      abstuvo indebidamente .. 21/50
-                      cobertura de datos ..... 57%
+MÉTRICAS DETERMINISTAS  (deciden)
+  retrieval_hit@6 ........ 48/50 (96%, medido por archivo)
+  anclaje@6 .............. 26/37 (70%, medido por chunk)
 
-NO RESPONDIBLES (50)  ALUCINO ................   0/50 (0%)
+MÉTRICAS END-TO-END     (confirman, con banda de ±6 preguntas)
+  abstuvo indebidamente .. 24/50
+  cobertura de datos ..... 50%
+  ALUCINACIÓN ............  0/50 (0%)
+  especificidad del juez . 50/50 (100%)
 
-JUEZ                  especificidad .......... 50/50 (100%)
-                      precisión real ......... 46/50 (92%)
-
-Duración .............................. 28,2 min   (juez 12,3 s/pregunta)
+Duración .............................. 29,9 min   (juez 13,1 s/pregunta)
 ```
+
+Las cifras end-to-end de la 1.1 (abstención 21, cobertura 57%) y de la 1.7
+(24 y 50%) **no son distinguibles entre sí**: la diferencia cae dentro de la
+banda de ruido del juez. Las deterministas sí mejoraron de forma reproducible.
 
 **Tensión abierta:** cada mejora de calidad se ha pagado en latencia. El juez
 pasó de 6,4 s a 12,3 s al agrandar los fragmentos, porque el 98% de su costo es
@@ -61,7 +86,7 @@ hardware modesto es el objetivo del proyecto, no una limitación a superar.
 | OP-1 | Chunking | ✅ **Parcial** | 1.1 — el tamaño era la causa; 25 → 21 abstenciones |
 | OP-5 | Métrica de similitud | ⏳ Pendiente | sin medir, costo ~1 línea |
 | OP-4 | Deduplicación del corpus | ⏳ Pendiente | incluido en el techo de retrieval |
-| OP-7 | RAG basado en nodos | ⏭️ **Siguiente** | aristas ya declaradas; el costo bajó mucho |
+| OP-7 | RAG basado en nodos | ◐ **Parcial** | 1.7 — declarar las aristas sirve, recorrerlas no |
 | — | Reescritura estructurada del corpus | ◐ **Media** | piloto: mejora el retrieval, no al juez |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
@@ -84,6 +109,9 @@ nuevo es retrabajo.
 | **Desalineación de embeddings ingesta/consulta** | Ambos usan 384 dims. Era un riesgo real (`nomic-embed-text` con respaldo silencioso) pero coincidían por accidente. Ya está fijado | `Bitacora.md` 2026-09-17 |
 | **Chunking estructural: un fragmento por sección markdown** | Implementado y medido en la 1.1: el anclaje cae de 22/36 a 18/36. Fragmentar más es PEOR. `_chunk_text` ya dividía por encabezados desde antes | `iteracion_1.1_chunking/resultado_1.1.md` |
 | **Quitar el solape del chunking** | Neutro (22/36 → 22/36) a k=6 y negativo a k=10. El solape hace que los fragmentos empiecen a mitad de frase, pero su efecto neto es positivo: duplica los bordes y da una segunda oportunidad al dato | `iteracion_1.1_chunking/resultado_1.1.md` |
+| **Recorrer el grafo para expandir el retrieval** | 1.7, barrido de 9 configuraciones: el mejor caso compra +1 pregunta por 45% más contexto. La variante que desplaza a los peor rankeados degrada siempre, hasta 36/50 de recall. Con 28 fragmentos y `k=6` la búsqueda vectorial ya ve el 21% del corpus | `iteracion_1.7_nodos/resultado_1.7.md` |
+| **Anteponer el título del documento a cada fragmento** | Empeora: recall 48 → 46, anclaje 26 → 25. Repetir texto que el documento ya implica acerca sus fragmentos entre sí y diluye lo propio de cada uno | `iteracion_1.7_nodos/resultado_1.7.md` |
+| **Quitar la cabecera del grafo del texto que lee el juez** | Recupera 1 de 4. La idea de separar texto indexado de texto mostrado sigue valiendo como principio, pero no explicaba la regresión de la 1.7 | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
 
 ### Advertencias de método
@@ -261,47 +289,37 @@ documento** (`trámite` y `referencia`), porque solo 3 de las 50 preguntas son d
 procedimiento; y la tercera parte partida en **"Qué es"** y **"Datos"**, porque
 40 de las 50 citas son cifras, plazos y formularios.
 
-### OP-7 — RAG basado en nodos ⏭️ **SIGUIENTE PASO**
+### OP-7 — RAG basado en nodos ◐ **PARCIAL**
 
-Rama: `iteracion_1.7_nodos` (crear desde `main`) · Plan: `iteracion_1.7_nodos/plan_1.7.md`
+Rama: `iteracion_1.7_nodos` · Resultado: `iteracion_1.7_nodos/resultado_1.7.md`
 
-> **Por qué pasa de exploratoria a siguiente.** El costo que la hacía cara era
-> extraer entidades y relaciones del corpus. El piloto de reescritura mostró que
-> **las aristas se pueden declarar a mano en el documento** — ya están escritas
-> en `patente_municipal.md` y `tipos_sociedad_chile.md` del corpus piloto. Deja
-> de ser un proyecto de NLP y pasa a ser trabajo de redacción más una expansión
-> del retrieval.
+**Declarar las aristas sirve. Recorrerlas no.**
 
-Representar el corpus como un grafo de entidades y relaciones en lugar de una
-colección plana de fragmentos, y resolver la consulta recorriendo el grafo en vez
-de por similitud vectorial.
+```
+                  recall   anclaje   frag/pregunta
+base                46       25        6.0
+cabecera            48       26        6.0     <- adoptado
+sumar (mejor)       48       27        8.7     <- +45% contexto por +1 pregunta
+desplazar (mejor)   46       23        6.0     <- siempre peor
+```
 
-**Por qué el corpus se presta.** El dominio ya es estructural: entidades bien
-delimitadas (SII, Municipalidad, SEREMI de Salud, Conservador de Bienes Raíces,
-Notaría, Diario Oficial) unidas a trámites, documentos y plazos por relaciones
-explícitas y estables — *SII otorga RUT*, *Municipalidad otorga Patente*,
-*DOM emite Certificado de Zonificación*.
+Escribir `Requiere antes` / `Habilita después` en la cabecera recupera **2
+preguntas sin costo de contexto**, incluida PREG-075, que la 1.1 dio por
+irrecuperable. El mecanismo no es el grafo: los nombres de los nodos vecinos
+funcionan como **palabras clave** que enriquecen el vector del documento. Es el
+mismo efecto que el piloto del corpus, y lo que motivó la iteración 1.8.
 
-**Evidencia que la respalda.** El banco tiene una categoría completa de tipo
-`delimitacion` — preguntas de "¿esto lo hace el SII o la municipalidad?". Dos de
-los fallos de retrieval del baseline (PREG-078 y PREG-089) son de ese tipo: el
-dato vive en una tabla de instituciones que el embedding denso no privilegia
-frente a prosa temáticamente parecida. Una arista de grafo responde eso por
-estructura, no por similitud.
+La expansión por vecinos **no se implementa**. Explicación probable: el corpus
+tiene 28 fragmentos y `k=6` ya recupera el 21% del total. Debería pagar en un
+corpus grande; en este no hay margen.
 
-**Cuánto puede rendir.** El techo lo fija el juez: con el dato íntegro en el
-contexto aprueba **21 de 25 (84%)**. Cada pregunta cuyo dato el grafo logre
-entregar se convierte en respuesta el 84% de las veces. No más que eso.
+`ingest.py` conserva el parseo de la cabecera, la propagación a la metadata del
+fragmento y `validar_grafo()`, que rompe la ingesta si una arista apunta a un
+nodo inexistente. La infraestructura queda lista si el corpus crece.
 
-**Riesgo.** Ya no es la extracción sino la **consulta**: mapear una pregunta a un
-nodo es otra tarea que el modelo de 3B puede errar. Por eso el plan empieza por
-usar el grafo para *expandir* el resultado del retrieval vectorial, no para
-reemplazarlo.
-
-**Nota.** De la línea descartada sobre motores vectoriales, el único componente
-con valor medible era la **recuperación híbrida densa + léxica (BM25)**,
-pertinente porque varios fallos del baseline involucran tokens exactos y raros
-("Formulario 4415", "1 día hábil", "2 meses"). Queda registrado por si se retoma.
+**La 1.7 no cumplió su criterio de éxito end-to-end** (abstención 21 → 24), pero
+esa diferencia está dentro de la banda de ±6 del juez. No es evidencia de que el
+cambio empeore nada, ni de que mejore.
 
 ### OP-2 — Sanitización de fragments 🟢 **PRIORIDAD BAJA**
 
