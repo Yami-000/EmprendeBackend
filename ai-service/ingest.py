@@ -283,6 +283,80 @@ def _palabras_clave(textos, n=N_CLAVES):
     return out
 
 
+# Iteración 1.11. El vector de un fragmento cubre el fragmento completo.
+#
+# EL PROBLEMA: all-MiniLM-L6-v2 tiene max_seq_length = 256 y los fragmentos
+# tienen mediana 382 tokens, así que al embeber el fragmento entero el modelo
+# TRUNCA y el 32% del corpus no influye en el retrieval. Medido antes de este
+# cambio: cuando la cita de anclaje cae dentro de la ventana, anclaje@6 acierta
+# 21 de 23 (91%); cuando cae fuera, 7 de 14 (50%). Ver
+# scripts/medir_ventana_embedder.py.
+#
+# NO CONFUNDIR con el truncado de api.py (1400 caracteres). Son dos recortes
+# distintos: la ventana decide QUÉ fragmentos se recuperan, el truncado decide
+# QUÉ lee el juez de cada fragmento recuperado.
+#
+# LA SOLUCIÓN: partir en ventanas que sí entren, embeber cada una y promediar.
+# El vector que devuelve el modelo ya es un mean pooling sobre los tokens que
+# alcanza a leer, así que promediar ventanas extiende ese mismo promedio a todos
+# los tokens. Sigue habiendo UN vector por fragmento, de modo que el camino de
+# consulta (api.py, los scripts de medición) no cambia y k=6 sigue devolviendo
+# seis fragmentos distintos.
+VENTANA_TOKENS = 240      # < 256 para dejar aire al prefijo de palabras clave
+VENTANA_SOLAPE = 40
+
+
+def _ventanas(texto: str, tokenizer, max_tok: int = VENTANA_TOKENS,
+              solape: int = VENTANA_SOLAPE):
+    """Parte el texto en tramos de <= max_tok tokens, con solape.
+
+    Se corta por palabras y no por tokens crudos para no partir una palabra al
+    medio: un tramo que empieza en '##ción' no representa nada.
+    """
+    palabras = texto.split()
+    if not palabras:
+        return [texto]
+    largos = [len(tokenizer.tokenize(w)) for w in palabras]
+
+    ventanas, ini = [], 0
+    while ini < len(palabras):
+        n, fin = 0, ini
+        while fin < len(palabras) and n + largos[fin] <= max_tok:
+            n += largos[fin]
+            fin += 1
+        if fin == ini:          # una sola palabra más larga que la ventana
+            fin = ini + 1
+        ventanas.append(" ".join(palabras[ini:fin]))
+        if fin >= len(palabras):
+            break
+        # retroceder por el solape, medido en tokens
+        atras, c = fin, 0
+        while atras > ini + 1 and c < solape:
+            atras -= 1
+            c += largos[atras]
+        ini = atras
+    return ventanas
+
+
+def _embeber_completo(st_model, texto: str):
+    """Vector del fragmento completo: media de sus ventanas, renormalizada.
+
+    La renormalización no es cosmética: all-MiniLM-L6-v2 trae capa Normalize y
+    todos los vectores del índice son unitarios. Una media sin renormalizar
+    tendría norma < 1 y no sería comparable con los vectores de consulta.
+    """
+    import numpy as np
+
+    vs = st_model.encode(_ventanas(texto, st_model.tokenizer),
+                         show_progress_bar=False)
+    v = np.asarray(vs, dtype="float64")
+    if v.ndim == 1:
+        v = v.reshape(1, -1)
+    v = v.mean(axis=0)
+    n = float(np.linalg.norm(v))
+    return v / n if n else v
+
+
 def create_vector_store(documents):
     from sentence_transformers import SentenceTransformer
 
@@ -320,7 +394,9 @@ def create_vector_store(documents):
             sep = chr(10) * 2
             indexables.append(("Palabras clave: " + pal + sep + t) if pal else t)
 
-        embeddings_list = st_model.encode(indexables, show_progress_bar=False)
+        # Iteración 1.11: el vector cubre el fragmento COMPLETO, no sus primeros
+        # 256 tokens. Ver _embeber_completo.
+        embeddings_list = [_embeber_completo(st_model, t) for t in indexables]
         # Ensure embeddings are plain Python floats (avoid numpy types that print verbosely)
         cleaned_embeddings = [[float(x) for x in emb] for emb in embeddings_list]
 
