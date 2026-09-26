@@ -234,6 +234,8 @@ nuevo es retrabajo.
 | **Poner un ejemplo concreto en el prompt del juez** | El modelo de 3B lo copia como respuesta en vez de leer el contexto: 3 de 10 citas eran literalmente el ejemplo del prompt. Quitarlo sube las citas válidas de 60% a 100% | `iteracion_1.9_juez_con_cita/resultado_fase0.md` |
 | **Des-aplanar los saltos de línea del contexto del juez** | Fase 1 de la 1.10: `doc.replace('\n',' ')[:1400]` a `doc[:1400]` recupera **1 de 8** del núcleo duro y **0 de 8** end-to-end. Determinista (0 vuelcos en dos corridas idénticas). Lo decisivo: PREG-088 seguía en `NO` con la tabla perfectamente formateada, **y la Fase 2 la recuperó agregando el verbo con la tabla igual de aplanada**. No era el formato, era la relación ausente. El contexto tampoco crece: 28415 caracteres en ambas versiones | `iteracion_1.10_relaciones_explicitas/resultado_fase1.md` |
 | **Declarar la relación en prosa para preguntas comparativas o disyuntivas** | 1.10 Fase 2: funciona para relaciones de un dato (5 de 8) pero **no** para las que piden una relación entre dos datos. PREG-010, 064 y 084 reciben el predicado en el contexto —en el **puesto 1** dos de ellas— y el juez dice `NO` igual. Agregar más prosa del mismo tipo es retrabajo: hace falta otro mecanismo | `iteracion_1.10_relaciones_explicitas/resultado_fase2.md` |
+| **Ampliar la enumeración de tipos de dato del prompt del juez** | 1.12: agregar *"comparación entre dos figuras"* y *"delimitación de qué organismo interviene y cuál no"* a la lista de `estricto` da **0 de 3**, y la sonda de descomposición corrida con las dos variantes da **9 juicios idénticos**. Efecto exactamente nulo: el juez no usa esa lista para decidir. **Tercera refutación independiente** de tocar el prompt del juez | `iteracion_1.12_comparativas/resultado_1.12.md` |
+| **Mejorar `anclaje@k` suponiendo que la sensibilidad lo sigue** | 1.11A: promediar ventanas sube `anclaje@6` de 28 a **31/37** —el mejor del proyecto— y la sensibilidad **baja** de 23/29 a 20/29, con la cobertura de datos subiendo de 61% a 77%. Llega más dato y el juez aprueba menos. `anclaje@k` no mira **qué más** hay en los 6 fragmentos | `iteracion_1.11_ventana_embedder/resultado_1.11.md` |
 | **Anteponer el título del documento a cada fragmento** | Empeora: recall 48 → 46, anclaje 26 → 25. Repetir texto que el documento ya implica acerca sus fragmentos entre sí y diluye lo propio de cada uno | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Quitar la cabecera del grafo del texto que lee el juez** | Recupera 1 de 4. La idea de separar texto indexado de texto mostrado sigue valiendo como principio, pero no explicaba la regresión de la 1.7 | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
@@ -284,6 +286,17 @@ nuevo es retrabajo.
   47/50 y la sensibilidad a 22/29. Con 6, el índice volvió a 28 chunks, `recall@6`
   a 48/50 y la sensibilidad subió a 23/29. **Vigilar el conteo de chunks al tocar
   el corpus.**
+- **`anclaje@k` no es un proxy suficiente del rendimiento del juez.** Mide si la
+  cita está en alguno de los k fragmentos, y **no mira qué más hay ahí**. La 1.11A
+  lo subió a 31/37 —el mejor del proyecto— y la sensibilidad bajó 3 puntos con la
+  cobertura de datos **subiendo** de 61% a 77%. Falta una métrica de **precisión del
+  contexto**: 31/37 con 6 fragmentos ruidosos puede valer menos que 28/37 con 6
+  limpios.
+- **El juez de 3B verifica un hecho a la vez, no relaciones entre dos hechos.**
+  Demostrado con `scripts/sonda_descomposicion.py`: con el **mismo** contexto y el
+  **mismo** prompt, PREG-084 da `NO` como *"¿cuál es la diferencia entre los tipos
+  de socios?"* y `SI` a las dos subpreguntas por separado. No es la instrucción del
+  prompt —tres refutaciones— es la tarea.
 - **La ventana del embedder y el truncado de `api.py` son DOS recortes distintos,
   y el primero decide el retrieval.** `all-MiniLM-L6-v2` lee 256 tokens; los chunks
   tienen mediana 382, así que **32% del corpus es invisible para la búsqueda

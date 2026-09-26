@@ -77,8 +77,10 @@ def reporte():
           f"min {min(toks)}, max {max(toks)}")
     print(f"chunks que exceden la ventana: {sum(1 for t in toks if t > W)} de {len(docs)}")
     invis = sum(max(0, t - W) for t in toks)
-    print(f"tokens invisibles para el retrieval: {invis} de {sum(toks)} "
-          f"({100 * invis / sum(toks):.0f}% del corpus)\n")
+    print(f"tokens fuera de la ventana: {invis} de {sum(toks)} "
+          f"({100 * invis / sum(toks):.0f}% del corpus)")
+    print("  (fuera de la ventana no implica invisible: depende de como ingest.py")
+    print("   calcule el vector. Truncando si lo es; promediando ventanas, no.)\n")
 
     resp = [p for p in banco if p["ground_truth"].get("md_origen")]
     dentro, fuera = [], []
@@ -112,8 +114,10 @@ def reporte():
           f"({100 * d_ok / max(1, len(dentro)):.0f}%)")
     print(f"  fuera de la ventana:  {f_ok}/{len(fuera)} "
           f"({100 * f_ok / max(1, len(fuera)):.0f}%)")
-    print("\nLa brecha entre esas dos filas es el costo de indexar fragmentos mas")
-    print("largos que la ventana del embedder.")
+    print("\nLA BRECHA ENTRE ESAS DOS FILAS ES EL NUMERO QUE IMPORTA.")
+    print("Con el vector truncado a la ventana medía 91% contra 50%: 41 puntos, y")
+    print("era el techo del retrieval. La 1.11 promedia ventanas para cerrarla; si")
+    print("vuelve a abrirse, algo rompió _embeber_completo en ingest.py.")
 
 
 if __name__ == "__main__":

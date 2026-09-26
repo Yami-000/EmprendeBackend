@@ -104,11 +104,22 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   prompt: fue **declarar la relación en prosa antes de la tabla** —*"La Notaría
   elabora la escritura pública de constitución"*— sin borrar la fila. Núcleo duro
   0 → 5 de 8, sensibilidad 18/29 → 23/29, especificidad y alucinación intactas.
-- **Lo que resiste son las preguntas comparativas y disyuntivas.** PREG-010, 064 y
-  084 reciben el predicado en el contexto —en el **puesto 1** dos de ellas— y el
-  juez dice `NO` igual. Piden una **relación entre dos datos**, no un dato. Es el
-  trabajo de la 1.11 y hace falta un mecanismo nuevo: más prosa del mismo tipo es
-  retrabajo.
+- **Lo que resiste son las preguntas comparativas y disyuntivas, y ya se sabe por
+  qué.** El juez de 3B **verifica un hecho a la vez**: con el mismo contexto y el
+  mismo prompt, PREG-084 da `NO` como *"¿cuál es la diferencia entre los tipos de
+  socios?"* y `SI` a las dos subpreguntas por separado
+  (`scripts/sonda_descomposicion.py`). No es la instrucción: es la tarea.
+- **No editar el texto del prompt del juez para esos casos.** Tres refutaciones
+  independientes: `flexible` (1 de 8), un juez de 7B (0 de 8) y ampliar la
+  enumeración de tipos de dato (1.12, **0 de 3** y 9 juicios idénticos con las dos
+  variantes). Lo que queda en pie es **partir la pregunta en dos juicios y combinar
+  los veredictos fuera del modelo** (B2), con premisa validada en 2 de 3 y un techo
+  de 2 preguntas por una llamada extra.
+- **`anclaje@k` no es un proxy suficiente del juez.** La 1.11A lo subió de 28 a
+  31/37 —el mejor del proyecto— y la **sensibilidad bajó** de 23/29 a 20/29, con la
+  cobertura de datos subiendo de 61% a 77%. Mide si la cita está entre los k, no
+  **qué más** hay ahí. Si un cambio mejora `anclaje@k`, confirmá la sensibilidad
+  antes de celebrarlo.
 - **Al agregar texto al corpus, vigilar el conteo de chunks.** Dos frases de más
   partieron `tipos_sociedad_chile.md` en 3 chunks, bajaron `recall@6` de 48/50 a
   47/50 y *bajaron* la sensibilidad de 23/29 a 22/29. Un predicado que parte una
