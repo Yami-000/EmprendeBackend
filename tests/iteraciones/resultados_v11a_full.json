@@ -8,12 +8,12 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_sii.md",
       "constitucion_empresa_tradicional.md",
       "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md"
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -26,13 +26,13 @@
       "SII"
     ],
     "cobertura": 1.0,
-    "respuesta": "El Servicio de Impuestos Internos (SII) es responsable de emitir el RUT a la empresa, y también de recibir la declaración de inicio de actividades.",
+    "respuesta": "El Servicio de Impuestos Internos (SII) es responsable del inicio de actividades y la obtención del RUT, así como la declaración de impuestos.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 13.58,
-    "redactor_latencia_s": 16.95
+    "juez_latencia_s": 11.58,
+    "redactor_latencia_s": 16.97
   },
   {
     "id": "PREG-002",
@@ -47,8 +47,8 @@
       "planificacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md",
-      "tipos_empresa_decision.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -62,16 +62,22 @@
       "SII"
     ],
     "anclas_ok": [
+      "1.",
+      "2.",
+      "3.",
+      "4.",
+      "5.",
+      "RUT",
       "SII"
     ],
-    "cobertura": 0.14,
-    "respuesta": "El Servicio de Impuestos Internos (SII) ofrece el trámite de Inicio de Actividades tanto en línea como presencialmente.",
+    "cobertura": 1.0,
+    "respuesta": "El Servicio de Impuestos Internos (SII) ofrece el trámite de Inicio de Actividades en línea y presencialmente. Para realizarlo en línea, se deben seguir los siguientes pasos:\n\n1. Acceder a www.sii.cl\n2. Pinchar \"Mi SII\"\n3. Ingresar a \"Servicios On Line\"\n4. Seleccionar \"RUT e Inicio de Actividades\"\n5. Pinchar \"Inicio de Actividades\"\n\nAdemás, también se puede realizar el trámite presencialmente, presentando los siguientes documentos:\n\n- Formulario 4415 del SII\n- Cédula de identidad (original o fotocopia legalizada)\n- Poder notarial (si corresponde)\n- Escritura de constitución protocolizada\n- Código de Verificación Electrónica (CVE)\n- Comprobante de domicilio y rol de avalúo",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 13.23,
-    "redactor_latencia_s": 12.17
+    "juez_latencia_s": 14.98,
+    "redactor_latencia_s": 19.2
   },
   {
     "id": "PREG-006",
@@ -82,10 +88,10 @@
     ],
     "recuperado": [
       "inicio_actividades_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
       "planificacion_formalizacion.md",
-      "documentacion_formalizacion.md",
-      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": false,
@@ -102,7 +108,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 13.09,
+    "juez_latencia_s": 11.24,
     "redactor_latencia_s": 0.0
   },
   {
@@ -114,9 +120,9 @@
     ],
     "recuperado": [
       "patente_municipal.md",
-      "inicio_actividades_formalizacion_sii.md",
       "documentacion_formalizacion.md",
-      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
       "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
@@ -135,7 +141,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 3.42,
+    "juez_latencia_s": 12.89,
     "redactor_latencia_s": 0.0
   },
   {
@@ -147,11 +153,11 @@
     ],
     "recuperado": [
       "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "formularios_tributarios_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md",
-      "inicio_actividades_formalizacion_sii.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -168,13 +174,13 @@
       "IVA"
     ],
     "cobertura": 0.6,
-    "respuesta": "El Formulario 29 (F29) es una declaración mensual de IVA que se debe presentar a través del Servicio de Impuestos Internos (SII). En este formulario, las empresas deben declarar y pagar el Impuesto al Valor Agregado (IVA) sobre sus ventas.",
+    "respuesta": "El Formulario 29 (F29) es un documento utilizado por las empresas para declarar y pagar el Impuesto a la Valor Agregado (IVA) mensualmente. En este formulario, se declara y paga el IVA sobre las ventas realizadas durante el período tributario, así como también se calculan y retienen los impuestos de segunda categoría, como honorarios y otros impuestos específicos.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 14.59,
-    "redactor_latencia_s": 19.53
+    "juez_latencia_s": 14.37,
+    "redactor_latencia_s": 20.04
   },
   {
     "id": "PREG-061",
@@ -187,10 +193,10 @@
     "recuperado": [
       "tipos_empresa_decision.md",
       "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "tipos_sociedad_chile.md",
       "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "tipos_sociedad_chile.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -205,7 +211,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 11.85,
+    "juez_latencia_s": 15.4,
     "redactor_latencia_s": 0.0
   },
   {
@@ -221,7 +227,7 @@
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "tipos_sociedad_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_empresa_decision.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
@@ -237,13 +243,13 @@
       "UF"
     ],
     "cobertura": 1.0,
-    "respuesta": "Una MEF es un tipo de empresa que se opera desde el domicilio familiar, sin separación patrimonial entre la persona natural y el negocio. Su límite de ventas anuales es de 2.400 UF (Unidades Fijas). No puede tener trabajadores externos, solo familiares directos.",
+    "respuesta": "Una Microempresa Familiar (MEF) en Chile es una forma de empresa que se opera desde el domicilio familiar. Su característica principal es que solo puede tener socios familiares directos, sin la posibilidad de contratar trabajadores externos. El límite de ventas anuales para una MEF es de 2.400 UF (Unidades Fijas).",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 9.86,
-    "redactor_latencia_s": 20.14
+    "juez_latencia_s": 7.27,
+    "redactor_latencia_s": 20.45
   },
   {
     "id": "PREG-063",
@@ -254,11 +260,11 @@
       "tipos_sociedad_chile.md"
     ],
     "recuperado": [
-      "inicio_actividades_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": true,
@@ -273,7 +279,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 13.6,
+    "juez_latencia_s": 9.85,
     "redactor_latencia_s": 0.0
   },
   {
@@ -285,12 +291,12 @@
       "tipos_sociedad_chile.md"
     ],
     "recuperado": [
-      "tipos_empresa_decision.md",
-      "inicio_actividades_sii.md",
-      "constitucion_empresa_simplificada.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md",
-      "tipos_sociedad_chile.md"
+      "tipos_sociedad_chile.md",
+      "tipos_empresa_decision.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "constitucion_empresa_tradicional.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -304,9 +310,9 @@
     "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
+    "juez_respuesta": "NO",
     "juez_dijo_si": false,
-    "juez_latencia_s": 3.38,
+    "juez_latencia_s": 11.99,
     "redactor_latencia_s": 0.0
   },
   {
@@ -318,12 +324,12 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -333,13 +339,13 @@
     ],
     "anclas_ok": [],
     "cobertura": 0.0,
-    "respuesta": "El costo total de formalizar una empresa bajo el régimen simplificado (Tu Empresa en un Día) es $0, ya que se trata de un proceso gratuito.",
+    "respuesta": "El costo total de formalizar una empresa bajo el régimen simplificado (Tu Empresa en un Día) es $0: formalizar por esa vía es gratuito.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 12.2,
-    "redactor_latencia_s": 19.15
+    "juez_latencia_s": 15.07,
+    "redactor_latencia_s": 19.33
   },
   {
     "id": "PREG-066",
@@ -351,10 +357,10 @@
     ],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "costos_y_plazos_formalizacion.md",
-      "constitucion_empresa_tradicional.md",
-      "inicio_actividades_sii.md",
+      "documentacion_formalizacion.md",
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": true,
@@ -370,13 +376,13 @@
       "notaría"
     ],
     "cobertura": 1.0,
-    "respuesta": "El rango de costo estimado para la escritura pública en notaría en el régimen tradicional es entre $50.000 y $200.000 CLP.",
+    "respuesta": "El rango de costo estimado para la escritura pública en notaría en el régimen tradicional es $50.000 - $200.000 CLP.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 11.66,
-    "redactor_latencia_s": 13.07
+    "juez_latencia_s": 12.19,
+    "redactor_latencia_s": 19.04
   },
   {
     "id": "PREG-067",
@@ -387,12 +393,12 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
       "costos_y_plazos_formalizacion.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_tradicional.md"
+      "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -407,7 +413,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 15.15,
+    "juez_latencia_s": 10.96,
     "redactor_latencia_s": 0.0
   },
   {
@@ -419,12 +425,12 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "patente_municipal.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md",
+      "patente_municipal.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "costos_y_plazos_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md"
+      "constitucion_empresa_tradicional.md",
+      "documentacion_formalizacion.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -448,8 +454,8 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 9.79,
-    "redactor_latencia_s": 18.6
+    "juez_latencia_s": 12.58,
+    "redactor_latencia_s": 17.2
   },
   {
     "id": "PREG-069",
@@ -461,11 +467,11 @@
     ],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
-      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "constitucion_empresa_simplificada.md",
       "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -484,13 +490,13 @@
       "IVA"
     ],
     "cobertura": 1.0,
-    "respuesta": "El plazo para declarar y pagar el Formulario 29 (F29) — Declaración Mensual de IVA — es hasta el día 12 del mes siguiente al mes en que se realiza la declaración. Si se declara en línea sin deuda, el plazo se extiende hasta el 20 del mismo mes.",
+    "respuesta": "El plazo para declarar y pagar el Formulario 29 (F29) — Declaración Mensual de IVA — es hasta el día 12 del mes siguiente al mes en que se realizó la actividad tributaria, o hasta el 20 del mismo mes si se declara en línea sin deuda.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 13.57,
-    "redactor_latencia_s": 21.16
+    "juez_latencia_s": 11.15,
+    "redactor_latencia_s": 19.53
   },
   {
     "id": "PREG-070",
@@ -502,11 +508,11 @@
     ],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
       "constitucion_empresa_simplificada.md",
+      "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "documentacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -519,13 +525,13 @@
       "IVA"
     ],
     "cobertura": 1.0,
-    "respuesta": "La tasa general del Impuesto a la Valor Agregado (IVA) en Chile es del 19%. Se declara y paga mensualmente en el Formulario 29.",
+    "respuesta": "La tasa de IVA que se declara en el Formulario 29 es del 19%.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 11.51,
-    "redactor_latencia_s": 12.99
+    "juez_latencia_s": 12.08,
+    "redactor_latencia_s": 12.98
   },
   {
     "id": "PREG-071",
@@ -538,10 +544,10 @@
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md",
       "formularios_tributarios_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -559,8 +565,8 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 18.06,
-    "redactor_latencia_s": 20.62
+    "juez_latencia_s": 13.82,
+    "redactor_latencia_s": 14.68
   },
   {
     "id": "PREG-072",
@@ -573,23 +579,23 @@
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "formularios_tributarios_chile.md",
-      "documentacion_formalizacion.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
-      "constitucion_empresa_simplificada.md"
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
     "anclas": [],
     "anclas_ok": [],
     "cobertura": null,
-    "respuesta": "Existen tres tipos de documentos tributarios electrónicos (DTE) en Chile: Factura Electrónica, Boleta Electrónica y Nota de Crédito/Débito Electrónica. Las boletas electrónicas son obligatorias para ventas a consumidores finales.",
+    "respuesta": "Existen Factura Electrónica, Boleta Electrónica y Nota de Crédito/Débito Electrónica. Las boletas electrónicas son obligatorias para ventas a consumidores finales. Se emiten desde el portal del SII o software autorizado.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 15.37,
-    "redactor_latencia_s": 15.01
+    "juez_latencia_s": 12.99,
+    "redactor_latencia_s": 15.45
   },
   {
     "id": "PREG-073",
@@ -601,24 +607,24 @@
     ],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
       "inicio_actividades_sii.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md",
-      "constitucion_empresa_simplificada.md"
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": false,
+    "abstuvo": true,
     "anclas": [],
     "anclas_ok": [],
     "cobertura": null,
-    "respuesta": "Las empresas deben emitir Boletas Electrónicas obligatoriamente en las siguientes situaciones:\n\n* Ventas a consumidores finales.",
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "SI.",
-    "juez_dijo_si": true,
-    "juez_latencia_s": 11.56,
-    "redactor_latencia_s": 12.63
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.13,
+    "redactor_latencia_s": 0.0
   },
   {
     "id": "PREG-074",
@@ -628,31 +634,30 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "constitucion_empresa_simplificada.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "documentacion_formalizacion.md",
       "tipos_empresa_decision.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": false,
+    "abstuvo": true,
     "anclas": [
       "SA",
       "SpA"
     ],
     "anclas_ok": [
-      "SA",
-      "SpA"
+      "SA"
     ],
-    "cobertura": 1.0,
-    "respuesta": "Las SA y SpA deben llevar contabilidad completa con balance y estado de resultados.",
+    "cobertura": 0.5,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "SI.",
-    "juez_dijo_si": true,
-    "juez_latencia_s": 12.35,
-    "redactor_latencia_s": 13.04
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 15.55,
+    "redactor_latencia_s": 0.0
   },
   {
     "id": "PREG-075",
@@ -664,14 +669,14 @@
     ],
     "recuperado": [
       "constitucion_empresa_simplificada.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md",
       "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": false,
+    "abstuvo": true,
     "anclas": [
       "SII"
     ],
@@ -679,13 +684,13 @@
       "SII"
     ],
     "cobertura": 1.0,
-    "respuesta": "Todas las empresas deben mantener un registro electrónico en el SII: el Libro de Compras y Ventas electrónico.",
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "SI.",
-    "juez_dijo_si": true,
-    "juez_latencia_s": 14.2,
-    "redactor_latencia_s": 16.93
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.08,
+    "redactor_latencia_s": 0.0
   },
   {
     "id": "PREG-076",
@@ -696,33 +701,29 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "formularios_tributarios_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_tradicional.md"
+      "constitucion_empresa_tradicional.md",
+      "documentacion_formalizacion.md",
+      "tipos_sociedad_chile.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": false,
+    "abstuvo": true,
     "anclas": [
       "14",
       "25%",
       "27%"
     ],
-    "anclas_ok": [
-      "14",
-      "25%",
-      "27%"
-    ],
-    "cobertura": 1.0,
-    "respuesta": "La tasa de impuesto a la renta que aplica el Régimen General (14A) es del 25% para rentas atribuidas y del 27% para el régimen semi-integrado.",
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "SI.",
-    "juez_dijo_si": true,
-    "juez_latencia_s": 16.92,
-    "redactor_latencia_s": 20.26
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.73,
+    "redactor_latencia_s": 0.0
   },
   {
     "id": "PREG-077",
@@ -734,29 +735,33 @@
     ],
     "recuperado": [
       "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "tipos_sociedad_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "constitucion_empresa_tradicional.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": true,
+    "abstuvo": false,
     "anclas": [
       "14",
       "25%",
       "75.000 UF",
       "UF"
     ],
-    "anclas_ok": [],
-    "cobertura": 0.0,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "anclas_ok": [
+      "14",
+      "75.000 UF",
+      "UF"
+    ],
+    "cobertura": 0.75,
+    "respuesta": "El régimen Pro Pyme (14D N°3) está dirigido a PYMEs (Pequeñas y Medias Empresas) con ventas anuales entre 0 y 75.000 UF.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 14.29,
-    "redactor_latencia_s": 0.0
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 15.65,
+    "redactor_latencia_s": 20.23
   },
   {
     "id": "PREG-078",
@@ -768,10 +773,10 @@
     "recuperado": [
       "inicio_actividades_sii.md",
       "tipos_empresa_decision.md",
-      "planificacion_formalizacion.md",
-      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md"
+      "planificacion_formalizacion.md",
+      "tipos_sociedad_chile.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -789,8 +794,8 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 12.67,
-    "redactor_latencia_s": 13.05
+    "juez_latencia_s": 15.11,
+    "redactor_latencia_s": 14.31
   },
   {
     "id": "PREG-079",
@@ -801,11 +806,11 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_simplificada.md",
       "inicio_actividades_formalizacion_sii.md",
-      "permisos_complementarios.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
@@ -818,7 +823,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 14.67,
+    "juez_latencia_s": 12.92,
     "redactor_latencia_s": 0.0
   },
   {
@@ -829,12 +834,12 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_tradicional.md",
-      "constitucion_empresa_simplificada.md",
       "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -845,13 +850,13 @@
       "conservador"
     ],
     "cobertura": 1.0,
-    "respuesta": "El Conservador de Bienes Raíces es quien inscribe la empresa en el Registro de Comercio.",
+    "respuesta": "El Conservador de Bienes Raíces inscribe la empresa en el Registro de Comercio.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 14.34,
-    "redactor_latencia_s": 18.18
+    "juez_latencia_s": 13.87,
+    "redactor_latencia_s": 17.45
   },
   {
     "id": "PREG-081",
@@ -862,11 +867,11 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "formularios_tributarios_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": true,
@@ -883,13 +888,13 @@
       "abril"
     ],
     "cobertura": 0.75,
-    "respuesta": "El plazo para presentar el Formulario 22 de Declaración Anual de Renta es hasta el 30 de abril del año tributario anterior.",
+    "respuesta": "El plazo para presentar el Formulario 22 de Declaración Anual de Renta es hasta el 30 de abril de cada año (por el año tributario anterior).",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 13.34,
-    "redactor_latencia_s": 14.72
+    "juez_latencia_s": 12.04,
+    "redactor_latencia_s": 13.51
   },
   {
     "id": "PREG-083",
@@ -900,25 +905,25 @@
       "tipos_sociedad_chile.md"
     ],
     "recuperado": [
-      "inicio_actividades_sii.md",
+      "tipos_sociedad_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
       "tipos_empresa_decision.md",
-      "tipos_sociedad_chile.md",
-      "tipos_sociedad_chile.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": false,
+    "abstuvo": true,
     "anclas": [],
     "anclas_ok": [],
     "cobertura": null,
-    "respuesta": "La Sociedad Colectiva Comercial es una forma de sociedad que se caracteriza por la responsabilidad solidaria e ilimitada de todos sus socios.",
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "SI.",
-    "juez_dijo_si": true,
-    "juez_latencia_s": 14.57,
-    "redactor_latencia_s": 13.77
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.56,
+    "redactor_latencia_s": 0.0
   },
   {
     "id": "PREG-084",
@@ -931,10 +936,10 @@
     "recuperado": [
       "tipos_empresa_decision.md",
       "tipos_sociedad_chile.md",
-      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md"
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -946,7 +951,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 13.4,
+    "juez_latencia_s": 15.57,
     "redactor_latencia_s": 0.0
   },
   {
@@ -958,12 +963,12 @@
       "tipos_sociedad_chile.md"
     ],
     "recuperado": [
-      "tipos_sociedad_chile.md",
       "tipos_empresa_decision.md",
+      "tipos_sociedad_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "permisos_complementarios.md",
-      "inicio_actividades_sii.md",
-      "tipos_sociedad_chile.md"
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -975,17 +980,17 @@
     ],
     "anclas_ok": [
       "EIRL",
-      "SRL",
-      "SpA"
+      "SA",
+      "SRL"
     ],
     "cobertura": 0.75,
-    "respuesta": "EIRL, SRL y SpA.",
+    "respuesta": "La responsabilidad limitada se ofrece en las siguientes estructuras jurídicas:\n\n- Empresa Individual de Responsabilidad Limitada (EIRL)\n- Sociedad de Responsabilidad Limitada (SRL)",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 13.53,
-    "redactor_latencia_s": 16.87
+    "juez_latencia_s": 9.24,
+    "redactor_latencia_s": 19.26
   },
   {
     "id": "PREG-087",
@@ -995,10 +1000,10 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
@@ -1014,10 +1019,10 @@
     "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 16.53,
-    "redactor_latencia_s": 0.0
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 9.32,
+    "redactor_latencia_s": 10.35
   },
   {
     "id": "PREG-088",
@@ -1029,11 +1034,11 @@
     ],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_tradicional.md",
       "inicio_actividades_formalizacion_sii.md",
-      "planificacion_formalizacion.md",
+      "documentacion_formalizacion.md",
       "tipos_empresa_decision.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -1050,8 +1055,8 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 10.95,
-    "redactor_latencia_s": 11.9
+    "juez_latencia_s": 16.8,
+    "redactor_latencia_s": 19.57
   },
   {
     "id": "PREG-089",
@@ -1061,27 +1066,29 @@
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "recuperado": [
-      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "documentacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md"
+      "constitucion_empresa_tradicional.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
     "anclas": [
       "diario oficial"
     ],
-    "anclas_ok": [],
-    "cobertura": 0.0,
-    "respuesta": "La escritura pública de constitución del régimen tradicional.",
+    "anclas_ok": [
+      "diario oficial"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "La constitución de la empresa se debe publicar en el Diario Oficial.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 15.13,
-    "redactor_latencia_s": 17.23
+    "juez_latencia_s": 11.15,
+    "redactor_latencia_s": 11.79
   },
   {
     "id": "PREG-101",
@@ -1092,24 +1099,24 @@
     ],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
       "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
     "anclas": [],
     "anclas_ok": [],
     "cobertura": null,
-    "respuesta": "La formalización de un emprendimiento en Chile es el conjunto de trámites y procedimientos necesarios para que una iniciativa de emprendimiento se constituya como una entidad propia y cumpla con las normativas y regulaciones laborales, sanitarias, municipales y tributarias.",
+    "respuesta": "La formalización de un emprendimiento en Chile implica el conjunto de trámites y procedimientos necesarios para que una iniciativa de emprendimiento se constituya como una entidad propia y cumpla con las normativas y regulaciones laborales, sanitarias, municipales y tributarias.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 12.63,
-    "redactor_latencia_s": 14.82
+    "juez_latencia_s": 15.71,
+    "redactor_latencia_s": 15.3
   },
   {
     "id": "PREG-102",
@@ -1120,11 +1127,11 @@
     ],
     "recuperado": [
       "inicio_actividades_formalizacion_sii.md",
-      "tipos_empresa_decision.md",
       "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md"
+      "constitucion_empresa_simplificada.md",
+      "documentacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -1141,7 +1148,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 14.58,
+    "juez_latencia_s": 14.61,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1153,11 +1160,11 @@
     ],
     "recuperado": [
       "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_sii.md",
       "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
       "planificacion_formalizacion.md",
-      "tipos_empresa_decision.md"
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -1169,7 +1176,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.55,
+    "juez_latencia_s": 13.29,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1181,28 +1188,31 @@
     ],
     "recuperado": [
       "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_sii.md"
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": true,
+    "abstuvo": false,
     "anclas": [
       "2.",
       "60",
       "diario oficial"
     ],
-    "anclas_ok": [],
-    "cobertura": 0.0,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "anclas_ok": [
+      "60",
+      "diario oficial"
+    ],
+    "cobertura": 0.67,
+    "respuesta": "El plazo para publicar el extracto de constitución en el Diario Oficial es de 60 días desde la firma de la escritura.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.18,
-    "redactor_latencia_s": 0.0
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.64,
+    "redactor_latencia_s": 18.51
   },
   {
     "id": "PREG-105",
@@ -1212,12 +1222,12 @@
       "inicio_actividades_formalizacion_sii.md"
     ],
     "recuperado": [
-      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
       "constitucion_empresa_simplificada.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md"
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -1232,7 +1242,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 11.25,
+    "juez_latencia_s": 12.18,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1244,11 +1254,11 @@
     ],
     "recuperado": [
       "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md"
+      "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -1257,13 +1267,13 @@
     ],
     "anclas_ok": [],
     "cobertura": 0.0,
-    "respuesta": "Se constituye una empresa bajo el régimen simplificado en el portal www.tuempresaenundia.cl.",
+    "respuesta": "Una empresa se constituye bajo el régimen simplificado en la plataforma \"Tu Empresa en un Día\" (tuempresaenundia.cl).",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 13.45,
-    "redactor_latencia_s": 17.18
+    "juez_latencia_s": 14.52,
+    "redactor_latencia_s": 20.61
   },
   {
     "id": "PREG-107",
@@ -1273,27 +1283,29 @@
       "inicio_actividades_formalizacion_sii.md"
     ],
     "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
       "patente_municipal.md",
       "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
-      "permisos_complementarios.md",
-      "constitucion_empresa_simplificada.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
     "anclas": [
       "30"
     ],
-    "anclas_ok": [],
-    "cobertura": 0.0,
-    "respuesta": "La Patente Provisional es un tipo de patente municipal que se otorga a una empresa para operar en una comuna determinada. Se requiere para que un negocio utilice un local, oficina o instalación física. El trámite de la Patente Municipal se gestiona en la Municipalidad, que es una institución distinta del SII: el SII no tramita ni cobra la patente municipal.",
+    "anclas_ok": [
+      "30"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "La Patente Provisional es una autorización otorgada por la Municipalidad para actividades comerciales que requieren local fijo. Se convierte en definitiva tras 30 días sin observaciones.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 14.15,
-    "redactor_latencia_s": 18.84
+    "juez_latencia_s": 15.14,
+    "redactor_latencia_s": 18.38
   },
   {
     "id": "PREG-108",
@@ -1306,7 +1318,7 @@
       "patente_municipal.md",
       "inicio_actividades_formalizacion_sii.md",
       "documentacion_formalizacion.md",
-      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
@@ -1319,13 +1331,13 @@
       "MEF"
     ],
     "cobertura": 1.0,
-    "respuesta": "Existen las siguientes categorías de patente municipal: \n\n- Microempresa Familiar (MEF)\n- Comercial\n- Profesional\n- Industrial\n- De Alcoholes.",
+    "respuesta": "Existen las siguientes categorías de patente municipal:\n\n- Microempresa Familiar (MEF)\n- Comercial\n- Profesional\n- Industrial\n- De Alcoholes.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 9.09,
-    "redactor_latencia_s": 10.35
+    "juez_latencia_s": 10.5,
+    "redactor_latencia_s": 11.82
   },
   {
     "id": "PREG-109",
@@ -1335,12 +1347,12 @@
       "inicio_actividades_formalizacion_sii.md"
     ],
     "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
       "permisos_complementarios.md",
       "tipos_empresa_decision.md",
       "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_sii.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md"
+      "inicio_actividades_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -1355,7 +1367,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.92,
+    "juez_latencia_s": 14.71,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1366,12 +1378,12 @@
       "inicio_actividades_formalizacion_sii.md"
     ],
     "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_tradicional.md",
-      "documentacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_simplificada.md"
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -1387,7 +1399,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 14.62,
+    "juez_latencia_s": 13.95,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1399,11 +1411,11 @@
     ],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
-      "documentacion_formalizacion.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
       "inicio_actividades_formalizacion_sii.md",
-      "tipos_sociedad_chile.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -1418,10 +1430,10 @@
     "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 14.55,
-    "redactor_latencia_s": 0.0
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 12.13,
+    "redactor_latencia_s": 13.1
   },
   {
     "id": "PREG-112",
@@ -1432,12 +1444,12 @@
       "inicio_actividades_formalizacion_sii.md"
     ],
     "recuperado": [
-      "inicio_actividades_sii.md",
-      "planificacion_formalizacion.md",
       "constitucion_empresa_tradicional.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_simplificada.md",
       "tipos_empresa_decision.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_simplificada.md"
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": true,
@@ -1453,9 +1465,9 @@
     "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "Formulario 4415",
+    "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.44,
+    "juez_latencia_s": 13.51,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1469,9 +1481,9 @@
       "documentacion_formalizacion.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
     "abstuvo": false,
@@ -1483,7 +1495,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 15.63,
+    "juez_latencia_s": 15.52,
     "redactor_latencia_s": 19.28
   },
   {
@@ -1497,22 +1509,22 @@
       "patente_municipal.md",
       "documentacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
-      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
-    "abstuvo": false,
+    "abstuvo": true,
     "anclas": [],
     "anclas_ok": [],
     "cobertura": null,
-    "respuesta": "Además de la patente municipal, la municipalidad puede aplicar otros cobros asociados a un negocio. Estos incluyen: \n\n- Derechos de aseo del local\n- Derechos de publicidad (según tamaño de letreros)",
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "SI.",
-    "juez_dijo_si": true,
-    "juez_latencia_s": 14.25,
-    "redactor_latencia_s": 14.09
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 14.69,
+    "redactor_latencia_s": 0.0
   },
   {
     "id": "PREG-115",
@@ -1522,11 +1534,11 @@
       "inicio_actividades_formalizacion_sii.md"
     ],
     "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "constitucion_empresa_simplificada.md",
       "inicio_actividades_sii.md",
-      "planificacion_formalizacion.md",
+      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
@@ -1534,13 +1546,13 @@
     "anclas": [],
     "anclas_ok": [],
     "cobertura": null,
-    "respuesta": "El Certificado de Informaciones Previas contiene normas de edificación y destinos posibles del inmueble. Lo emite la Dirección de Obras Municipales.",
+    "respuesta": "El Certificado de Informaciones Previas es emitido por la Dirección de Obras Municipales. Contiene normas de edificación y destinos posibles del inmueble.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 9.36,
-    "redactor_latencia_s": 16.18
+    "juez_latencia_s": 12.07,
+    "redactor_latencia_s": 12.6
   },
   {
     "id": "PREG-116",
@@ -1550,11 +1562,11 @@
       "costos_y_plazos_formalizacion.md"
     ],
     "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": false,
@@ -1565,9 +1577,9 @@
     "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
+    "juez_respuesta": "NO",
     "juez_dijo_si": false,
-    "juez_latencia_s": 11.28,
+    "juez_latencia_s": 13.83,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1579,10 +1591,10 @@
     ],
     "recuperado": [
       "tipos_empresa_decision.md",
+      "inicio_actividades_formalizacion_sii.md",
       "tipos_sociedad_chile.md",
-      "inicio_actividades_formalizacion_sii.md",
       "planificacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": true,
@@ -1597,7 +1609,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.86,
+    "juez_latencia_s": 15.17,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1608,10 +1620,10 @@
       "inicio_actividades_formalizacion_sii.md"
     ],
     "recuperado": [
-      "planificacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_tradicional.md",
+      "planificacion_formalizacion.md",
       "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
       "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
@@ -1622,16 +1634,17 @@
       "diario oficial"
     ],
     "anclas_ok": [
-      "SII"
+      "SII",
+      "diario oficial"
     ],
-    "cobertura": 0.5,
-    "respuesta": "Puedes realizar los trámites de formalización en el sitio web oficial del Servicio de Impuestos Internos (SII) a través de la siguiente dirección: www.sii.cl.",
+    "cobertura": 1.0,
+    "respuesta": "- SII: www.sii.cl \n- Tu Empresa en un Día: www.tuempresaenundia.cl \n- Diario Oficial: www.diariooficial.cl \n- Conservadores de Bienes Raíces: www.conservadores.cl \n- Trámites en Línea: www.tramiteenlinea.cl",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
     "juez_respuesta": "SI.",
     "juez_dijo_si": true,
-    "juez_latencia_s": 12.69,
-    "redactor_latencia_s": 16.68
+    "juez_latencia_s": 11.14,
+    "redactor_latencia_s": 13.62
   },
   {
     "id": "PREG-003",
@@ -1639,11 +1652,89 @@
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "documentacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.01,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-004",
+    "pregunta": "¿Cómo puedo recuperar mi Clave Tributaria si la he olvidado o bloqueado?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.93,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-005",
+    "pregunta": "¿Cuáles son las principales funciones operativas de las Direcciones Regionales del SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.01,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-007",
+    "pregunta": "¿Cuál es la diferencia fundamental entre contribuyentes de Primera y Segunda Categoría?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
       "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md",
-      "formularios_tributarios_chile.md",
-      "tipos_empresa_decision.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "planificacion_formalizacion.md",
       "inicio_actividades_sii.md"
     ],
     "retrieval_hit": null,
@@ -1656,85 +1747,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 15.51,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-004",
-    "pregunta": "¿Cómo puedo recuperar mi Clave Tributaria si la he olvidado o bloqueado?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "formularios_tributarios_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
-      "planificacion_formalizacion.md",
-      "constitucion_empresa_simplificada.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.28,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-005",
-    "pregunta": "¿Cuáles son las principales funciones operativas de las Direcciones Regionales del SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "inicio_actividades_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.58,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-007",
-    "pregunta": "¿Cuál es la diferencia fundamental entre contribuyentes de Primera y Segunda Categoría?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "tipos_empresa_decision.md",
-      "inicio_actividades_sii.md",
-      "planificacion_formalizacion.md",
-      "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.63,
+    "juez_latencia_s": 11.13,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1743,10 +1756,10 @@
     "respondible": false,
     "esperado": [],
     "recuperado": [
+      "inicio_actividades_sii.md",
       "inicio_actividades_formalizacion_sii.md",
       "documentacion_formalizacion.md",
-      "planificacion_formalizacion.md",
-      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_simplificada.md"
     ],
@@ -1760,7 +1773,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.25,
+    "juez_latencia_s": 14.64,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1770,11 +1783,11 @@
     "esperado": [],
     "recuperado": [
       "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "formularios_tributarios_chile.md",
       "patente_municipal.md",
-      "planificacion_formalizacion.md"
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -1786,7 +1799,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.25,
+    "juez_latencia_s": 12.08,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1796,9 +1809,35 @@
     "esperado": [],
     "recuperado": [
       "inicio_actividades_sii.md",
+      "documentacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.98,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-012",
+    "pregunta": "¿Qué es una Factura Electrónica y qué valor legal tiene frente a la factura en papel tradicional?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_simplificada.md",
       "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "documentacion_formalizacion.md",
       "constitucion_empresa_tradicional.md"
     ],
@@ -1812,33 +1851,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 11.5,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-012",
-    "pregunta": "¿Qué es una Factura Electrónica y qué valor legal tiene frente a la factura en papel tradicional?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "constitucion_empresa_simplificada.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_tradicional.md",
-      "documentacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.81,
+    "juez_latencia_s": 13.76,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1847,12 +1860,12 @@
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
       "inicio_actividades_formalizacion_sii.md",
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "documentacion_formalizacion.md"
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -1864,7 +1877,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.66,
+    "juez_latencia_s": 14.29,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1873,12 +1886,12 @@
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "constitucion_empresa_simplificada.md",
-      "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_sii.md"
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -1888,9 +1901,9 @@
     "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
     "modo": "dos_pasos",
     "juez_prompt": "estricto",
-    "juez_respuesta": "NO",
+    "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 13.02,
+    "juez_latencia_s": 12.77,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1899,9 +1912,9 @@
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "planificacion_formalizacion.md",
-      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
+      "planificacion_formalizacion.md",
       "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "permisos_complementarios.md"
@@ -1916,7 +1929,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 10.92,
+    "juez_latencia_s": 11.87,
     "redactor_latencia_s": 0.0
   },
   {
@@ -1925,63 +1938,11 @@
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "formularios_tributarios_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md",
       "formularios_tributarios_chile.md",
       "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 14.7,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-017",
-    "pregunta": "¿Cuál es el plazo que tiene un receptor comercial para reclamar o aceptar el contenido de una Factura Electrónica?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "formularios_tributarios_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "formularios_tributarios_chile.md",
       "constitucion_empresa_simplificada.md",
-      "documentacion_formalizacion.md",
-      "constitucion_empresa_tradicional.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 11.15,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-018",
-    "pregunta": "¿Qué sanciones contempla el Código Tributario por la no emisión de boletas o facturas obligatorias?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "formularios_tributarios_chile.md",
-      "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
-      "planificacion_formalizacion.md",
       "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": null,
@@ -1994,21 +1955,21 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 11.19,
+    "juez_latencia_s": 12.57,
     "redactor_latencia_s": 0.0
   },
   {
-    "id": "PREG-021",
-    "pregunta": "¿Qué son los Pagos Provisionales Mensuales (PPM) y para qué sirven?",
+    "id": "PREG-017",
+    "pregunta": "¿Cuál es el plazo que tiene un receptor comercial para reclamar o aceptar el contenido de una Factura Electrónica?",
     "respondible": false,
     "esperado": [],
     "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "formularios_tributarios_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
       "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "tipos_sociedad_chile.md"
+      "formularios_tributarios_chile.md",
+      "constitucion_empresa_simplificada.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -2020,7 +1981,59 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 14.27,
+    "juez_latencia_s": 12.5,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-018",
+    "pregunta": "¿Qué sanciones contempla el Código Tributario por la no emisión de boletas o facturas obligatorias?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "formularios_tributarios_chile.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.14,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-021",
+    "pregunta": "¿Qué son los Pagos Provisionales Mensuales (PPM) y para qué sirven?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.88,
     "redactor_latencia_s": 0.0
   },
   {
@@ -2031,10 +2044,10 @@
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
       "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -2046,7 +2059,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.21,
+    "juez_latencia_s": 11.05,
     "redactor_latencia_s": 0.0
   },
   {
@@ -2056,11 +2069,11 @@
     "esperado": [],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
       "tipos_sociedad_chile.md",
-      "tipos_empresa_decision.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
-      "formularios_tributarios_chile.md"
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -2072,7 +2085,7 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 13.7,
+    "juez_latencia_s": 15.29,
     "redactor_latencia_s": 0.0
   },
   {
@@ -2081,740 +2094,12 @@
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "formularios_tributarios_chile.md",
-      "inicio_actividades_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "planificacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.91,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-027",
-    "pregunta": "¿Qué es una Citación (Art. 63 del Código Tributario) emitida por el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "formularios_tributarios_chile.md",
-      "documentacion_formalizacion.md",
-      "constitucion_empresa_simplificada.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.93,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-028",
-    "pregunta": "¿Cuál es el plazo legal que tiene un contribuyente para dar respuesta a una Citación del SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
-      "tipos_empresa_decision.md",
-      "documentacion_formalizacion.md",
-      "permisos_complementarios.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.34,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-029",
-    "pregunta": "¿Qué diferencia existe entre una Liquidación y un Giro de impuestos emitido por el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "documentacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
-      "inicio_actividades_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.65,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-030",
-    "pregunta": "¿Qué es la Reposición Administrativa Voluntaria (RAV) contemplada en el Código Tributario?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
-      "documentacion_formalizacion.md",
-      "planificacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.41,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-032",
-    "pregunta": "¿Qué tribunal es competente para conocer reclamaciones judiciales contra liquidaciones del SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "planificacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.01,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-033",
-    "pregunta": "¿Qué retenciones previsionales u obligaciones tributarias debe aplicar una empresa al pagar sueldos a sus trabajadores?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "constitucion_empresa_tradicional.md",
-      "inicio_actividades_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.54,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-034",
-    "pregunta": "¿Qué es el Libro de Remuneraciones Electrónico (LRE) y ante qué organismo se declara?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md",
-      "documentacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.36,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-035",
-    "pregunta": "¿Qué obligaciones tributarias tienen las personas que generan ingresos prestando servicios digitales en plataformas online?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "constitucion_empresa_simplificada.md",
-      "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "tipos_empresa_decision.md",
-      "documentacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.75,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-036",
-    "pregunta": "¿Cuál es el procedimiento y plazo para dar aviso de Término de Giro ante el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "planificacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "formularios_tributarios_chile.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 14.64,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-037",
-    "pregunta": "¿Qué sucede con los inventarios y activos fijos al momento de tramitar el Término de Giro de una empresa?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "planificacion_formalizacion.md",
-      "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 8.56,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-038",
-    "pregunta": "¿Dónde se consultan las anotaciones tributarias o inconcurrencias vigentes de un contribuyente?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "constitucion_empresa_tradicional.md",
-      "planificacion_formalizacion.md",
-      "formularios_tributarios_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "permisos_complementarios.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.49,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-039",
-    "pregunta": "¿Qué es el Registro de Compras y Ventas (RCV) digital del SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "formularios_tributarios_chile.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.87,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-040",
-    "pregunta": "¿Cómo se descarga un Certificado de Situación Tributaria en el sitio web del SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
-      "documentacion_formalizacion.md",
-      "constitucion_empresa_simplificada.md",
-      "formularios_tributarios_chile.md",
-      "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.61,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-041",
-    "pregunta": "¿Cuáles son los derechos fundamentales garantizados al contribuyente en el Artículo 8 bis del Código Tributario?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "planificacion_formalizacion.md",
-      "constitucion_empresa_tradicional.md",
-      "formularios_tributarios_chile.md",
-      "inicio_actividades_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 11.81,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-042",
-    "pregunta": "¿Qué institución autónoma defiende a los contribuyentes frente a vulneraciones cometidas por el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "planificacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.54,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-043",
-    "pregunta": "¿Cuál es la norma jurídica principal que rige los procedimientos tributarios en Chile?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "formularios_tributarios_chile.md",
       "tipos_sociedad_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 14.53,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-044",
-    "pregunta": "¿Qué es la prescripción tributaria y qué plazos generales rigen para la fiscalización del SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
       "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.09,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-045",
-    "pregunta": "¿Qué organismo público es responsable directo de recaudar y cobrar los impuestos girados por el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "planificacion_formalizacion.md",
-      "inicio_actividades_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "tipos_empresa_decision.md",
-      "permisos_complementarios.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.06,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-046",
-    "pregunta": "¿Qué impuestos debe pagar una microempresa familiar (MEF) acogida a la Ley 19.749?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "tipos_sociedad_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
       "obligaciones_tributarias_y_tipos_sociedad.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 14.7,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-048",
-    "pregunta": "¿Qué es el Impuesto Territorial (contribuciones) y sobre qué base se calcula?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_tradicional.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.27,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-050",
-    "pregunta": "¿Qué es el secreto de la información tributaria y en qué casos excepcionales puede ser levantado?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "constitucion_empresa_tradicional.md",
-      "inicio_actividades_sii.md",
-      "constitucion_empresa_simplificada.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.25,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-051",
-    "pregunta": "¿Cuáles son los requisitos y el costo para renovar mi Licencia de Conducir en el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "costos_y_plazos_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.49,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-052",
-    "pregunta": "¿Cómo tramito un reclamo por despido injustificado ante el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "planificacion_formalizacion.md",
-      "inicio_actividades_sii.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "tipos_empresa_decision.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.88,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-053",
-    "pregunta": "¿Qué tasa de IVA aplica actualmente la AFIP en Argentina según el Código Tributario chileno?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "formularios_tributarios_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "documentacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 10.54,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-054",
-    "pregunta": "¿Dónde descargo el formulario del SII para solicitar una subvención de vivienda SERVIU?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "constitucion_empresa_tradicional.md",
-      "constitucion_empresa_simplificada.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.46,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-055",
-    "pregunta": "¿Cuál es la cotización del dólar observada para el año 2030 según las tablas del SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "documentacion_formalizacion.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "inicio_actividades_formalizacion_sii.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 13.39,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-056",
-    "pregunta": "¿Qué es la auditoría tributaria integral llevada a cabo por el SII?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "formularios_tributarios_chile.md",
-      "constitucion_empresa_tradicional.md",
-      "documentacion_formalizacion.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md"
-    ],
-    "retrieval_hit": null,
-    "abstuvo": true,
-    "anclas": [],
-    "anclas_ok": [],
-    "cobertura": null,
-    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
-    "modo": "dos_pasos",
-    "juez_prompt": "estricto",
-    "juez_respuesta": "NO.",
-    "juez_dijo_si": false,
-    "juez_latencia_s": 12.41,
-    "redactor_latencia_s": 0.0
-  },
-  {
-    "id": "PREG-058",
-    "pregunta": "¿Cómo opera la figura de la Responsabilidad Solidaria en las deudas tributarias de una sociedad?",
-    "respondible": false,
-    "esperado": [],
-    "recuperado": [
-      "tipos_empresa_decision.md",
-      "inicio_actividades_sii.md",
-      "tipos_sociedad_chile.md",
-      "tipos_sociedad_chile.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "formularios_tributarios_chile.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -2830,17 +2115,17 @@
     "redactor_latencia_s": 0.0
   },
   {
-    "id": "PREG-059",
-    "pregunta": "¿Qué sanciones aplican por la presentación tardía y fuera de plazo del Formulario 22 de Renta?",
+    "id": "PREG-027",
+    "pregunta": "¿Qué es una Citación (Art. 63 del Código Tributario) emitida por el SII?",
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "formularios_tributarios_chile.md",
-      "formularios_tributarios_chile.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "inicio_actividades_formalizacion_sii.md",
-      "obligaciones_tributarias_y_tipos_sociedad.md",
-      "costos_y_plazos_formalizacion.md"
+      "formularios_tributarios_chile.md",
+      "constitucion_empresa_simplificada.md",
+      "documentacion_formalizacion.md",
+      "formularios_tributarios_chile.md",
+      "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -2852,21 +2137,99 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 13.21,
+    "juez_latencia_s": 10.64,
     "redactor_latencia_s": 0.0
   },
   {
-    "id": "PREG-060",
-    "pregunta": "¿Qué es un convenio de pago de impuestos y ante qué organismo se suscribe?",
+    "id": "PREG-028",
+    "pregunta": "¿Cuál es el plazo legal que tiene un contribuyente para dar respuesta a una Citación del SII?",
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "inicio_actividades_sii.md",
-      "tipos_empresa_decision.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
       "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "documentacion_formalizacion.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.41,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-029",
+    "pregunta": "¿Qué diferencia existe entre una Liquidación y un Giro de impuestos emitido por el SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "documentacion_formalizacion.md",
+      "documentacion_formalizacion.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.4,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-030",
+    "pregunta": "¿Qué es la Reposición Administrativa Voluntaria (RAV) contemplada en el Código Tributario?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_sociedad_chile.md",
       "constitucion_empresa_tradicional.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "permisos_complementarios.md"
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.49,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-032",
+    "pregunta": "¿Qué tribunal es competente para conocer reclamaciones judiciales contra liquidaciones del SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "constitucion_empresa_simplificada.md",
+      "planificacion_formalizacion.md"
     ],
     "retrieval_hit": null,
     "abstuvo": true,
@@ -2878,19 +2241,305 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.04,
+    "juez_latencia_s": 12.27,
     "redactor_latencia_s": 0.0
   },
   {
-    "id": "PREG-086",
-    "pregunta": "¿Cuál es el capital mínimo requerido para constituir una Sociedad de Responsabilidad Limitada (SRL)?",
+    "id": "PREG-033",
+    "pregunta": "¿Qué retenciones previsionales u obligaciones tributarias debe aplicar una empresa al pagar sueldos a sus trabajadores?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.04,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-034",
+    "pregunta": "¿Qué es el Libro de Remuneraciones Electrónico (LRE) y ante qué organismo se declara?",
     "respondible": false,
     "esperado": [],
     "recuperado": [
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "tipos_sociedad_chile.md",
-      "tipos_sociedad_chile.md",
       "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "formularios_tributarios_chile.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 15.95,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-035",
+    "pregunta": "¿Qué obligaciones tributarias tienen las personas que generan ingresos prestando servicios digitales en plataformas online?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_empresa_decision.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.48,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-036",
+    "pregunta": "¿Cuál es el procedimiento y plazo para dar aviso de Término de Giro ante el SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "planificacion_formalizacion.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 14.22,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-037",
+    "pregunta": "¿Qué sucede con los inventarios y activos fijos al momento de tramitar el Término de Giro de una empresa?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "planificacion_formalizacion.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.18,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-038",
+    "pregunta": "¿Dónde se consultan las anotaciones tributarias o inconcurrencias vigentes de un contribuyente?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "permisos_complementarios.md",
+      "planificacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.85,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-039",
+    "pregunta": "¿Qué es el Registro de Compras y Ventas (RCV) digital del SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "permisos_complementarios.md",
+      "formularios_tributarios_chile.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.7,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-040",
+    "pregunta": "¿Cómo se descarga un Certificado de Situación Tributaria en el sitio web del SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_simplificada.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.51,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-041",
+    "pregunta": "¿Cuáles son los derechos fundamentales garantizados al contribuyente en el Artículo 8 bis del Código Tributario?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "planificacion_formalizacion.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.48,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-042",
+    "pregunta": "¿Qué institución autónoma defiende a los contribuyentes frente a vulneraciones cometidas por el SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "planificacion_formalizacion.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.36,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-043",
+    "pregunta": "¿Cuál es la norma jurídica principal que rige los procedimientos tributarios en Chile?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 11.83,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-044",
+    "pregunta": "¿Qué es la prescripción tributaria y qué plazos generales rigen para la fiscalización del SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
       "documentacion_formalizacion.md"
     ],
@@ -2904,20 +2553,46 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 13.93,
+    "juez_latencia_s": 14.26,
     "redactor_latencia_s": 0.0
   },
   {
-    "id": "PREG-094",
-    "pregunta": "¿Qué impuestos se deben cancelar al transferir las acciones de una empresa entre personas naturales?",
+    "id": "PREG-045",
+    "pregunta": "¿Qué organismo público es responsable directo de recaudar y cobrar los impuestos girados por el SII?",
     "respondible": false,
     "esperado": [],
     "recuperado": [
-      "inicio_actividades_formalizacion_sii.md",
-      "tipos_empresa_decision.md",
       "obligaciones_tributarias_y_tipos_sociedad.md",
-      "constitucion_empresa_simplificada.md",
+      "tipos_empresa_decision.md",
+      "inicio_actividades_formalizacion_sii.md",
       "constitucion_empresa_tradicional.md",
+      "planificacion_formalizacion.md",
+      "inicio_actividades_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.43,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-046",
+    "pregunta": "¿Qué impuestos debe pagar una microempresa familiar (MEF) acogida a la Ley 19.749?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
       "inicio_actividades_formalizacion_sii.md"
     ],
     "retrieval_hit": null,
@@ -2930,7 +2605,345 @@
     "juez_prompt": "estricto",
     "juez_respuesta": "NO.",
     "juez_dijo_si": false,
-    "juez_latencia_s": 12.15,
+    "juez_latencia_s": 14.86,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-048",
+    "pregunta": "¿Qué es el Impuesto Territorial (contribuciones) y sobre qué base se calcula?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.29,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-050",
+    "pregunta": "¿Qué es el secreto de la información tributaria y en qué casos excepcionales puede ser levantado?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "permisos_complementarios.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.52,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-051",
+    "pregunta": "¿Cuáles son los requisitos y el costo para renovar mi Licencia de Conducir en el SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "costos_y_plazos_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 15.21,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-052",
+    "pregunta": "¿Cómo tramito un reclamo por despido injustificado ante el SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "planificacion_formalizacion.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.25,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-053",
+    "pregunta": "¿Qué tasa de IVA aplica actualmente la AFIP en Argentina según el Código Tributario chileno?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
+      "documentacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 9.77,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-054",
+    "pregunta": "¿Dónde descargo el formulario del SII para solicitar una subvención de vivienda SERVIU?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 11.05,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-055",
+    "pregunta": "¿Cuál es la cotización del dólar observada para el año 2030 según las tablas del SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 11.86,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-056",
+    "pregunta": "¿Qué es la auditoría tributaria integral llevada a cabo por el SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_sii.md",
+      "formularios_tributarios_chile.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.83,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-058",
+    "pregunta": "¿Cómo opera la figura de la Responsabilidad Solidaria en las deudas tributarias de una sociedad?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "tipos_sociedad_chile.md",
+      "tipos_empresa_decision.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 14.61,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-059",
+    "pregunta": "¿Qué sanciones aplican por la presentación tardía y fuera de plazo del Formulario 22 de Renta?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
+      "formularios_tributarios_chile.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.96,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-060",
+    "pregunta": "¿Qué es un convenio de pago de impuestos y ante qué organismo se suscribe?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_empresa_decision.md",
+      "planificacion_formalizacion.md",
+      "inicio_actividades_sii.md",
+      "permisos_complementarios.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 9.42,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-086",
+    "pregunta": "¿Cuál es el capital mínimo requerido para constituir una Sociedad de Responsabilidad Limitada (SRL)?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.81,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-094",
+    "pregunta": "¿Qué impuestos se deben cancelar al transferir las acciones de una empresa entre personas naturales?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_empresa_decision.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.3,
     "redactor_latencia_s": 0.0
   }
 ]
