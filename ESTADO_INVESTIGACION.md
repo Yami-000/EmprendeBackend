@@ -11,36 +11,75 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-24, tras cerrar la iteración 1.7.
+**Última actualización:** 2026-09-25, al cerrar la 1.9 y abrir la 1.10. Las
+métricas de abajo son las de la 1.8, que sigue siendo la última corrida completa:
+la Fase 0, la B1 y el análisis del núcleo duro se resolvieron con pruebas
+dirigidas de 8 a 29 preguntas.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Iteración 1.9, con dos vías aprobadas por Yami el 2026-09-24.** Plan completo
-> en `tests/iteraciones/iteracion_1.9_juez_con_cita/plan_1.9.md`. Se continúa en
-> la rama `iteracion_1.9_juez_con_cita`, que está al día con `main`.
+> **Iteración 1.10. Plan completo y ejecutable en**
+> `tests/iteraciones/iteracion_1.10_relaciones_explicitas/plan_1.10.md`.
+> **Leer antes** el diagnóstico que lo motiva:
+> `tests/iteraciones/iteracion_1.9_B1_juez_grande/hallazgo_relaciones_implicitas.md`.
 >
-> **Vía A — la cita audita el camino `SI`.** El binario sigue decidiendo (conserva
-> la especificidad 50/50) y, solo cuando dice `SI`, una segunda llamada pide la
-> línea citada. Hace auditable ese `SI` por código. Es instrumentación: no sube la
-> sensibilidad.
+> Crear la rama `iteracion_1.10_relaciones_explicitas` desde `main`.
 >
-> **Vía B — atacar la sensibilidad.** Empezar por **B1: un modelo más grande solo
-> para juzgar** (`qwen2.5:7b` de juez + `llama3.2` de redactor). Es un hueco real
-> en la evidencia: la 1.3 midió que escalar no ayuda **en generación de un paso**,
-> y nadie ha medido un juez más grande. Prueba dirigida de ~7 min sobre las 29
-> preguntas cuyo dato llega íntegro.
+> ### El diagnóstico, en una línea
 >
-> Después: **OP-5** (métrica de similitud, cambio de una línea) que desbloquea
-> B3, y **B2** (descomponer la pregunta, no el contexto — A3 descompuso el
-> contexto, nadie la pregunta).
+> El juez niega 8 preguntas **con el dato delante**, y no es capacidad del modelo
+> (0 de 8 al pasar a 7B) ni calibración del prompt (1 de 8 con `flexible`) ni
+> redacción de la pregunta (PREG-065 ya cita el encabezado del documento). Lo que
+> falta en el contexto es **siempre el verbo**: `inscribe`, `emite`, `elabora`,
+> `mantener`, `diferencia`. El corpus dice `| Notaría | Escritura pública |` bajo
+> una columna "Rol"; la pregunta pide quién la elabora; el prompt del juez veta el
+> *"tema relacionado o parecido"*. **La inferencia que hace falta es justo la que
+> el prompt prohíbe.** El juez es obediente, no incapaz.
+>
+> ### Qué hacer, en orden
+>
+> **Fase 1 — no aplanar los saltos de línea.** Una línea en `_build_judge_prompt`:
+> `doc.replace('
+', ' ')[:1400]` → `doc[:1400]`. Medición dirigida sobre las 8
+> del núcleo duro, ~3 min. Corte: recuperar ≥3 de 8. No tocar
+> `_build_system_prompt` en la misma pasada.
+>
+> **Fase 2 — declarar las relaciones como predicados en el corpus.** Agregar
+> *"La Notaría elabora la escritura pública de constitución"* **sin borrar la fila
+> de tabla**: 37 de las 50 citas son texto literal y `anclaje@k` las compara
+> carácter a carácter. La frase va **antes** de la tabla, para caer dentro de los
+> 256 tokens que lee el embedder.
+>
+> **Si ambas fallan:** queda **B2** del plan 1.9 (descomponer la pregunta), con la
+> expectativa ajustada — solo 3 de las 8 son compuestas.
+>
+> ### Los números de control
+>
+> ```
+> núcleo duro (8 preguntas) .....  0 de 8 aprobadas
+> sensibilidad en las 29 .........  18/29
+> especificidad ..................  50/50
+> alucinación ....................  0/50
+> recall@6 / anclaje@6 ...........  48/50  /  29/37
+> ```
 >
 > **Restricción que no se negocia:** nada entra si la especificidad baja de 48/50
 > o la alucinación sube de 0%.
 >
-> **Por qué urge:** el anclaje subió 25 → 26 → 29 en tres iteraciones y la
-> sensibilidad del juez bajó 30 → 28 → 25. Siete hipótesis sobre su
-> comportamiento están sin confirmar. Mientras su veredicto no sea verificable,
-> las mejoras de retrieval no se pueden convertir ni medir.
+> ### Por qué 1.10 y no 2.0
+>
+> Las dos fases son incrementales, de una variable cada una. **El 2.0 debería ser
+> llevar el pipeline de dos pasos a producción:** la 1.6 lo dejó solo en el arnés
+> de evaluación y `api.py` todavía sirve `/chat` de un paso, que es el que alucina
+> 34%. Esa es la deuda arquitectónica real.
+>
+> ### Herramientas disponibles
+>
+> `evaluar_banco.py --ids` corre un subconjunto por ID (lista con comas o
+> `@archivo`); `subconjunto_dato_integro.py` y `subconjunto_sin_respaldo.py`
+> generan los subconjuntos. Una prueba dirigida de 8 preguntas tarda ~3 min y una
+> de 29 unos 15, contra 20-45 min de la corrida completa. La 1.9 se resolvió
+> entera sin pagar una corrida completa.
 
 ## 🚨 Dos restricciones que invalidan supuestos previos
 
@@ -57,7 +96,11 @@ cosméticos del contexto.** Medido entre la 1.1 y la 1.7: en 49 de 50 preguntas 
 disponibilidad del dato no cambió y el juez cambió de opinión en 6. Con
 `temperature=0.0`, así que no es aleatoriedad entre ejecuciones. **Las
 diferencias menores a ~6 preguntas en las métricas end-to-end no son
-distinguibles de esta sensibilidad.** Decidir con `recall@k` y `anclaje@k`, que
+distinguibles de esta sensibilidad.** La B1 le dio una segunda confirmación
+independiente: cambiar el juez de `llama3.2` a `qwen2.5:7b` con el **mismo
+contexto** movió exactamente 6 veredictos (3 en cada dirección) sin mover el
+total. La banda aparece tanto entre contextos con el mismo modelo como entre
+modelos con el mismo contexto. Decidir con `recall@k` y `anclaje@k`, que
 son deterministas, y usar la corrida end-to-end como confirmación declarando la
 banda.
 
@@ -105,19 +148,24 @@ hardware modesto es el objetivo del proyecto, no una limitación a superar.
 
 ---
 
-## Las siete líneas de investigación
+## Las líneas de investigación
+
+Empezaron siendo siete oportunidades numeradas (OP-1 a OP-7) de la auditoría. Las
+que no llevan número salieron después, de iteraciones que abrieron mecanismos que
+la auditoría no había visto.
 
 | # | Línea | Estado | Evidencia |
 |---|---|---|---|
-| OP-3 | Modelo de generación | ❌ **Refutada** | 1.3 — escalar a 7-8B no baja la alucinación |
+| OP-3 | Modelo de generación | ❌ **Refutada** | 1.3 — escalar a 7-8B no baja la alucinación; B1 — tampoco ayuda escalar solo el juez |
 | OP-6 | Discriminación en dos pasos | ✅ **Confirmada** | 1.6 — alucinación 34% a 0% |
 | OP-1 | Chunking | ✅ **Parcial** | 1.1 — el tamaño era la causa; 25 → 21 abstenciones |
 | OP-5 | Métrica de similitud | ⏳ Pendiente | sin medir, costo ~1 línea |
 | OP-4 | Deduplicación del corpus | ⏳ Pendiente | incluido en el techo de retrieval |
 | OP-7 | RAG basado en nodos | ◐ **Parcial** | 1.7 — declarar las aristas sirve, recorrerlas no |
 | — | Palabras clave derivadas del corpus | ✅ **Confirmada** | 1.8 — anclaje 25 → 29, el mejor retrieval del proyecto |
-| — | Reescritura estructurada del corpus | ◐ **Media** | piloto: mejora el retrieval, no al juez |
-| — | Estabilidad del juez | 🔴 **Bloqueante** | 7 hipótesis sin confirmar; domina toda mejora |
+| — | Reescritura estructurada del corpus | 🟠 **Candidata principal** | piloto: mejora el retrieval, no al juez. La 1.9 le da un mecanismo nuevo: declarar las relaciones como predicados. Fase 2 de la 1.10 |
+| — | Estabilidad del juez | 🔴 **Bloqueante** | domina toda mejora. Ni capacidad (B1: 0 de 8) ni prompt (`flexible`: 1 de 8) ni redacción de la pregunta (refutada). El diagnóstico vigente es la inferencia relacional |
+| — | Presentación del contexto al juez | 🟠 **Nueva** | el juez lee las tablas aplanadas a una fila de pipes. Una línea de `api.py`, sin medir. Fase 1 de la 1.10 |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
 ---
@@ -133,6 +181,10 @@ nuevo es retrabajo.
 | **Reformular el system prompt (v2)** | Mover la regla de abstención a un cierre tras el contexto subió la alucinación de 34% a **78%** | `experimento_prompt_v2.md` |
 | **Recalibrar el prompt del juez (A2)** | Quitar el sesgo *"ante cualquier duda responde NO"* recupera **1 de 9** casos | `iteracion_1.6_dos_pasos/resultado_1.6.md` |
 | **Juzgar fragmento por fragmento (A3)** | Descomponer el contexto en 6 juicios de ~220 tokens recupera **2 de 9** | `iteracion_1.6_dos_pasos/resultado_1.6.md` |
+| **Reescribir la pregunta del usuario antes del pipeline** | Idea de un modelo "validador de consultas" que desglose y reformule la pregunta. Refutada por PREG-065: la pregunta ya contiene **textualmente el encabezado del documento** y el dato viene en la línea siguiente, y dos modelos dicen `NO` igual. El eslabón que falla está después de la pregunta. Además "agregar contexto" hace que un LLM genere texto fuera del corpus, que es lo que en la Fase 0 llevó al juez a no decir `NO` nunca | `iteracion_1.9_B1_juez_grande/hallazgo_relaciones_implicitas.md` |
+| **Aflojar el prompt del juez (A2 `flexible`)** | Recupera **1 de 8** del núcleo duro, y de forma inconsistente: recupera PREG-088 pero no PREG-080, otra fila de la misma tabla. Replica el "1 de 9" de la 1.6 sobre el corpus de la 1.8. Medido dos veces | `iteracion_1.9_B1_juez_grande/hallazgo_relaciones_implicitas.md` |
+| **Un modelo más grande solo para juzgar (B1)** | `qwen2.5:7b` de juez da **18/29**, el mismo número que el 3B, y 8 de los 11 falsos `NO` son los mismos. Cuesta 2,3x de latencia (13,1 → 30,1 s). Si dos modelos con 2,3x de diferencia rechazan las mismas 8 preguntas teniendo el dato delante, no es capacidad | `iteracion_1.9_B1_juez_grande/resultado_B1.md` |
+| **El formato de la cita explica los falsos `NO`** | La tasa de `NO` es plana entre formatos: negrita 43%, tabla 33%, prosa 33%, encabezado 50%, viñeta 0%, con 1-7 casos por celda. Coincidencia sobre n minúsculo | `iteracion_1.9_B1_juez_grande/resultado_B1.md` |
 | **Juez 3B + redactor 8B (experimento B)** | Descartado sin correr: el redactor ya responde en 25 de las 26 veces que se le habilita. El problema no está ahí | `iteracion_1.6_dos_pasos/resultado_1.6.md` |
 | **Contaminación del índice con documentos de la CMF** | Nunca estuvieron indexados. `ingest.py` solo lee `docs/sii/`. El daño estaba en el ground truth, no en ChromaDB | `Bitacora.md` 2026-09-17 |
 | **Chunks duplicados en ChromaDB** | 0 duplicados. La sospecha venía de que `collection.add()` acumulaba entre ingestas; ya es idempotente | `Bitacora.md` 2026-09-17 |
@@ -169,6 +221,14 @@ nuevo es retrabajo.
   26 puntos. El normalizador debe ignorar tildes **y marcadores de lista**: sin
   lo segundo el techo daba 36 y PREG-064 contaba como no verificable pese a estar
   textual en el corpus.
+- **`anclaje@k` se mide sobre texto estructurado y el juez lee texto plano.**
+  `_build_judge_prompt` hace `doc.replace('
+', ' ')[:1400]`, así que las tablas
+  llegan al modelo como una fila de pipes. **El dato no se pierde** —ningún chunk
+  supera los 1400 caracteres (máx. 1378) y las citas están presentes— pero la
+  estructura sí. Cuidado al verificar esto: el normalizador de
+  `medir_retrieval.py` quita las viñetas solo al **inicio de línea**, y sobre
+  texto aplanado quedan en medio, lo que produce falsas "pérdidas" de cita.
 - **El tope del chunking está acoplado al truncado de `api.py`** (1400
   caracteres por fragmento). Subir uno sin el otro anula la mejora: el recorte
   vuelve a partir el dato justo antes de que el modelo lo lea.

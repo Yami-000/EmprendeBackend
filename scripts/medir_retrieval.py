@@ -86,38 +86,48 @@ _fuente = norm(" || ".join(
     for f in sorted(os.listdir(DOCS)) if f.endswith(".md")))
 verificables = [p for p in resp if norm(p["ground_truth"].get("cita_anclaje")) in _fuente]
 
-print("indice: %d chunks" % col.count())
-print("techo del anclaje: %d de %d preguntas tienen su cita literal en el corpus"
-      % (len(verificables), len(resp)))
-print()
-print("  %-12s %-20s %s" % ("", "recall (archivo)", "anclaje (chunk)"))
-for k in (1, 3, 6, 8, 10):
-    hit = sum(1 for p in resp if esperados(p) & set(recuperados(p["pregunta"], k)))
-    anc = sum(1 for p in verificables if anclaje_presente(p, k))
-    print("  k=%-10d %2d/%d  (%3.0f%%)          %2d/%d  (%3.0f%%)"
-          % (k, hit, len(resp), 100.0 * hit / len(resp),
-             anc, len(verificables), 100.0 * anc / len(verificables)))
 
-K = 6
-fallos, ocup = [], collections.Counter()
-for p in resp:
-    got = recuperados(p["pregunta"], K)
-    ocup.update(got)
-    if not (esperados(p) & set(got)):
-        fallos.append((p["id"], p["pregunta"][:48]))
+def reporte():
+    """Informe de retrieval por consola. Aparte para que otros scripts puedan
+    importar este modulo y reusar `verificables` y `anclaje_presente` sin
+    disparar la impresion (ver subconjunto_dato_integro.py).
+    """
+    print("indice: %d chunks" % col.count())
+    print("techo del anclaje: %d de %d preguntas tienen su cita literal en el corpus"
+          % (len(verificables), len(resp)))
+    print()
+    print("  %-12s %-20s %s" % ("", "recall (archivo)", "anclaje (chunk)"))
+    for k in (1, 3, 6, 8, 10):
+        hit = sum(1 for p in resp if esperados(p) & set(recuperados(p["pregunta"], k)))
+        anc = sum(1 for p in verificables if anclaje_presente(p, k))
+        print("  k=%-10d %2d/%d  (%3.0f%%)          %2d/%d  (%3.0f%%)"
+              % (k, hit, len(resp), 100.0 * hit / len(resp),
+                 anc, len(verificables), 100.0 * anc / len(verificables)))
 
-print()
-print("-- fallos con k=%d: %d --" % (K, len(fallos)))
-for pid, q in fallos:
-    print("   %s %s" % (pid, q))
+    K = 6
+    fallos, ocup = [], collections.Counter()
+    for p in resp:
+        got = recuperados(p["pregunta"], K)
+        ocup.update(got)
+        if not (esperados(p) & set(got)):
+            fallos.append((p["id"], p["pregunta"][:48]))
 
-sin_ancla = [(p["id"], p["pregunta"][:46]) for p in verificables if not anclaje_presente(p, K)]
-print()
-print("-- el dato NO llega integro con k=%d: %d --" % (K, len(sin_ancla)))
-for pid, q in sin_ancla:
-    print("   %s" % pid)
+    print()
+    print("-- fallos con k=%d: %d --" % (K, len(fallos)))
+    for pid, q in fallos:
+        print("   %s %s" % (pid, q))
 
-print()
-print("-- ocupacion del top-%d (%d slots) --" % (K, sum(ocup.values())))
-for a, c in ocup.most_common():
-    print("   %-46s %3d  (%4.1f%%)" % (a, c, 100.0 * c / sum(ocup.values())))
+    sin_ancla = [(p["id"], p["pregunta"][:46]) for p in verificables if not anclaje_presente(p, K)]
+    print()
+    print("-- el dato NO llega integro con k=%d: %d --" % (K, len(sin_ancla)))
+    for pid, q in sin_ancla:
+        print("   %s" % pid)
+
+    print()
+    print("-- ocupacion del top-%d (%d slots) --" % (K, sum(ocup.values())))
+    for a, c in ocup.most_common():
+        print("   %-46s %3d  (%4.1f%%)" % (a, c, 100.0 * c / sum(ocup.values())))
+
+
+if __name__ == "__main__":
+    reporte()

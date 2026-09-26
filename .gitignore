@@ -153,3 +153,9 @@ venv/
 
 # ChromaDB: base vectorial generada por ingest.py, se regenera con `python ingest.py`
 ai-service/chroma_db/
+
+# Subconjuntos derivados del banco y del indice: se regeneran en segundos con
+# scripts/subconjunto_*.py. Versionarlos arriesga medir contra una lista obsoleta
+# tras una re-ingesta (chroma_db tampoco esta versionado).
+tests/dataset/dato_integro_k6.txt
+tests/dataset/sin_respaldo.txt

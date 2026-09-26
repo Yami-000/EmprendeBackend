@@ -73,7 +73,9 @@ directamente, y `api.py` habla con Ollama por HTTP con `httpx`.
 | Ruta | Responsabilidad |
 |---|---|
 | `scripts/evaluar_banco.py` | Arnés end-to-end. Separa fallos de recuperación de fallos de generación. Importa los prompts **desde `api.py`** para no medir una copia divergente |
-| `scripts/medir_retrieval.py` | Recall@k sin invocar al LLM (segundos) |
+| `scripts/medir_retrieval.py` | Recall@k y anclaje@k sin invocar al LLM (segundos). El informe vive en `reporte()` bajo `__main__`, para que otros scripts importen `verificables` y `anclaje_presente` sin disparar la impresión |
+| `scripts/subconjunto_dato_integro.py` | IDs cuyo dato de anclaje llega íntegro al juez. Sobre ese subconjunto la sensibilidad del juez se mide sin fallos de retrieval de por medio |
+| `scripts/subconjunto_sin_respaldo.py` | IDs sin respaldo en el corpus, leídos de `md_origen`. Mitad de control: mide alucinación y especificidad |
 | `tests/dataset/` | Banco de 100 preguntas: las 50 primeras respondibles, las 50 siguientes sin respaldo |
 
 ### Código muerto detectado
@@ -144,7 +146,9 @@ incomparables. Antes del 2026-09-17 `ingest.py` intentaba `nomic-embed-text`
 ### Corpus
 
 `ingest.py` define `DOCS_DIR = BASE_DIR / "docs" / "sii"` e itera con
-`rglob("*.md")`. Indexa **13 archivos** que producen **48 fragmentos**.
+`rglob("*.md")`. Indexa **13 archivos** que producen **28 fragmentos** con el
+tope vigente de 1400 caracteres. (Eran 48 con el tope de 800 del baseline; varias
+secciones de este archivo se escribieron en esa época.)
 
 ⚠️ **`ai-service/docs/` contiene 79 `.md` adicionales que NO se indexan** —
 documentos financieros de la CMF (acciones, bonos, calculadoras de ahorro)
@@ -160,11 +164,13 @@ porque `chroma_db/` no está versionado.
 
 La ingesta es **idempotente**: `create_vector_store` hace `delete_collection`
 antes de `create_collection`. Antes, `collection.add()` acumulaba y cada
-re-ingesta duplicaba los 48 fragmentos.
+re-ingesta duplicaba los fragmentos.
 
 ### Fragmentación — 🔴 problema activo
 
-`_chunk_text(chunk_size=800, chunk_overlap=150)`, en caracteres:
+`_chunk_text(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)`, en caracteres.
+Los valores vigentes son **1400 y 200** desde la iteración 1.1; los pasos de abajo
+describen el algoritmo con los valores originales de 800 y 150:
 
 1. Divide por encabezados markdown — `re.split(r'(?m)(?=^#{1,6}\s)', text)`. Si
    no hay encabezados, por doble salto de línea.
@@ -303,6 +309,9 @@ por esa razón.
 | 4 | `langchain`, `ollama` y cuatro paquetes npm declarados sin uso | 🟢 Limpieza de manifests |
 | 5 | Pipeline de dos pasos solo en el arnés, no en `/chat` | 🟡 Portar a producción |
 | 6 | Sanitización de fragments contra prompt injection | 🟢 Baja — OP-2 |
+| 8 | El juez recibe las tablas aplanadas (`doc.replace('
+', ' ')`), sin estructura | 🟡 Fase 1 de la 1.10 |
+| 9 | El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas | 🟠 Fase 2 de la 1.10 |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 
 ---

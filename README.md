@@ -120,6 +120,11 @@ scripts/
                        de generación
   medir_retrieval.py     Mide recall@k sin invocar al LLM (segundos,
                        útil para iterar sobre chunking/embeddings)
+  subconjunto_dato_integro.py   Emite los IDs cuyo dato de anclaje llega
+                       íntegro al juez: mide su sensibilidad sin
+                       contaminarla con fallos de retrieval
+  subconjunto_sin_respaldo.py   Emite los IDs sin respaldo en el corpus,
+                       la mitad que mide alucinación y especificidad
 
 tests/
   dataset/               Banco de 100 preguntas (50 con respaldo en el
@@ -149,6 +154,15 @@ python scripts/medir_retrieval.py
 
 # Smoke test sobre las primeras N preguntas, sin pagar la corrida completa
 python scripts/evaluar_banco.py prueba --limite 10
+
+# Calibración del juez: 'estricto' (la de producción) o 'flexible', que quita el
+# sesgo hacia negar. Medido dos veces: 'flexible' recupera 1 de 8 casos difíciles
+python scripts/evaluar_banco.py prueba --dos-pasos --juez-prompt flexible --limite 10
+
+# Prueba dirigida a un subconjunto de preguntas, por ID. Los subconjuntos se
+# regeneran (no se versionan: dependen del índice, que tampoco está versionado)
+python scripts/subconjunto_dato_integro.py > tests/dataset/dato_integro_k6.txt
+python scripts/evaluar_banco.py b1_sens --dos-pasos --juez qwen2.5:7b     --redactor llama3.2 --ids @tests/dataset/dato_integro_k6.txt
 ```
 
 El estado de las líneas de investigación abiertas (qué se probó, qué falta,
