@@ -310,7 +310,9 @@ por esa razón.
 | 5 | Pipeline de dos pasos solo en el arnés, no en `/chat` | 🟡 Portar a producción — candidato a 2.0 |
 | 6 | Sanitización de fragments contra prompt injection | 🟢 Baja — OP-2 |
 | 8 | ~~El juez recibe las tablas aplanadas, sin estructura~~ — **cerrada 2026-09-25**: des-aplanar recupera 1 de 8 del núcleo duro y 0 end-to-end, y el contexto no crece (28415 caracteres en ambas versiones). No era el formato | ✅ Medida y descartada (1.10 Fase 1) |
-| 9 | El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas | 🔴 Fase 2 de la 1.10 — **única vía en pie** tras cerrar la 8 |
+| 9 | ~~El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas~~ — **resuelta 2026-09-26**: declarar la relación en prosa antes de la tabla lleva el núcleo duro de 0 a 5 de 8 y la sensibilidad a 23/29 | ✅ 1.10 Fase 2 |
+| 11 | Preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado llega en el puesto 1 y el juez dice `NO`. Piden una relación entre dos datos, no un dato | 🔴 Alta — trabajo de la 1.11 |
+| 12 | PREG-118 regresó con la Fase 2: su chunk de anclaje quedó en el puesto 7. Es el punto que falta de `anclaje@6` (28/37) | 🟡 Barata — mover el predicado de PREG-115 dentro de su archivo |
 | 10 | El redactor puede abstenerse pese al `SI` del juez: en PREG-065 corrió 18,3 s y emitió la frase de abstención igual. Un `SI` del juez no garantiza respuesta | 🟠 Sin medir — detectado en la 1.10 Fase 1 |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 

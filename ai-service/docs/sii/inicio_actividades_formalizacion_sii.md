@@ -179,6 +179,8 @@ Indica los usos de suelo permitidos. Lo otorga la Dirección de Obras Municipale
 - Nota: las MEF no requieren este informe
 
 ### Otros Certificados
+
+La Dirección de Obras Municipales emite el Certificado de Informaciones Previas, que entrega las normas de edificación y los destinos posibles del inmueble.
 - **Certificado de Informaciones Previas:** emitido por Dirección de Obras Municipales; contiene normas de edificación y destinos posibles del inmueble
 - **Certificado de Calificación Industrial:** emitido por SEREMI de Salud; categoriza actividades como peligrosas, insalubres, contaminantes, molestas o inofensivas
 - **Permiso de Cambio de Destino:** autoriza cambio de uso del inmueble

@@ -175,6 +175,25 @@ idénticas del núcleo duro dan 0 vuelcos de 8. La banda de ±6 preguntas aplica
 cambios *del* contexto, no a repetir una corrida. Repetir para "confirmar" un
 número no aporta información; cambiar el contexto sí mueve ~6 veredictos.
 
+**Al comparar contra un control, no regenerar el subconjunto.** Los
+`subconjunto_*.py` se derivan del índice, así que si el corpus cambió el
+denominador se mueve y la comparación se rompe. Los 29 IDs del control de
+sensibilidad están congelados en
+`tests/dataset/dato_integro_k6_control_1.9.txt`. Y al redirigir su salida, **no
+usar `2>&1`**: imprimen una línea de resumen por stderr que `leer_ids` tomaría
+como IDs.
+
+**Tras cambiar el corpus hay que reingestar y mirar el conteo de chunks:**
+
+```bash
+cd ai-service && python ingest.py && cd ..
+python scripts/medir_retrieval.py    # 28 chunks, recall@6 48/50, anclaje@6 28/37
+```
+
+Un fragmento que crece hasta partir su sección en dos cuesta más de lo que
+compra: en la iteración 1.10, dos frases de más partieron un archivo en 3 chunks
+y bajaron `recall@6` de 48/50 a 47/50.
+
 El estado de las líneas de investigación abiertas (qué se probó, qué falta,
 qué se descartó y por qué) está en
 [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md), en la raíz del repositorio.

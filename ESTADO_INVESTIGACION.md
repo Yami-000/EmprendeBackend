@@ -11,81 +11,98 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-25, al medir y descartar la Fase 1 de la 1.10. Las
+**Última actualización:** 2026-09-26, al cerrar la 1.10 con la Fase 2 positiva. Las
 métricas de abajo son las de la 1.8, que sigue siendo la última corrida completa:
 la Fase 0, la B1 y el análisis del núcleo duro se resolvieron con pruebas
 dirigidas de 8 a 29 preguntas.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Iteración 1.10, Fase 2 — declarar las relaciones como predicados en el
-> corpus.** El plan está escrito y aprobado en
-> `tests/iteraciones/iteracion_1.10_relaciones_explicitas/plan_1.10.md`. **No hay
-> que rediseñarlo:** la Fase 1 ya se midió y su resultado lo refuerza.
+> **La 1.10 está cerrada y fue positiva.** Iteración **1.11**: las preguntas
+> comparativas y disyuntivas, que son lo único que resistió.
 >
-> Rama: `iteracion_1.10_relaciones_explicitas` (ya creada, desde `main`).
+> ### Qué logró la 1.10
 >
-> ### Qué pasó con la Fase 1, y por qué importa para la Fase 2
->
-> Se quitó el aplanado de los saltos de línea en `_build_judge_prompt`. Resultado:
-> **1 de 8 en el juez, 0 de 8 end-to-end.** No pasa el corte de 3 y **está
-> revertido**. Detalle en
-> [`resultado_fase1.md`](tests/iteraciones/iteracion_1.10_relaciones_explicitas/resultado_fase1.md).
->
-> Lo que deja no es solo un número negativo: **PREG-088 sigue en `NO` con la tabla
-> perfectamente formateada.** Era el caso que motivó el cambio —fila de tabla,
-> columna "Rol"— y no cayó. Eso separa dos hipótesis que venían juntas: el
-> problema **no es que la tabla sea ilegible**, es que la celda no contiene el
-> verbo. Des-aplanar devuelve la estructura; no devuelve la relación.
->
-> **La Fase 2 es ahora la única vía en pie**, y ataca exactamente eso.
->
-> ### Qué hacer, en orden
->
-> **Fase 2 — declarar las relaciones como predicados.** Agregar *"La Notaría
-> elabora la escritura pública de constitución"* **sin borrar la fila de tabla**:
-> 37 de las 50 citas son texto literal y `anclaje@k` las compara carácter a
-> carácter. La frase va **antes** de la tabla, para caer dentro de los 256 tokens
-> que lee el embedder. Solo los documentos del núcleo duro. Reconstruir el índice
-> y correr `medir_retrieval.py` **antes** de gastar el end-to-end: si `recall@6`
-> baja de 48/50 o `anclaje@6` de 29/37, se corta ahí.
->
-> **Corte:** recuperar ≥ 4 de 8.
->
-> **Si falla:** queda **B2** del plan 1.9 (descomponer la pregunta), con la
-> expectativa ajustada — solo 3 de las 8 son compuestas.
->
-> ### Candidato nuevo que dejó la Fase 1, para después
->
-> En PREG-065 el juez dijo `SI`, el redactor corrió 18,3 s y **aun así abstuvo**.
-> Por eso el end-to-end fue 0 y no 1. El redactor tiene su propia abstención y
-> sigue leyendo contexto aplanado (`_build_system_prompt`, línea 96, intacta por
-> diseño). **Es un segundo eslabón, y está sin medir.** No entra en la 1.10 para no
-> mezclar variables.
->
-> ### Los números de control
+> Declarar las relaciones como predicados en el corpus —*"La Notaría elabora la
+> escritura pública de constitución"* **antes** de la tabla, sin borrar la fila—
+> es el mayor avance del proyecto sobre el juez. Detalle en
+> [`resultado_fase2.md`](tests/iteraciones/iteracion_1.10_relaciones_explicitas/resultado_fase2.md).
 >
 > ```
-> núcleo duro (8 preguntas) .....  0 de 8 aprobadas   (Fase 1: 1 en el juez, 0 e2e)
-> sensibilidad en las 29 .........  18/29
+> nucleo duro .....  0 de 8  ->  5 de 8
+> sensibilidad ....  18/29   ->  23/29
+> especificidad ...  50/50   ->  50/50     (intacta)
+> alucinacion .....  0/50    ->  0/50      (intacta)
+> recall@6 ........  48/50   ->  48/50
+> anclaje@6 .......  29/37   ->  28/37     (-1, PREG-118)
+> anclaje@1 .......   7/37   ->  12/37     (casi el doble)
+> ```
+>
+> Cayó **PREG-088**, que había resistido al juez de 7B, al prompt `flexible` y a la
+> Fase 1. **Sin tocar el modelo ni el prompt:** solo lo que el corpus afirma.
+>
+> ### Qué resistió, y es la 1.11
+>
+> **Tres preguntas no se recuperan, y no es retrieval.** El predicado les llega al
+> contexto —en el **puesto 1** en PREG-010 y PREG-084— y el juez dice `NO` igual.
+>
+> ```
+> PREG-064  "¿Qué diferencia existe entre una SA Cerrada y una SA Abierta?"
+> PREG-084  "¿Cuál es la diferencia entre los tipos de socios...?"
+> PREG-010  "¿...se gestiona directamente en el SII o en otra institución?"
+> ```
+>
+> Las dos primeras son **comparativas**, la tercera **disyuntiva**. No piden un
+> dato: piden una **relación entre dos datos**. Declarar la diferencia en prosa no
+> alcanza, y es un mecanismo distinto del que resolvió la 1.10. **Ese es el trabajo
+> de la 1.11**, y hay que diseñarlo, no hay plan escrito todavía.
+>
+> ### Deuda que dejó la 1.10, en orden de costo
+>
+> 1. **PREG-118, barata.** Es la regresión real de la Fase 2: se respondía en el
+>    control y ahora abstiene, porque el predicado de PREG-115 desplazó su chunk del
+>    puesto 6 al 7. Mover ese predicado dentro de
+>    `inicio_actividades_formalizacion_sii.md` y mirar solo `medir_retrieval.py`,
+>    que corre en segundos. Es también el punto que falta de `anclaje@6`.
+> 2. **Extender los predicados al resto del corpus**, con la lección aprendida:
+>    **vigilar el conteo de chunks.** Agregar 8 predicados en vez de 6 partió
+>    `tipos_sociedad_chile.md` en 3 chunks, bajó `recall@6` a 47/50 y *bajó* la
+>    sensibilidad a 22/29. Un predicado que parte una sección cuesta más de lo que
+>    compra.
+> 3. **El redactor se abstiene pese al `SI` del juez.** Detectado en la Fase 1
+>    (PREG-065: el juez aprobó, el redactor corrió 18,3 s y abstuvo igual). Sin
+>    medir.
+>
+> ### Advertencias de método que dejó esta iteración
+>
+> - **No regenerar el subconjunto de 29 para comparar contra 18/29.** Se deriva del
+>   índice; si el índice cambia, el denominador se mueve y la comparación se rompe.
+>   Los IDs exactos del control están en
+>   `tests/dataset/dato_integro_k6_control_1.9.txt`.
+> - **`anclaje@k` exige adyacencia.** Compara `cita in norm(doc)`, una subcadena
+>   contigua. Insertar texto *entre* las líneas de una cita multilínea la destruye.
+> - **Al regenerar los subconjuntos, no redirigir `2>&1`:** el script imprime una
+>   línea de log por stderr que `leer_ids` tomaría como IDs.
+>
+> ### Los números de control para la 1.11
+>
+> ```
+> nucleo duro restante ...........  3 (PREG-010, 064, 084)
+> sensibilidad ...................  23/29
 > especificidad ..................  50/50
 > alucinación ....................  0/50
-> recall@6 / anclaje@6 ...........  48/50  /  29/37     (28 chunks)
+> recall@6 / anclaje@6 ...........  48/50  /  28/37     (28 chunks)
 > ```
->
-> El veredicto del juez es **determinista ante el mismo contexto**: dos corridas
-> idénticas del núcleo duro dieron 0 vuelcos de 8. La banda de ±6 aplica a cambios
-> *del* contexto, no a repetir una corrida.
 >
 > **Restricción que no se negocia:** nada entra si la especificidad baja de 48/50
 > o la alucinación sube de 0%.
 >
-> ### Por qué 1.10 y no 2.0
+> ### Por qué la 1.10 no fue 2.0, y qué sí debería serlo
 >
-> Las fases son incrementales, de una variable cada una. **El 2.0 debería ser
-> llevar el pipeline de dos pasos a producción:** la 1.6 lo dejó solo en el arnés
-> de evaluación y `api.py` todavía sirve `/chat` de un paso, que es el que alucina
-> 34%. Esa es la deuda arquitectónica real.
+> **El 2.0 es llevar el pipeline de dos pasos a producción:** la 1.6 lo dejó solo en
+> el arnés de evaluación y `api.py` todavía sirve `/chat` de un paso, que es el que
+> alucina 34%. Esa es la deuda arquitectónica real, y ahora que la 1.10 confirmó que
+> el juez rinde, cobra más sentido.
 >
 > ### Herramientas disponibles
 >
@@ -129,22 +146,28 @@ caracteres y palabras clave derivadas en el texto indexado** (iteraciones 1.6,
 ```
 MÉTRICAS DETERMINISTAS  (deciden)
   retrieval_hit@6 ........ 48/50 (96%, medido por archivo)
-  anclaje@6 .............. 29/37 (78%, medido por chunk)
+  anclaje@6 .............. 28/37 (76%, medido por chunk)
+  anclaje@1 .............. 12/37 (32%, era 7/37 antes de los predicados)
 
 MÉTRICAS END-TO-END     (confirman, con banda de ±6 preguntas)
-  abstuvo indebidamente .. 25/50
-  cobertura de datos ..... 48%
+  sensibilidad del juez .. 23/29 (79%, sobre el subconjunto de dato íntegro)
+  cobertura de datos ..... 61%
   ALUCINACIÓN ............  0/50 (0%)
   especificidad del juez . 50/50 (100%)
 
-Duración .............................. 28,1 min   (juez 12,7 s/pregunta)
+Duración .............................. ~28 min    (juez ~11 s/pregunta)
 ```
 
-**Las dos mitades del pipeline van en direcciones distintas.** La recuperación
-avanzó de verdad: de `recall` 44/50 y `anclaje` 22/37 en el baseline a 48/50 y
-29/37, con mediciones deterministas. La generación está bloqueada: la
-sensibilidad del juez bajó 30 → 28 → 25 en las mismas tres iteraciones, y cuando
-el dato le llega íntegro aprueba 18 de 29 (62%) contra 21 de 25 (84%) en la 1.1.
+**La 1.10 desbloqueó la mitad que estaba trabada.** La recuperación ya venía
+avanzando: de `recall` 44/50 y `anclaje` 22/37 en el baseline a 48/50 y 29/37. La
+generación estaba bloqueada —la sensibilidad del juez había bajado 30 → 28 → 25, y
+con el dato íntegro aprobaba 18 de 29 (62%)— y la 1.10 la movió a **23 de 29
+(79%)** sin tocar el modelo ni el prompt: **cambiando lo que el corpus afirma**.
+
+**El mecanismo, en una línea:** el corpus codificaba las relaciones como columnas
+de tabla (`| Notaría | Escritura pública |`) y el prompt del juez veta la
+inferencia necesaria para leerlas. Declarar la relación en prosa —*"La Notaría
+elabora la escritura pública"*— elimina la inferencia en vez de pedirla.
 
 **El modo de fallo es el correcto para el dominio:** cero falsos positivos, así
 que la alucinación se mantiene en 0% y la especificidad en 50/50. El sistema
@@ -177,8 +200,8 @@ la auditoría no había visto.
 | OP-4 | Deduplicación del corpus | ⏳ Pendiente | incluido en el techo de retrieval |
 | OP-7 | RAG basado en nodos | ◐ **Parcial** | 1.7 — declarar las aristas sirve, recorrerlas no |
 | — | Palabras clave derivadas del corpus | ✅ **Confirmada** | 1.8 — anclaje 25 → 29, el mejor retrieval del proyecto |
-| — | Reescritura estructurada del corpus | 🟠 **Candidata principal** | piloto: mejora el retrieval, no al juez. La 1.9 le da un mecanismo nuevo: declarar las relaciones como predicados. **Fase 2 de la 1.10, y ahora la única vía en pie**: la Fase 1 aisló el formato y no era el formato |
-| — | Estabilidad del juez | 🔴 **Bloqueante** | domina toda mejora. Ni capacidad (B1: 0 de 8) ni prompt (`flexible`: 1 de 8) ni redacción de la pregunta (refutada). El diagnóstico vigente es la inferencia relacional |
+| — | Reescritura estructurada del corpus | ✅ **Confirmada** | **1.10 Fase 2 — el mayor avance del proyecto en el juez.** Declarar las relaciones como predicados lleva el núcleo duro de 0 a 5 de 8 y la sensibilidad de 18/29 a 23/29, con especificidad 50/50 y alucinación 0%. `anclaje@1` casi se duplica (7 → 12/37) |
+| — | Estabilidad del juez | 🟠 **Parcialmente resuelta** | la inferencia relacional era la causa, y se ataca desde el corpus (1.10 Fase 2: 5 de 8). Lo que resiste son las preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado les llega en el puesto 1 y el juez dice `NO` igual |
 | — | Presentación del contexto al juez | ❌ **Refutada** | Fase 1 de la 1.10 — des-aplanar las tablas recupera 1 de 8 y 0 end-to-end. PREG-088, el caso de tabla que motivó el cambio, sigue en `NO` con la tabla bien formateada |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
@@ -209,7 +232,8 @@ nuevo es retrabajo.
 | **Que el top-6 se volviera más diverso y confundiera al juez** | 1.8: la diversidad *bajó* de 4,96 a 4,50 documentos distintos por consulta. Y el contexto no creció: 2028 → 2074 tokens | `iteracion_1.8_palabras_clave/resultado_1.8.md` |
 | **Sustituir el `SI`/`NO` del juez por una cita verificable** | Fase 0 de la 1.9: el juez con cita **nunca dice NO**, 10 fugas de 10 en preguntas sin respaldo. Y 6 de esas 10 citas son válidas pero irrelevantes, así que verificar que la cita exista no protege. Llevaría la especificidad de 50/50 a 0/50 | `iteracion_1.9_juez_con_cita/resultado_fase0.md` |
 | **Poner un ejemplo concreto en el prompt del juez** | El modelo de 3B lo copia como respuesta en vez de leer el contexto: 3 de 10 citas eran literalmente el ejemplo del prompt. Quitarlo sube las citas válidas de 60% a 100% | `iteracion_1.9_juez_con_cita/resultado_fase0.md` |
-| **Des-aplanar los saltos de línea del contexto del juez** | Fase 1 de la 1.10: `doc.replace('\n',' ')[:1400]` a `doc[:1400]` recupera **1 de 8** del núcleo duro y **0 de 8** end-to-end. Determinista (0 vuelcos en dos corridas idénticas), así que el 1 es real y es uno solo. Lo decisivo: **PREG-088 sigue en `NO` con la tabla perfectamente formateada**, y era el caso que motivó el cambio. El contexto no crece —28415 caracteres en ambas versiones— así que tampoco hay nada que ganar optimizándolo | `iteracion_1.10_relaciones_explicitas/resultado_fase1.md` |
+| **Des-aplanar los saltos de línea del contexto del juez** | Fase 1 de la 1.10: `doc.replace('\n',' ')[:1400]` a `doc[:1400]` recupera **1 de 8** del núcleo duro y **0 de 8** end-to-end. Determinista (0 vuelcos en dos corridas idénticas). Lo decisivo: PREG-088 seguía en `NO` con la tabla perfectamente formateada, **y la Fase 2 la recuperó agregando el verbo con la tabla igual de aplanada**. No era el formato, era la relación ausente. El contexto tampoco crece: 28415 caracteres en ambas versiones | `iteracion_1.10_relaciones_explicitas/resultado_fase1.md` |
+| **Declarar la relación en prosa para preguntas comparativas o disyuntivas** | 1.10 Fase 2: funciona para relaciones de un dato (5 de 8) pero **no** para las que piden una relación entre dos datos. PREG-010, 064 y 084 reciben el predicado en el contexto —en el **puesto 1** dos de ellas— y el juez dice `NO` igual. Agregar más prosa del mismo tipo es retrabajo: hace falta otro mecanismo | `iteracion_1.10_relaciones_explicitas/resultado_fase2.md` |
 | **Anteponer el título del documento a cada fragmento** | Empeora: recall 48 → 46, anclaje 26 → 25. Repetir texto que el documento ya implica acerca sus fragmentos entre sí y diluye lo propio de cada uno | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Quitar la cabecera del grafo del texto que lee el juez** | Recupera 1 de 4. La idea de separar texto indexado de texto mostrado sigue valiendo como principio, pero no explicaba la regresión de la 1.7 | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
@@ -236,17 +260,30 @@ nuevo es retrabajo.
   26 puntos. El normalizador debe ignorar tildes **y marcadores de lista**: sin
   lo segundo el techo daba 36 y PREG-064 contaba como no verificable pese a estar
   textual en el corpus.
-- **`anclaje@k` se mide sobre texto estructurado y el juez lee texto plano, y
-  eso ya está medido: no importa.** `_build_judge_prompt` hace
-  `doc.replace('\n', ' ')[:1400]`, así que las tablas llegan al modelo como una
-  fila de pipes. La Fase 1 de la 1.10 quitó el aplanado y recuperó **1 de 8** del
-  núcleo duro, 0 end-to-end. **El dato no se pierde y el contexto tampoco crece:**
-  28415 caracteres en ambas versiones —`replace` cambia un carácter por otro— y
-  ningún chunk supera los 1400 (máx. 1378, mediana 1066). Cuidado al verificarlo
-  a mano: el normalizador de `medir_retrieval.py` quita las viñetas solo al
+- **`anclaje@k` se mide sobre texto estructurado y el juez lee texto plano, y no
+  importa.** La Fase 1 de la 1.10 quitó el aplanado: recuperó 1 de 8 y 0
+  end-to-end. La prueba definitiva la dio la Fase 2, que recuperó PREG-088 **con la
+  tabla igual de aplanada**, agregando el verbo. El problema nunca fue el formato.
+  El contexto tampoco crece: 28415 caracteres en ambas versiones. Al verificarlo a
+  mano, ojo: el normalizador de `medir_retrieval.py` quita las viñetas solo al
   **inicio de línea**, y sobre texto aplanado quedan en medio, lo que produce
   falsas "pérdidas" de cita.
-
+- **`anclaje@k` exige adyacencia.** Compara `cita in norm(doc)`: una subcadena
+  **contigua**, tras colapsar espacios y quitar marcadores de lista al inicio de
+  línea. Varias citas del banco abarcan dos o tres líneas seguidas, así que
+  **insertar texto entre las líneas de una cita la destruye**. En la 1.10 esto
+  obligó a poner el predicado de PREG-065 antes del encabezado `###`, no después.
+- **No regenerar un subconjunto para compararlo con su propio control.** Los
+  `subconjunto_*.py` se derivan del índice: si el índice cambió, el denominador se
+  mueve. La 1.10 reusó los 29 IDs exactos del control
+  (`tests/dataset/dato_integro_k6_control_1.9.txt`) en vez de regenerarlos.
+- **Al redirigir la salida de los `subconjunto_*.py`, no usar `2>&1`.** Imprimen una
+  línea de resumen por stderr que no lleva `#`, y `leer_ids` la tomaría como IDs.
+- **Un predicado que parte una sección cuesta más de lo que compra.** En la 1.10,
+  8 predicados partieron `tipos_sociedad_chile.md` en 3 chunks: `recall@6` bajó a
+  47/50 y la sensibilidad a 22/29. Con 6, el índice volvió a 28 chunks, `recall@6`
+  a 48/50 y la sensibilidad subió a 23/29. **Vigilar el conteo de chunks al tocar
+  el corpus.**
 - **El tope del chunking está acoplado al truncado de `api.py`** (1400
   caracteres por fragmento). Subir uno sin el otro anula la mejora: el recorte
   vuelve a partir el dato justo antes de que el modelo lo lea.

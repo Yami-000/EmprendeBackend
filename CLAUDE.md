@@ -92,12 +92,30 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   idénticas del núcleo duro dan 0 vuelcos de 8. La inestabilidad de ~6 de 50
   aplica a cambios *del* contexto, no a repetir una corrida.
 
-- **El juez niega 8 preguntas con el dato delante, y ya está descartado por qué
-  no es.** No es capacidad del modelo (un 7B recupera 0 de 8), no es la
-  calibración del prompt (`flexible` recupera 1 de 8) y no es la redacción de la
-  pregunta (PREG-065 contiene textual el encabezado del documento). Lo que falta
-  en el contexto es el **verbo**: el corpus codifica las relaciones como columnas
-  de tabla y el prompt del juez veta la inferencia que hace falta para leerlas.
+- **El juez negaba 8 preguntas con el dato delante, y la 1.10 recuperó 5.** La
+  causa era que el corpus codificaba las relaciones como columnas de tabla
+  (`| Notaría | Escritura pública |`) mientras el prompt del juez veta la
+  inferencia necesaria para leerlas. La solución **no** fue tocar el modelo ni el
+  prompt: fue **declarar la relación en prosa antes de la tabla** —*"La Notaría
+  elabora la escritura pública de constitución"*— sin borrar la fila. Núcleo duro
+  0 → 5 de 8, sensibilidad 18/29 → 23/29, especificidad y alucinación intactas.
+- **Lo que resiste son las preguntas comparativas y disyuntivas.** PREG-010, 064 y
+  084 reciben el predicado en el contexto —en el **puesto 1** dos de ellas— y el
+  juez dice `NO` igual. Piden una **relación entre dos datos**, no un dato. Es el
+  trabajo de la 1.11 y hace falta un mecanismo nuevo: más prosa del mismo tipo es
+  retrabajo.
+- **Al agregar texto al corpus, vigilar el conteo de chunks.** Dos frases de más
+  partieron `tipos_sociedad_chile.md` en 3 chunks, bajaron `recall@6` de 48/50 a
+  47/50 y *bajaron* la sensibilidad de 23/29 a 22/29. Un predicado que parte una
+  sección cuesta más de lo que compra.
+- **`anclaje@k` exige adyacencia.** Compara `cita in norm(doc)`, una subcadena
+  contigua. Varias citas abarcan dos o tres líneas seguidas, así que **insertar
+  texto entre las líneas de una cita la destruye**. Verificar que las citas siguen
+  presentes **antes** de reingestar.
+- **No regenerar un subconjunto para compararlo con su propio control.** Se derivan
+  del índice; si el corpus cambió, el denominador se mueve. Los 29 IDs del control
+  están congelados en `tests/dataset/dato_integro_k6_control_1.9.txt`. Y al
+  redirigirlos, **no usar `2>&1`**: la línea de resumen de stderr se colaría como ID.
 - **El chunking ya divide por encabezados markdown.** Lo que rompe los
   fragmentos es el solape por caracteres (`chunk[-150:]`), que hace que el 62%
   empiece a mitad de frase. Ver la sección 5 de `CONTEXTO.md`.
