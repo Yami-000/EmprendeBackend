@@ -14,6 +14,17 @@
 - **Sociedad Comanditaria:** mezcla socios gestores (responsabilidad ilimitada) con socios comanditarios (responsabilidad limitada a su aporte).
 
 ## Resumen comparativo
+<!-- predicados generados por scripts/generar_predicados.py -->
+La Persona Natural con Giro admite 1 socios, su responsabilidad es ilimitada, y sin rut propio.
+La MEF admite 1 (familia) socios, su responsabilidad es ilimitada, y solo domicilio.
+La EIRL admite 1 socios, su responsabilidad es limitada, y rut propio.
+La SRL (Ltda.) admite 2+ socios, su responsabilidad es limitada, y capital en cuotas.
+La SpA admite 1+ socios, su responsabilidad es limitada, y capital en acciones.
+La SA Cerrada admite 2+ socios, su responsabilidad es limitada, y sin bolsa.
+La SA Abierta admite 2+ socios, su responsabilidad es limitada, y cotiza en bolsa, cmf.
+La Colectiva admite 2+ socios, su responsabilidad es ilimitada solidaria, y poco usada.
+La Comanditaria admite 2+ socios, su responsabilidad es mixta, y poco usada.
+
 | Tipo | Socios | Responsabilidad | Notas |
 |---|---|---|---|
 | Persona Natural con Giro | 1 | Ilimitada | Sin RUT propio |

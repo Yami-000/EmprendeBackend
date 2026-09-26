@@ -92,6 +92,16 @@ Todas las empresas deben mantener un registro electrónico en el SII: el Libro d
 La Notaría elabora la escritura pública de constitución del régimen tradicional: el notario público es el responsable de su elaboración.
 El Conservador de Bienes Raíces inscribe la empresa en el Registro de Comercio.
 
+<!-- predicados generados por scripts/generar_predicados.py -->
+La institución SII (Servicio de Impuestos Internos) se encarga de: rut, inicio de actividades, declaración de impuestos.
+La institución Notaría se encarga de: escritura pública de constitución (régimen tradicional).
+La institución Diario Oficial se encarga de: publicación del extracto de constitución.
+La institución Conservador de Bienes Raíces se encarga de: inscripción en registro de comercio.
+La institución Municipalidad se encarga de: patente municipal y permisos de edificación.
+La institución SEREMI de Salud se encarga de: autorización sanitaria para alimentos y salud.
+La institución Ministerio de Economía se encarga de: registro de empresas y sociedades (tu empresa en un día).
+La institución Dirección de Obras Municipales se encarga de: certificado de zonificación e informaciones previas.
+
 | Institución | Rol |
 |---|---|
 | SII (Servicio de Impuestos Internos) | RUT, Inicio de Actividades, declaración de impuestos |

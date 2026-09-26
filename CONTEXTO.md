@@ -314,6 +314,7 @@ por esa razón.
 | 11 | Preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado llega en el puesto 1 y el juez dice `NO`. Piden una relación entre dos datos, no un dato | 🔴 Alta — trabajo de la 1.11 |
 | 12 | PREG-118 regresó con la Fase 2: su chunk de anclaje quedó en el puesto 7. Es el punto que falta de `anclaje@6` (28/37) | 🟡 Barata — mover el predicado de PREG-115 dentro de su archivo |
 | 10 | El redactor puede abstenerse pese al `SI` del juez: en PREG-065 corrió 18,3 s y emitió la frase de abstención igual. Un `SI` del juez no garantiza respuesta | 🟠 Sin medir — detectado en la 1.10 Fase 1 |
+| 13 | **El presupuesto de 256 tokens del prefijo es el techo estructural del retrieval.** El embedder lee 256 tokens y los fragmentos tienen mediana 382: 32% del corpus no influye en qué se recupera. Las palabras clave (1.8) y los predicados (1.10) compiten por el mismo espacio | 🔴 **La decisión pendiente más importante.** Un embedder de ventana mayor lo resuelve de raíz y **requiere descargar un modelo** |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 
 ---

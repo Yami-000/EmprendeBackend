@@ -2,6 +2,11 @@
 
 ## Formularios del SII
 
+<!-- predicados generados por scripts/generar_predicados.py -->
+El formulario F29 es la Declaración Mensual y Pago de IVA. Se presenta de forma mensual, con plazo hasta el día 12 del mes siguiente, y declara iva (19%), ppm, retenciones.
+El formulario F50 es la Declaración Mensual de Impuestos. Se presenta de forma mensual, con plazo hasta el día 12 del mes siguiente, y declara retenciones honorarios, impuestos específicos.
+El formulario F22 es la Declaración Anual de Renta. Se presenta de forma anual, con plazo hasta el 30 de abril, y declara impuesto a la renta del año tributario anterior.
+
 | Formulario | Nombre | Periodicidad | Plazo | Contenido |
 |---|---|---|---|---|
 | F29 | Declaración Mensual y Pago de IVA | Mensual | Día 12 del mes siguiente | IVA (19%), PPM, retenciones |
