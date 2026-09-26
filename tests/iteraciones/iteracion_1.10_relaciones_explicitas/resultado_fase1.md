@@ -77,6 +77,11 @@ end-to-end es 0 de 8 y no 1 de 8. El redactor sigue leyendo contexto aplanado �
 línea 96, intacta por diseño— y tiene su propia abstención. **Es un eslabón
 distinto del que esta fase midió, y está sin medir.**
 
+**4. La causalidad está confirmada por el revert.** Tras revertir la línea, se
+volvieron a correr PREG-065 y PREG-088: **0 de 2**, PREG-065 de vuelta en `NO`,
+latencia del juez 13,1 s — el control exacto. El `SI` de PREG-065 lo produjo el
+cambio y nada más.
+
 ## El riesgo de crecimiento del contexto queda refutado
 
 El plan advertía que al volver los `
