@@ -155,6 +155,10 @@ python scripts/medir_retrieval.py
 # Smoke test sobre las primeras N preguntas, sin pagar la corrida completa
 python scripts/evaluar_banco.py prueba --limite 10
 
+# Calibración del juez: 'estricto' (la de producción) o 'flexible', que quita el
+# sesgo hacia negar. Medido dos veces: 'flexible' recupera 1 de 8 casos difíciles
+python scripts/evaluar_banco.py prueba --dos-pasos --juez-prompt flexible --limite 10
+
 # Prueba dirigida a un subconjunto de preguntas, por ID. Los subconjuntos se
 # regeneran (no se versionan: dependen del índice, que tampoco está versionado)
 python scripts/subconjunto_dato_integro.py > tests/dataset/dato_integro_k6.txt

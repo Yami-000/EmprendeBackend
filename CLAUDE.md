@@ -79,6 +79,20 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
 - **El orden del system prompt no es arbitrario.** Mover la regla de abstención
   tras el contexto subió la alucinación de 34% a 78%. Hay un comentario de
   advertencia en `api.py`.
+- **El juez lee las tablas aplanadas.** `_build_judge_prompt` hace
+  `doc.replace('
+', ' ')[:1400]`, así que una tabla markdown llega al modelo
+  como una fila de pipes sin estructura. El dato **no** se pierde (ningún chunk
+  supera los 1400 caracteres), pero `anclaje@k` se mide sobre texto estructurado y
+  el juez lee texto plano. Al verificarlo, ojo: el normalizador de
+  `medir_retrieval.py` quita las viñetas solo al inicio de línea, y sobre texto
+  aplanado quedan en medio, lo que produce falsas "pérdidas" de cita.
+- **El juez niega 8 preguntas con el dato delante, y ya está descartado por qué
+  no es.** No es capacidad del modelo (un 7B recupera 0 de 8), no es la
+  calibración del prompt (`flexible` recupera 1 de 8) y no es la redacción de la
+  pregunta (PREG-065 contiene textual el encabezado del documento). Lo que falta
+  en el contexto es el **verbo**: el corpus codifica las relaciones como columnas
+  de tabla y el prompt del juez veta la inferencia que hace falta para leerlas.
 - **El chunking ya divide por encabezados markdown.** Lo que rompe los
   fragmentos es el solape por caracteres (`chunk[-150:]`), que hace que el 62%
   empiece a mitad de frase. Ver la sección 5 de `CONTEXTO.md`.
