@@ -59,11 +59,11 @@ dirigidas de 8 a 29 preguntas.
 >
 > ### Deuda que dejó la 1.10, en orden de costo
 >
-> 1. **PREG-118, barata.** Es la regresión real de la Fase 2: se respondía en el
->    control y ahora abstiene, porque el predicado de PREG-115 desplazó su chunk del
->    puesto 6 al 7. Mover ese predicado dentro de
->    `inicio_actividades_formalizacion_sii.md` y mirar solo `medir_retrieval.py`,
->    que corre en segundos. Es también el punto que falta de `anclaje@6`.
+> 1. **PREG-118 NO era barata, y ya se sabe por qué.** Se intentó y falló: el
+>    predicado que se le agregó cae en el **token 313** de su chunk y el embedder lee
+>    **256**, así que nunca lo leyó. No es ubicación, es la ventana del embedder. Ver
+>    [`hallazgo_ventana_embedder.md`](tests/iteraciones/iteracion_1.10_relaciones_explicitas/hallazgo_ventana_embedder.md).
+>    **`anclaje@6` se queda en 28/37** y arreglarlo es una iteración propia.
 > 2. **Extender los predicados al resto del corpus**, con la lección aprendida:
 >    **vigilar el conteo de chunks.** Agregar 8 predicados en vez de 6 partió
 >    `tipos_sociedad_chile.md` en 3 chunks, bajó `recall@6` a 47/50 y *bajó* la
@@ -284,6 +284,14 @@ nuevo es retrabajo.
   47/50 y la sensibilidad a 22/29. Con 6, el índice volvió a 28 chunks, `recall@6`
   a 48/50 y la sensibilidad subió a 23/29. **Vigilar el conteo de chunks al tocar
   el corpus.**
+- **La ventana del embedder y el truncado de `api.py` son DOS recortes distintos,
+  y el primero decide el retrieval.** `all-MiniLM-L6-v2` lee 256 tokens; los chunks
+  tienen mediana 382, así que **32% del corpus es invisible para la búsqueda
+  vectorial** aunque el juez sí lo lea. Medido: cuando la cita cae dentro de la
+  ventana, `anclaje@6` acierta 21/23 (91%); cuando cae fuera, 7/14 (50%). **41
+  puntos de brecha.** Herramienta: `scripts/medir_ventana_embedder.py`. Agregar
+  texto más allá del token 256 de un fragmento no cambia su ranking: es texto muerto
+  para el retrieval.
 - **El tope del chunking está acoplado al truncado de `api.py`** (1400
   caracteres por fragmento). Subir uno sin el otro anula la mejora: el recorte
   vuelve a partir el dato justo antes de que el modelo lo lea.

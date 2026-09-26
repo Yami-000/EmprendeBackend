@@ -62,10 +62,15 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
 
 ## Trampas conocidas
 
-- **El embedder solo lee 256 tokens.** `all-MiniLM-L6-v2` tiene
-  `max_seq_length = 256` y los fragmentos tienen mediana 402: un tercio del
-  corpus es invisible para el retrieval. Lo que se agregue al corpus para mejorar
-  la recuperación tiene que caer dentro de esa ventana.
+- **El embedder solo lee 256 tokens, y está cuantificado.** `all-MiniLM-L6-v2`
+  tiene `max_seq_length = 256` y los fragmentos tienen mediana 382 tokens: **32%
+  del corpus es invisible para el retrieval**, aunque el juez sí lo lea. Medido con
+  `scripts/medir_ventana_embedder.py`: cuando la cita cae dentro de la ventana,
+  `anclaje@6` acierta **21/23 (91%)**; cuando cae fuera, **7/14 (50%)**. Lo que se
+  agregue al corpus para mejorar la recuperación tiene que caer dentro de esa
+  ventana, o es **texto muerto**: así falló el arreglo de PREG-118, cuyo predicado
+  quedó en el token 313. **No confundir con el truncado de `api.py` (1400
+  caracteres):** ese decide qué lee el juez, la ventana decide qué se recupera.
 - **El juez es inestable en ~6 de 50 preguntas** ante cambios cosméticos del
   contexto, con `temperature=0`. Decidir con `recall@k` y `anclaje@k`, que son
   deterministas; el end-to-end solo confirma, y con banda de ±6.
