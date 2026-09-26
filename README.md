@@ -194,6 +194,22 @@ Un fragmento que crece hasta partir su sección en dos cuesta más de lo que
 compra: en la iteración 1.10, dos frases de más partieron un archivo en 3 chunks
 y bajaron `recall@6` de 48/50 a 47/50.
 
+**Comparar dos corridas** (totales, vuelcos ganados y perdidos, fugas nuevas):
+
+```bash
+python scripts/comparar_corridas.py <etiqueta_control> <etiqueta_nueva>
+```
+
+Avisa cuando la cantidad de vuelcos supera el cambio neto, que es la señal de
+que el neto no se distingue de la banda de inestabilidad del juez.
+
+**Medir cuánto del corpus ve el embedder** (la ventana de 256 tokens decide qué
+se recupera; el truncado de 1400 caracteres solo decide qué lee el juez):
+
+```bash
+python scripts/medir_ventana_embedder.py
+```
+
 El estado de las líneas de investigación abiertas (qué se probó, qué falta,
 qué se descartó y por qué) está en
 [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md), en la raíz del repositorio.

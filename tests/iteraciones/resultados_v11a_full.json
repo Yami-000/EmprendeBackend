@@ -1,0 +1,217 @@
+[
+  {
+    "id": "PREG-001",
+    "pregunta": "¿Qué rol cumple el Servicio de Impuestos Internos (SII) en el proceso de formalización de una empresa?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "RUT",
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El Servicio de Impuestos Internos (SII) es responsable del inicio de actividades y la obtención del RUT, así como la declaración de impuestos.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 11.58,
+    "redactor_latencia_s": 16.97
+  },
+  {
+    "id": "PREG-002",
+    "pregunta": "¿Qué canales ofrece el SII para realizar el trámite de Inicio de Actividades?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "1.",
+      "2.",
+      "3.",
+      "4.",
+      "5.",
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "1.",
+      "2.",
+      "3.",
+      "4.",
+      "5.",
+      "RUT",
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El Servicio de Impuestos Internos (SII) ofrece el trámite de Inicio de Actividades en línea y presencialmente. Para realizarlo en línea, se deben seguir los siguientes pasos:\n\n1. Acceder a www.sii.cl\n2. Pinchar \"Mi SII\"\n3. Ingresar a \"Servicios On Line\"\n4. Seleccionar \"RUT e Inicio de Actividades\"\n5. Pinchar \"Inicio de Actividades\"\n\nAdemás, también se puede realizar el trámite presencialmente, presentando los siguientes documentos:\n\n- Formulario 4415 del SII\n- Cédula de identidad (original o fotocopia legalizada)\n- Poder notarial (si corresponde)\n- Escritura de constitución protocolizada\n- Código de Verificación Electrónica (CVE)\n- Comprobante de domicilio y rol de avalúo",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.98,
+    "redactor_latencia_s": 19.2
+  },
+  {
+    "id": "PREG-006",
+    "pregunta": "¿Cuál es el plazo legal para realizar el trámite de Inicio de Actividades ante el SII?",
+    "respondible": true,
+    "esperado": [
+      "costos_y_plazos_formalizacion.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": false,
+    "abstuvo": true,
+    "anclas": [
+      "SII"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 11.24,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-010",
+    "pregunta": "¿El trámite de Patente Municipal se gestiona directamente en el SII o en otra institución?",
+    "respondible": true,
+    "esperado": [
+      "patente_municipal.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SII",
+      "municipalidad"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 0.5,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.89,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-019",
+    "pregunta": "¿Qué es el Formulario 29 (F29) y qué obligaciones tributarias principales se declaran en él?",
+    "respondible": true,
+    "esperado": [
+      "formularios_tributarios_chile.md"
+    ],
+    "recuperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "12",
+      "19%",
+      "29",
+      "F29",
+      "IVA"
+    ],
+    "anclas_ok": [
+      "29",
+      "F29",
+      "IVA"
+    ],
+    "cobertura": 0.6,
+    "respuesta": "El Formulario 29 (F29) es un documento utilizado por las empresas para declarar y pagar el Impuesto a la Valor Agregado (IVA) mensualmente. En este formulario, se declara y paga el IVA sobre las ventas realizadas durante el período tributario, así como también se calculan y retienen los impuestos de segunda categoría, como honorarios y otros impuestos específicos.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.37,
+    "redactor_latencia_s": 20.04
+  },
+  {
+    "id": "PREG-061",
+    "pregunta": "¿Cuál es la diferencia principal entre una EIRL y una Persona Natural con Giro?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_empresa_decision.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "EIRL",
+      "RUT"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 15.4,
+    "redactor_latencia_s": 0.0
+  }
+]

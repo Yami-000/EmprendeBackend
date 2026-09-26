@@ -313,7 +313,7 @@ por esa razón.
 | 9 | ~~El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas~~ — **resuelta 2026-09-26**: declarar la relación en prosa antes de la tabla lleva el núcleo duro de 0 a 5 de 8 y la sensibilidad a 23/29 | ✅ 1.10 Fase 2 |
 | 11 | Preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado llega en el puesto 1 y el juez dice `NO`. Piden una relación entre dos datos, no un dato | 🔴 Alta — trabajo de la 1.11 |
 | 12 | PREG-118 regresó con la Fase 2: su chunk de anclaje quedó en el puesto 7. Es el punto que falta de `anclaje@6` (28/37) | 🟡 Barata — mover el predicado de PREG-115 dentro de su archivo |
-| 10 | El redactor puede abstenerse pese al `SI` del juez: en PREG-065 corrió 18,3 s y emitió la frase de abstención igual. Un `SI` del juez no garantiza respuesta | 🟠 Sin medir — detectado en la 1.10 Fase 1 |
+| 10 | ~~El redactor puede abstenerse pese al `SI` del juez~~ — **medida 2026-09-26**: 6 de 185 casos (3,2%) en 12 corridas, y **0 en la configuración de la 1.10**. Los predicados arreglaron ese eslabón de paso: no eran dos problemas, era uno | ✅ Marginal, no amerita iteración. Vigilar: es un fallo silencioso que solo aparece en `abstuvo indebidamente`, no en `sensibilidad` |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 
 ---
