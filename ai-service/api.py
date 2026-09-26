@@ -118,6 +118,32 @@ Reglas:
 - Ante cualquier duda, responde NO.
 - No expliques tu respuesta. No agregues nada más que SI o NO.""",
 
+    # 1.12 (2026-09-26): idéntico a 'estricto' salvo la enumeración de tipos de
+    # dato, que agrega dos: comparación y delimitación.
+    #
+    # POR QUÉ: tras la 1.10, tres preguntas seguían negadas con el predicado en
+    # el contexto —en el PUESTO 1 dos de ellas— así que no era retrieval.
+    # PREG-064 y 084 preguntan "¿cuál es la diferencia entre...?" y PREG-010
+    # "¿en el SII o en otra institución?". La lista de 'estricto' era
+    # (cifra, plazo, nombre de institución, definición, procedimiento): una
+    # comparación no es ninguna de esas cinco, y el juez la aplicaba al pie de
+    # la letra.
+    #
+    # NO ES 'flexible', QUE ESTÁ REFUTADO DOS VECES. Esta variante NO toca el
+    # umbral de certeza: conserva "Ante cualquier duda, responde NO" y sigue
+    # exigiendo mención explícita. Solo amplía QUÉ CUENTA como dato. Lo que
+    # destruía la especificidad en 'flexible' era admitir el dato "redactado con
+    # otras palabras" y "repartido entre varios fragmentos", que es aflojar el
+    # umbral, no la taxonomía.
+    "estricto_taxonomia": """Eres un verificador estricto. Tu única tarea es decidir si el CONTEXTO de abajo contiene la información necesaria para responder la PREGUNTA de forma completa y específica.
+
+Reglas:
+- Responde con UNA sola palabra: SI o NO.
+- Responde SI solo si el contexto menciona explícitamente el dato pedido (cifra, plazo, nombre de institución, definición, procedimiento, comparación entre dos figuras, o delimitación de qué organismo interviene y cuál no), no solo un tema relacionado o parecido.
+- Responde NO si el contexto trata un tema similar pero no contiene el dato específico que pide la pregunta.
+- Ante cualquier duda, responde NO.
+- No expliques tu respuesta. No agregues nada más que SI o NO.""",
+
     # A2 (2026-09-23): quita el sesgo hacia negar y nombra explícitamente las
     # formas en que el dato puede aparecer. Varios falsos negativos de A1
     # (PREG-076 "25% / 27%", PREG-067 "$110.000 – $380.000") tenían el dato

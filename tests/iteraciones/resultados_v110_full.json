@@ -1,0 +1,37 @@
+[
+  {
+    "id": "PREG-001",
+    "pregunta": "¿Qué rol cumple el Servicio de Impuestos Internos (SII) en el proceso de formalización de una empresa?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "RUT",
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El Servicio de Impuestos Internos (SII) es responsable de emitir el RUT a la empresa, y también de recibir la declaración de inicio de actividades.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 13.58,
+    "redactor_latencia_s": 16.95
+  }
+]

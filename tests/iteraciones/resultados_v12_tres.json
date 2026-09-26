@@ -1,0 +1,97 @@
+[
+  {
+    "id": "PREG-010",
+    "pregunta": "¿El trámite de Patente Municipal se gestiona directamente en el SII o en otra institución?",
+    "respondible": true,
+    "esperado": [
+      "patente_municipal.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SII",
+      "municipalidad"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 0.5,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto_taxonomia",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.83,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-064",
+    "pregunta": "¿Qué diferencia existe entre una SA Cerrada y una SA Abierta?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_empresa_decision.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SA"
+    ],
+    "anclas_ok": [
+      "SA"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto_taxonomia",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.84,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-084",
+    "pregunta": "¿Cuál es la diferencia entre los tipos de socios en una Sociedad Comanditaria?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_empresa_decision.md",
+      "tipos_sociedad_chile.md",
+      "tipos_sociedad_chile.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto_taxonomia",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.85,
+    "redactor_latencia_s": 0.0
+  }
+]
