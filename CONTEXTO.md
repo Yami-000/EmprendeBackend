@@ -307,11 +307,11 @@ por esa razón.
 | 2 | Métrica de similitud del índice sin especificar (L2 por defecto, vectores sin normalizar) | 🟡 OP-5 |
 | 3 | Código muerto del proyecto anterior en `src/config/` y `src/graphql/` | 🟡 Limpieza pendiente |
 | 4 | `langchain`, `ollama` y cuatro paquetes npm declarados sin uso | 🟢 Limpieza de manifests |
-| 5 | Pipeline de dos pasos solo en el arnés, no en `/chat` | 🟡 Portar a producción |
+| 5 | Pipeline de dos pasos solo en el arnés, no en `/chat` | 🟡 Portar a producción — candidato a 2.0 |
 | 6 | Sanitización de fragments contra prompt injection | 🟢 Baja — OP-2 |
-| 8 | El juez recibe las tablas aplanadas (`doc.replace('
-', ' ')`), sin estructura | 🟡 Fase 1 de la 1.10 |
-| 9 | El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas | 🟠 Fase 2 de la 1.10 |
+| 8 | ~~El juez recibe las tablas aplanadas, sin estructura~~ — **cerrada 2026-09-25**: des-aplanar recupera 1 de 8 del núcleo duro y 0 end-to-end, y el contexto no crece (28415 caracteres en ambas versiones). No era el formato | ✅ Medida y descartada (1.10 Fase 1) |
+| 9 | El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas | 🔴 Fase 2 de la 1.10 — **única vía en pie** tras cerrar la 8 |
+| 10 | El redactor puede abstenerse pese al `SI` del juez: en PREG-065 corrió 18,3 s y emitió la frase de abstención igual. Un `SI` del juez no garantiza respuesta | 🟠 Sin medir — detectado en la 1.10 Fase 1 |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 
 ---

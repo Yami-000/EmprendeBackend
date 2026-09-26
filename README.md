@@ -163,7 +163,17 @@ python scripts/evaluar_banco.py prueba --dos-pasos --juez-prompt flexible --limi
 # regeneran (no se versionan: dependen del índice, que tampoco está versionado)
 python scripts/subconjunto_dato_integro.py > tests/dataset/dato_integro_k6.txt
 python scripts/evaluar_banco.py b1_sens --dos-pasos --juez qwen2.5:7b     --redactor llama3.2 --ids @tests/dataset/dato_integro_k6.txt
+
+# El núcleo duro: las 8 preguntas que el juez niega teniendo el dato delante.
+# Es la prueba más barata del proyecto (~3 min) y el control es 0 de 8 aprobadas
+python scripts/evaluar_banco.py f1_nucleo --dos-pasos --juez llama3.2 --redactor llama3.2 \
+    --ids PREG-010,PREG-064,PREG-065,PREG-075,PREG-080,PREG-084,PREG-088,PREG-115
 ```
+
+**El veredicto del juez es determinista ante el mismo contexto:** dos corridas
+idénticas del núcleo duro dan 0 vuelcos de 8. La banda de ±6 preguntas aplica a
+cambios *del* contexto, no a repetir una corrida. Repetir para "confirmar" un
+número no aporta información; cambiar el contexto sí mueve ~6 veredictos.
 
 El estado de las líneas de investigación abiertas (qué se probó, qué falta,
 qué se descartó y por qué) está en

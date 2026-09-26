@@ -79,14 +79,19 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
 - **El orden del system prompt no es arbitrario.** Mover la regla de abstención
   tras el contexto subió la alucinación de 34% a 78%. Hay un comentario de
   advertencia en `api.py`.
-- **El juez lee las tablas aplanadas.** `_build_judge_prompt` hace
-  `doc.replace('
-', ' ')[:1400]`, así que una tabla markdown llega al modelo
-  como una fila de pipes sin estructura. El dato **no** se pierde (ningún chunk
-  supera los 1400 caracteres), pero `anclaje@k` se mide sobre texto estructurado y
-  el juez lee texto plano. Al verificarlo, ojo: el normalizador de
+- **El juez lee las tablas aplanadas, y ya está medido que no importa.**
+  `_build_judge_prompt` hace `doc.replace('\n', ' ')[:1400]`, así que una tabla
+  markdown llega al modelo como una fila de pipes. La Fase 1 de la 1.10 quitó el
+  aplanado: recupera **1 de 8** del núcleo duro y **0 end-to-end**, y está
+  revertido. **No volver a proponerlo sin un argumento nuevo.** El dato no se
+  pierde y el contexto no crece: 28415 caracteres en ambas versiones, ningún chunk
+  supera los 1400 (máx. 1378). Al verificarlo a mano, ojo: el normalizador de
   `medir_retrieval.py` quita las viñetas solo al inicio de línea, y sobre texto
   aplanado quedan en medio, lo que produce falsas "pérdidas" de cita.
+- **El veredicto del juez es determinista ante el mismo contexto.** Dos corridas
+  idénticas del núcleo duro dan 0 vuelcos de 8. La inestabilidad de ~6 de 50
+  aplica a cambios *del* contexto, no a repetir una corrida.
+
 - **El juez niega 8 preguntas con el dato delante, y ya está descartado por qué
   no es.** No es capacidad del modelo (un 7B recupera 0 de 8), no es la
   calibración del prompt (`flexible` recupera 1 de 8) y no es la redacción de la
