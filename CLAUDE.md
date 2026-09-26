@@ -109,6 +109,16 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   juez dice `NO` igual. Piden una **relación entre dos datos**, no un dato. Es el
   trabajo de la 1.11 y hace falta un mecanismo nuevo: más prosa del mismo tipo es
   retrabajo.
+- **Los primeros 256 tokens de cada fragmento son un presupuesto escaso con dos
+  inquilinos.** Las palabras clave (1.8) y las frases-predicado (1.10) viven ahí, y
+  **compiten**: la 1.13 midió que agregar 14 predicados más baja `recall@6` en 1, y
+  que **quitar** dos frases lo baja 2 más. No es que "más texto diluya": es que mover
+  cualquier cosa en ese prefijo reordena lo que el embedder ve. **Es el techo
+  estructural del retrieval de este proyecto.**
+- **Los predicados no dependen de la redacción elegida.** Probado en la 1.13:
+  PREG-088 sigue aprobando con el predicado **mecánico** (*"La institución Notaría se
+  encarga de: escritura pública de constitución"*) en vez del escrito a mano. No hace
+  falta acertar las palabras, alcanza con que el corpus afirme la relación.
 - **Al agregar texto al corpus, vigilar el conteo de chunks.** Dos frases de más
   partieron `tipos_sociedad_chile.md` en 3 chunks, bajaron `recall@6` de 48/50 a
   47/50 y *bajaron* la sensibilidad de 23/29 a 22/29. Un predicado que parte una
