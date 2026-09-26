@@ -149,7 +149,11 @@ def _build_judge_prompt(fragments: List[Dict[str, Any]], variante: str = "estric
     for i, f in enumerate(fragments, 1):
         src = f.get("metadata", {}).get("source", "")
         doc = f.get("document", f.get("page_content", ""))
-        snippet = doc.replace('\n', ' ')[:1400]
+        # Iteracion 1.10, Fase 1: NO aplanar los saltos de linea. El aplanado
+        # convertia las tablas markdown en una fila de pipes sin estructura.
+        # Ningun chunk del indice supera los 1400 caracteres (max. 1378), asi
+        # que el truncado no recorta ninguna cita.
+        snippet = doc[:1400]
         ctx_lines.append(f"[{i}] Fuente: {src}\n{snippet}\n")
     return base + "\n" + "\n".join(ctx_lines)
 
