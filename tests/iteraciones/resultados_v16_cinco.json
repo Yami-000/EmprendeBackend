@@ -1,0 +1,179 @@
+[
+  {
+    "id": "PREG-007",
+    "pregunta": "¿Cuál es la diferencia fundamental entre contribuyentes de Primera y Segunda Categoría?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "subpreguntas": [
+      "¿Qué caracteriza a contribuyentes de Primera?",
+      "¿Qué caracteriza a Segunda Categoría?"
+    ],
+    "subpreguntas_si": [
+      false,
+      false
+    ],
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 19.59,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-029",
+    "pregunta": "¿Qué diferencia existe entre una Liquidación y un Giro de impuestos emitido por el SII?",
+    "respondible": false,
+    "esperado": [],
+    "recuperado": [
+      "documentacion_formalizacion.md",
+      "documentacion_formalizacion.md",
+      "formularios_tributarios_chile.md"
+    ],
+    "retrieval_hit": null,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "subpreguntas": [
+      "¿Qué caracteriza a una Liquidación?",
+      "¿Qué caracteriza a un Giro de impuestos emitido por el SII?"
+    ],
+    "subpreguntas_si": [
+      false,
+      false
+    ],
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 12.85,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-061",
+    "pregunta": "¿Cuál es la diferencia principal entre una EIRL y una Persona Natural con Giro?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_sociedad_chile.md",
+      "tipos_sociedad_chile.md",
+      "documentacion_formalizacion.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "EIRL",
+      "RUT"
+    ],
+    "anclas_ok": [
+      "EIRL",
+      "RUT"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Una EIRL (Empresa Individual de Responsabilidad Limitada) tiene un solo dueño, quien aporta capital y es responsable limitada al mismo. \n\nUna Persona Natural con Giro usa el RUT personal sin separación entre patrimonio personal y del negocio.",
+    "modo": "dos_pasos",
+    "subpreguntas": [
+      "¿Qué caracteriza a una EIRL?",
+      "¿Qué caracteriza a una Persona Natural con Giro?"
+    ],
+    "subpreguntas_si": [
+      true,
+      true
+    ],
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.57,
+    "redactor_latencia_s": 12.83
+  },
+  {
+    "id": "PREG-064",
+    "pregunta": "¿Qué diferencia existe entre una SA Cerrada y una SA Abierta?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_sociedad_chile.md",
+      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "SA"
+    ],
+    "anclas_ok": [
+      "SA"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "- **SA Cerrada:** Requiere directorio de al menos 3 miembros. No cotiza en bolsa. \n- **SA Abierta:** Cotiza en bolsa. Fiscalizada por la CMF (Comisión para el Mercado Financiero).",
+    "modo": "dos_pasos",
+    "subpreguntas": [
+      "¿Qué caracteriza a una SA Cerrada?",
+      "¿Qué caracteriza a una SA Abierta?"
+    ],
+    "subpreguntas_si": [
+      true,
+      true
+    ],
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 15.82,
+    "redactor_latencia_s": 10.6
+  },
+  {
+    "id": "PREG-117",
+    "pregunta": "¿Cuál es la diferencia en responsabilidad y RUT entre Persona Natural y Persona Jurídica?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_sociedad_chile.md",
+      "tipos_empresa_decision.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "RUT"
+    ],
+    "anclas_ok": [
+      "RUT"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "La Persona Natural tiene una responsabilidad personal sobre las deudas del negocio, mientras que la Persona Jurídica tiene una responsabilidad limitada al capital aportado. La Persona Natural utiliza el mismo RUT que su identificación personal, mientras que la Persona Jurídica tiene un RUT propio.",
+    "modo": "dos_pasos",
+    "subpreguntas": [
+      "¿Qué caracteriza a Persona Natural?",
+      "¿Qué caracteriza a Persona Jurídica?"
+    ],
+    "subpreguntas_si": [
+      true,
+      true
+    ],
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 15.67,
+    "redactor_latencia_s": 10.61
+  }
+]

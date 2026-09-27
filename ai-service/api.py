@@ -1,5 +1,6 @@
 import asyncio
 import json
+import re
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
@@ -163,6 +164,61 @@ Reglas:
 - Responde NO únicamente si el contexto no contiene ese dato: porque trata otro tema, o porque menciona el tema sin dar la información pedida.
 - No expliques tu respuesta. No agregues nada más que SI o NO.""",
 }
+
+
+# Iteración 1.16 (B2). Descomposición de preguntas comparativas, SOLO para el juez.
+#
+# POR QUÉ: la 1.12 demostró con scripts/sonda_descomposicion.py que el juez de 3B
+# verifica UN HECHO A LA VEZ. Con el mismo contexto y el mismo prompt, PREG-084 da
+# NO como "¿cuál es la diferencia entre los tipos de socios?" y SI a sus dos
+# subpreguntas por separado. No es la instrucción del prompt —refutado tres veces—
+# es la tarea: pedirle una relación entre dos hechos.
+#
+# POR QUÉ UNA REGLA Y NO UN MODELO: generar subpreguntas con un LLM cuesta una
+# llamada más por consulta y produce texto fuera del corpus, que es el modo de
+# fallo que mató la Fase 0 de la 1.9. El patrón "diferencia entre X y Y" cubre 6
+# de las 100 preguntas del banco y se parte con una expresión regular: gratis y
+# determinista.
+#
+# POR QUÉ 'TODAS' Y NO 'ALGUNA': una comparación necesita los DOS lados en el
+# contexto. Exigir que todas las subpreguntas den SI es lo que protege la
+# especificidad — de las 6 que encajan en el patrón, 2 son preguntas SIN respaldo
+# (PREG-007 y PREG-029) y el corpus no tiene alguno de sus lados.
+#
+# LO QUE NO HACE, deliberadamente: no toca el retrieval ni el redactor. El
+# contexto se recupera con la pregunta ORIGINAL y el redactor recibe la pregunta
+# ORIGINAL. Si la descomposición alimentara el retrieval podría traer contexto que
+# hace parecer pertinente algo que no lo es, y eso sí tocaría la especificidad.
+_COMPARATIVA = re.compile(
+    r"\bdiferencias?\b[^?]*?\bentre\b\s+(.+?)\s*\??$", re.IGNORECASE)
+
+
+def descomponer_comparativa(pregunta: str) -> List[str]:
+    """Subpreguntas por definición para una pregunta comparativa, o [] si no aplica.
+
+    "¿Qué diferencia existe entre una SA Cerrada y una SA Abierta?"
+      -> ["¿Qué caracteriza a una SA Cerrada?",
+          "¿Qué caracteriza a una SA Abierta?"]
+
+    Devuelve [] cuando no reconoce el patrón, que es lo correcto: es mejor no
+    descomponer que descomponer mal. El caso "entre los tipos de socios en una
+    Sociedad Comanditaria" no tiene dos lados separables por " y " y cae acá.
+    """
+    m = _COMPARATIVA.search(pregunta or "")
+    if not m:
+        return []
+    cola = m.group(1).strip()
+    # Se parte por el ULTIMO " y ": en "una EIRL y una Persona Natural con Giro"
+    # el primer " y " no existe, pero en enumeraciones mas largas el ultimo es el
+    # que separa los dos terminos que se comparan.
+    partes = re.split(r"\s+y\s+", cola)
+    if len(partes) < 2:
+        return []
+    izq = " y ".join(partes[:-1]).strip(" ,.")
+    der = partes[-1].strip(" ,.?")
+    if not izq or not der or len(izq) < 3 or len(der) < 3:
+        return []
+    return ["¿Qué caracteriza a %s?" % izq, "¿Qué caracteriza a %s?" % der]
 
 
 def _build_judge_prompt(fragments: List[Dict[str, Any]], variante: str = "estricto") -> str:
