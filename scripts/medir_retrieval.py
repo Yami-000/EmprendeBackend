@@ -25,14 +25,17 @@ equivocadas.
 
 Uso:  python scripts/medir_retrieval.py
 """
-import json, io, os, collections, re, unicodedata
+import json, io, os, sys, collections, re, unicodedata
 import chromadb
 from sentence_transformers import SentenceTransformer
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AI = os.path.join(RAIZ, "ai-service")
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
-EMB = "all-MiniLM-L6-v2"
+# El contrato del embedder vive en ai-service/embedding.py: un solo lugar, para
+# que el indice y la consulta no puedan divergir.
+sys.path.insert(0, AI)
+from embedding import MODEL_NAME as EMB, para_consulta  # noqa: E402
 
 d = json.load(io.open(BANCO, encoding="utf-8-sig"))
 resp = [p for p in d if p["ground_truth"]["md_origen"]]
@@ -44,7 +47,7 @@ def esperados(p):
     return {os.path.basename(x) for x in [gt["md_origen"]] + gt.get("md_alternativos", [])}
 
 def recuperados(q, k):
-    v = [float(x) for x in m.encode([q], show_progress_bar=False)[0]]
+    v = [float(x) for x in m.encode([para_consulta(q)], show_progress_bar=False)[0]]
     r = col.query(query_embeddings=[v], n_results=k)
     return [os.path.basename(mt.get("source", "?")) for mt in r["metadatas"][0]]
 
@@ -67,7 +70,7 @@ def norm(t):
 
 
 def docs_recuperados(q, k):
-    v = [float(x) for x in m.encode([q], show_progress_bar=False)[0]]
+    v = [float(x) for x in m.encode([para_consulta(q)], show_progress_bar=False)[0]]
     r = col.query(query_embeddings=[v], n_results=k)
     return r["documents"][0]
 

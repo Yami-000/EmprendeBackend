@@ -24,7 +24,10 @@ from sentence_transformers import SentenceTransformer
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS_DEF = os.path.join(RAIZ, "ai-service", "docs", "sii")
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
-EMB = "all-MiniLM-L6-v2"                   # debe coincidir con ingest.py y api.py
+import sys, os as _os
+sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "ai-service"))
+# Importado de ai-service/embedding.py para que no pueda divergir del indice.
+from embedding import MODEL_NAME as EMB  # noqa: E402
 TRUNCADO_API = 1400                        # api.py recorta cada fragmento a esto
 
 ap = argparse.ArgumentParser()

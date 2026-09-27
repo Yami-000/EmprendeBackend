@@ -36,7 +36,8 @@ from ingest import _chunk_text
 
 DOCS = os.path.join(RAIZ, "ai-service", "docs", "sii")
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
-EMB = "all-MiniLM-L6-v2"
+# Importado de ai-service/embedding.py para que no pueda divergir del indice.
+from embedding import MODEL_NAME as EMB  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--n", type=int, default=5, help="palabras clave por documento")

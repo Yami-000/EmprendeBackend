@@ -11,107 +11,102 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-26, tras una sesión que cerró la 1.10 y midió
-tres iteraciones más (1.11, 1.12, 1.13). **Las métricas de abajo son de la
-configuración 1.10, que ya tiene corrida completa**: dejó de ser cierto que la
-última fuera la de la 1.8. Las
+**Última actualización:** 2026-09-26, al cerrar la 1.10 con la Fase 2 positiva. Las
 métricas de abajo son las de la 1.8, que sigue siendo la última corrida completa:
 la Fase 0, la B1 y el análisis del núcleo duro se resolvieron con pruebas
 dirigidas de 8 a 29 preguntas.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Hay cuatro PRs abiertos sin fusionar, para revisar en orden.** Ninguno se fusionó
-> por decisión propia. Las ramas están apiladas sobre la 1.10, que es la única
-> candidata clara.
+> **Cinco PRs abiertos, ninguno fusionado.** Todos apilados sobre la 1.10.
+> **Esta versión del archivo es la autoritativa** (viene con la 1.14); las de los
+> otros PRs son anteriores y van a dar conflicto al fusionar. Resolverlos a favor de
+> esta.
 >
 > | PR | Iteración | Veredicto | Qué decidir |
 > |---|---|---|---|
-> | **#11** | 1.10 — predicados | **Positivo:** banco completo 25/50 → **30/50** | `anclaje@6` cierra 1 punto bajo el piso (28/37). La causa está identificada y es estructural |
-> | **#12** | 1.11 — ventana del embedder | **Mejor retrieval del proyecto, peor juez** | Recomendación: **no fusionar `ingest.py`**, sí el hallazgo y las herramientas |
+> | **#11** | 1.10 — predicados | **Positivo:** 25/50 → 30/50 | Base de todo lo demás. Fusionar primero |
+> | **#12** | 1.11 — promediar ventanas | **Obsoleta** por la 1.14 | Fusionar solo el hallazgo y las herramientas, **no `ingest.py`** |
 > | **#13** | 1.12 — taxonomía del prompt | **Negativo, efecto nulo** | Nada. No cambia producción |
-> | **#14** | 1.13 — predicados sistemáticos | **Neutro, y resuelve el sobreajuste** | Si entra el corpus convertido o solo el script |
+> | **#14** | 1.13 — predicados sistemáticos | **Neutro**, y hay que remedirla | El prefijo ya no es escaso: sus números son de otro régimen |
+> | **#15** | **1.14 — embedder** | **El mejor resultado del proyecto** | `k=3` o `k=6`, y si la garantía de `k=3` alcanza |
 >
-> ### El diagnóstico que unifica la noche
+> ### Lo que cambió el panorama
 >
-> **El presupuesto de 256 tokens del prefijo es el techo estructural del retrieval.**
-> `all-MiniLM-L6-v2` lee 256 tokens y los fragmentos tienen mediana 382, así que el
-> vector de cada fragmento se calcula con su primer tramo. Las tres iteraciones
-> chocaron con eso por caminos distintos:
->
-> - **1.10** ganó metiendo relaciones en ese prefijo (+5 en el banco completo).
-> - **1.11** intentó eliminar la escasez promediando ventanas: `anclaje@6` llegó a
->   **31/37**, el mejor del proyecto, y la sensibilidad **bajó**.
-> - **1.13** mostró que, mientras el prefijo siga escaso, **cada cosa que se agrega
->   cuesta algo que ya estaba ahí** — y que *quitar* dos frases también empeora el
->   retrieval, lo que descarta "más texto diluye" como explicación.
->
-> **Lo que resolvería esto de raíz es un embedder con ventana más grande, y requiere
-> descargar un modelo.** No se hizo: está fuera de lo autorizado. **Es la decisión
-> pendiente más importante.**
->
-> ### Lo que quedó demostrado, y sirve para no repetir trabajo
->
-> - **El juez de 3B verifica un hecho a la vez.** Con el mismo contexto y el mismo
->   prompt, PREG-084 da `NO` como *"¿cuál es la diferencia...?"* y `SI` a sus dos
->   subpreguntas (`scripts/sonda_descomposicion.py`). **B2 tiene la premisa validada
->   en 2 de 3**, y compra 2 preguntas por una llamada extra en las 100.
-> - **Tocar el texto del prompt del juez está refutado tres veces:** `flexible`
->   (1 de 8), un juez de 7B (0 de 8), ampliar la enumeración de tipos de dato (0 de 3,
->   con 9 juicios idénticos entre dos prompts).
-> - **`anclaje@k` no es proxy suficiente del juez.** La 1.11 lo mejoró y la
->   sensibilidad bajó, con la cobertura de datos **subiendo** de 61% a 77%.
-> - **La 1.10 no era sobreajuste**, aunque sus 6 predicados se escribieron mirando el
->   banco: PREG-088 sigue aprobando con el predicado **mecánico** en vez del escrito a
->   mano. La prueba es limpia en 1 de 2 casos y sale a favor del mecanismo.
-> - **La abstención del redactor pese al `SI` del juez es marginal:** 6 de 185 casos
->   (3,2%) y **0 en la configuración vigente**. No amerita iteración.
->
-> ### Las corridas completas, por fin comparables
+> **El embedder era el techo, y ya no lo es.** `multilingual-e5-small` tiene ventana
+> de 512 tokens contra 256 de MiniLM, y el tokenizador de XLM-R es más eficiente en
+> español (mediana 283 tokens por fragmento contra 382). Resultado: **0 de 28
+> fragmentos exceden la ventana**, contra 22 de 28 antes.
 >
 > ```
-> configuracion   sensibilidad   abstencion indebida   especificidad   alucinacion
-> 1.8                 25/50            25/50              50/50           0/50
-> 1.10                30/50            20/50              50/50           0/50
-> 1.11A               28/50            24/50              50/50           0/50
+>                         1.10      e5 k=6    e5 k=3 (recomendada)
+> anclaje@6 ..........   28/37     36/37     --
+> anclaje@3 ..........   22/37     --        30/37
+> sensibilidad .......   30/50     38/50     34/50
+> especificidad (juez)   50/50     49/50     49/50
+> ALUCINACION ........    0/50      1/50      0/50
+> latencia juez ......   12,7 s    13,0 s     6,9 s
 > ```
 >
-> La 1.10 es la mejor configuración medida del proyecto. **La especificidad y la
-> alucinación no se movieron en ninguna iteración de la noche.**
+> **`anclaje@8` llegó a 37/37: el techo teórico.** Todas las citas literales del
+> banco llegan al contexto.
 >
-> ### Candidatos para la próxima, en orden de retorno esperado
+> ### Las tres decisiones que quedan en el PR #15
 >
-> 1. **Decidir el embedder.** Es el techo. Requiere descargar un modelo.
-> 2. **B2, descomponer la pregunta**, con premisa validada. Cuesta una llamada por
->    consulta sobre un end-to-end que ya está en ~28 s, y hay que descomponer **solo
->    para el juez**, nunca para el retrieval ni el redactor, para que no pueda tocar
->    la especificidad.
-> 3. **Variante B de la 1.11:** indexar una entrada por ventana y quedarse con el
->    **máximo** en vez del promedio, que es lo que el diagnóstico de la 1.11 señala.
->    Cuesta deduplicar por fragmento padre en `api.py`, `medir_retrieval.py` y
->    `evaluar_banco.py`.
-> 4. **El 2.0 sigue siendo llevar el pipeline de dos pasos a producción.** `api.py`
->    todavía sirve `/chat` de un paso, que es el que alucina 34%.
+> 1. **`k=3` o `k=6`.** Con 6 la sensibilidad es 38/50 y hay **una alucinación**:
+>    PREG-045 pregunta quién recauda los impuestos girados por el SII —la Tesorería,
+>    que no está en el corpus— y el bot responde que el SII. Con 3 no llega ese
+>    contexto y no hay alucinación, a costa de 4 preguntas de sensibilidad.
+> 2. **Si la garantía de `k=3` alcanza.** La especificidad del juez baja a 49/50 en
+>    **las dos** configuraciones de e5: el juez aprueba PREG-045 igual. Con `k=3` lo
+>    que evita el daño es que **el redactor abstiene**, no que el juez acierte — y esa
+>    abstención está medida como marginal (3,2%) y no controlada. **Cumple la letra de
+>    la restricción con una garantía más frágil que la 1.10.**
+> 3. **`api.py` ya está en `k=3`** en esa rama, para que lo que se fusione sea lo que
+>    se midió. Si se elige 6, hay que revertir esa línea.
+>
+> ### Lo que la 1.14 vuelve obsoleto o dudoso
+>
+> - **La 1.11 (promediar ventanas) no tiene objeto.** Existía para exprimir 256
+>   tokens. Su hallazgo sigue valiendo como diagnóstico; su código no.
+> - **La 1.13 (predicados sistemáticos) hay que remedirla.** Medía la competencia por
+>   un prefijo escaso, y el prefijo ya no es escaso.
+> - **El `CHUNK_SIZE` de 1400 se puede reabrir.** Se fijó en la 1.1 para que el dato
+>   llegara íntegro al juez y quedó acoplado al truncado de `api.py`. Con 512 tokens de
+>   ventana los fragmentos podrían ser más grandes **sin volverse invisibles**. Es una
+>   variable nueva y no se tocó.
+>
+> ### Lo que sigue en pie de las sesiones anteriores
+>
+> - **El juez de 3B verifica un hecho a la vez.** PREG-084 da `NO` como *"¿cuál es la
+>   diferencia...?"* y `SI` a sus dos subpreguntas, con el mismo contexto y el mismo
+>   prompt (`scripts/sonda_descomposicion.py`). **B2 tiene la premisa validada en 2 de
+>   3.** Descomponer **solo para el juez**, nunca para el retrieval ni el redactor.
+> - **Tocar el texto del prompt del juez está refutado tres veces.**
+> - **El 2.0 sigue siendo llevar el pipeline de dos pasos a producción.** `api.py`
+>   todavía sirve `/chat` de un paso, que es el que alucina 34%. Con la latencia ahora
+>   en 10,3 s de media, el argumento en contra se debilitó.
 >
 > ### Los números de control
 >
 > ```
-> sensibilidad ..........  30/50 (banco completo) / 23/29 (subconjunto congelado)
-> especificidad .........  50/50
+> sensibilidad ..........  34/50 (banco completo, e5 + k=3)
+> especificidad del juez   49/50
 > alucinacion ...........  0/50
-> recall@6 / anclaje@6 ..  48/50  /  28/37     (28 chunks, configuracion 1.10)
-> nucleo duro restante ..  3 (PREG-010, 064, 084)
+> anclaje@3 / anclaje@6 .  30/37  /  36/37     (28 chunks)
+> latencia juez .........  6,9 s
 > ```
 >
 > **Restricción que no se negocia:** nada entra si la especificidad baja de 48/50 o
 > la alucinación sube de 0%.
 >
-> ### Herramientas nuevas de esta sesión
+> ### Herramientas
 >
 > `medir_ventana_embedder.py` (cuánto del corpus ve el embedder),
-> `comparar_corridas.py` (dos corridas pregunta por pregunta, avisa cuando el neto
-> cabe en la banda), `sonda_descomposicion.py` (valida B2 sin implementarlo),
-> `generar_predicados.py` (convierte tablas en predicados con regla ciega).
+> `comparar_corridas.py` (dos corridas pregunta por pregunta; separa especificidad
+> del juez, atajadas por el redactor y alucinación), `sonda_descomposicion.py`
+> (valida B2 sin implementarlo), `generar_predicados.py` (tablas a predicados con
+> regla ciega).
 >
 > ### Herramientas disponibles
 >
@@ -148,24 +143,28 @@ banda.
 
 ## Estado actual del sistema
 
-**Pipeline de dos pasos con `llama3.2` (3B) en ambos roles, chunking de 1400
-caracteres y palabras clave derivadas en el texto indexado** (iteraciones 1.6,
-1.1 y 1.8):
+**Pipeline de dos pasos con `llama3.2` (3B) en ambos roles, embedder
+`multilingual-e5-small`, `k=3`, chunking de 1400 caracteres y palabras clave
+derivadas en el texto indexado** (iteraciones 1.6, 1.1, 1.8, 1.10 y 1.14):
 
 ```
 MÉTRICAS DETERMINISTAS  (deciden)
-  retrieval_hit@6 ........ 48/50 (96%, medido por archivo)
-  anclaje@6 .............. 28/37 (76%, medido por chunk)
-  anclaje@1 .............. 12/37 (32%, era 7/37 antes de los predicados)
+  retrieval_hit@6 ........ 49/50 (98%, medido por archivo)
+  anclaje@6 .............. 36/37 (97%, medido por chunk)
+  anclaje@8 .............. 37/37 (100%, el techo teórico)
+  anclaje@3 .............. 30/37 (81%, el k que corre en producción)
+  chunks fuera de la ventana del embedder ...... 0 de 28
 
 MÉTRICAS END-TO-END     (confirman, con banda de ±6 preguntas)
-  sensibilidad del juez .. 30/50 (60%, banco completo) / 23/29 (subconjunto)
-  abstuvo indebidamente .. 20/50 (era 25/50 en la 1.8)
-  cobertura de datos ..... 51% (banco completo) / 61% (subconjunto)
+  sensibilidad del juez .. 34/50 (68%, banco completo con k=3)
+  abstuvo indebidamente .. 16/50 (era 25/50 en la 1.8 y 20/50 en la 1.10)
+  cobertura de datos ..... 54%
   ALUCINACIÓN ............  0/50 (0%)
-  especificidad del juez . 50/50 (100%)
+  especificidad del juez . 49/50 (98%)  <- el juez falla PREG-045 y el redactor
+                                           la ataja. Garantía más frágil.
 
-Duración .............................. ~28 min    (juez ~11 s/pregunta)
+Latencia ... juez 6,9 s | consulta respondida 10,3 s de media, 23 s de pico
+            (era 12,7 s / 17,5 s / 39 s con MiniLM y k=6)
 ```
 
 **La 1.10 desbloqueó la mitad que estaba trabada.** La recuperación ya venía
@@ -184,10 +183,13 @@ que la alucinación se mantiene en 0% y la especificidad en 50/50. El sistema
 calla de más, no inventa. Para normativa tributaria es preferible, pero limita
 su utilidad.
 
-**Tensión abierta:** cada mejora de calidad se ha pagado en latencia. El juez
-pasó de 6,4 s a 12,3 s al agrandar los fragmentos, porque el 98% de su costo es
-leer contexto. Una consulta respondida cuesta ~28 s en una GTX 1650. Para un bot
-de Telegram eso ya es mucho, y `k=8` lo encarecería otra vez.
+**Tensión de latencia, aliviada por primera vez.** Cada mejora de calidad se
+había pagado en latencia: el juez pasó de 6,4 s a 12,3 s al agrandar los
+fragmentos, porque el 98% de su costo es leer contexto. La 1.14 la revirtió sin
+ceder calidad: el embedder nuevo hace que `k=3` recupere mejor que `k=6` con
+MiniLM, y con la mitad del contexto el juez baja a **6,9 s** y una consulta
+respondida a **10,3 s** de media. **Menos contexto y mejor retrieval a la vez**,
+que es lo que no se había podido conseguir antes.
 
 **Dirección estratégica:** hacer rendir al modelo de 3B cambiando la
 arquitectura, no sustituirlo por uno más grande. Un sistema que corre en
@@ -244,8 +246,6 @@ nuevo es retrabajo.
 | **Poner un ejemplo concreto en el prompt del juez** | El modelo de 3B lo copia como respuesta en vez de leer el contexto: 3 de 10 citas eran literalmente el ejemplo del prompt. Quitarlo sube las citas válidas de 60% a 100% | `iteracion_1.9_juez_con_cita/resultado_fase0.md` |
 | **Des-aplanar los saltos de línea del contexto del juez** | Fase 1 de la 1.10: `doc.replace('\n',' ')[:1400]` a `doc[:1400]` recupera **1 de 8** del núcleo duro y **0 de 8** end-to-end. Determinista (0 vuelcos en dos corridas idénticas). Lo decisivo: PREG-088 seguía en `NO` con la tabla perfectamente formateada, **y la Fase 2 la recuperó agregando el verbo con la tabla igual de aplanada**. No era el formato, era la relación ausente. El contexto tampoco crece: 28415 caracteres en ambas versiones | `iteracion_1.10_relaciones_explicitas/resultado_fase1.md` |
 | **Declarar la relación en prosa para preguntas comparativas o disyuntivas** | 1.10 Fase 2: funciona para relaciones de un dato (5 de 8) pero **no** para las que piden una relación entre dos datos. PREG-010, 064 y 084 reciben el predicado en el contexto —en el **puesto 1** dos de ellas— y el juez dice `NO` igual. Agregar más prosa del mismo tipo es retrabajo: hace falta otro mecanismo | `iteracion_1.10_relaciones_explicitas/resultado_fase2.md` |
-| **Ampliar la enumeración de tipos de dato del prompt del juez** | 1.12: agregar *"comparación entre dos figuras"* y *"delimitación de qué organismo interviene y cuál no"* a la lista de `estricto` da **0 de 3**, y la sonda de descomposición corrida con las dos variantes da **9 juicios idénticos**. Efecto exactamente nulo: el juez no usa esa lista para decidir. **Tercera refutación independiente** de tocar el prompt del juez | `iteracion_1.12_comparativas/resultado_1.12.md` |
-| **Mejorar `anclaje@k` suponiendo que la sensibilidad lo sigue** | 1.11A: promediar ventanas sube `anclaje@6` de 28 a **31/37** —el mejor del proyecto— y la sensibilidad **baja** de 23/29 a 20/29, con la cobertura de datos subiendo de 61% a 77%. Llega más dato y el juez aprueba menos. `anclaje@k` no mira **qué más** hay en los 6 fragmentos | `iteracion_1.11_ventana_embedder/resultado_1.11.md` |
 | **Anteponer el título del documento a cada fragmento** | Empeora: recall 48 → 46, anclaje 26 → 25. Repetir texto que el documento ya implica acerca sus fragmentos entre sí y diluye lo propio de cada uno | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Quitar la cabecera del grafo del texto que lee el juez** | Recupera 1 de 4. La idea de separar texto indexado de texto mostrado sigue valiendo como principio, pero no explicaba la regresión de la 1.7 | `iteracion_1.7_nodos/resultado_1.7.md` |
 | **Cambiar de motor de base vectorial** (Qdrant/FAISS/pgvector) | Con 48 fragmentos el motor no es el cuello de botella: cualquier implementación devuelve los mismos vecinos con el mismo embedding | ver OP-7, nota final |
@@ -296,17 +296,6 @@ nuevo es retrabajo.
   47/50 y la sensibilidad a 22/29. Con 6, el índice volvió a 28 chunks, `recall@6`
   a 48/50 y la sensibilidad subió a 23/29. **Vigilar el conteo de chunks al tocar
   el corpus.**
-- **`anclaje@k` no es un proxy suficiente del rendimiento del juez.** Mide si la
-  cita está en alguno de los k fragmentos, y **no mira qué más hay ahí**. La 1.11A
-  lo subió a 31/37 —el mejor del proyecto— y la sensibilidad bajó 3 puntos con la
-  cobertura de datos **subiendo** de 61% a 77%. Falta una métrica de **precisión del
-  contexto**: 31/37 con 6 fragmentos ruidosos puede valer menos que 28/37 con 6
-  limpios.
-- **El juez de 3B verifica un hecho a la vez, no relaciones entre dos hechos.**
-  Demostrado con `scripts/sonda_descomposicion.py`: con el **mismo** contexto y el
-  **mismo** prompt, PREG-084 da `NO` como *"¿cuál es la diferencia entre los tipos
-  de socios?"* y `SI` a las dos subpreguntas por separado. No es la instrucción del
-  prompt —tres refutaciones— es la tarea.
 - **La ventana del embedder y el truncado de `api.py` son DOS recortes distintos,
   y el primero decide el retrieval.** `all-MiniLM-L6-v2` lee 256 tokens; los chunks
   tienen mediana 382, así que **32% del corpus es invisible para la búsqueda

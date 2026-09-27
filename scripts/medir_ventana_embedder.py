@@ -24,7 +24,7 @@ No invoca al LLM: corre en segundos.
 
 Uso:  python scripts/medir_ventana_embedder.py
 """
-import json, io, os, re, unicodedata, statistics, logging
+import json, io, os, sys, re, unicodedata, statistics, logging
 logging.disable(logging.WARNING)
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -32,7 +32,8 @@ from sentence_transformers import SentenceTransformer
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AI = os.path.join(RAIZ, "ai-service")
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
-EMB = "all-MiniLM-L6-v2"
+sys.path.insert(0, AI)
+from embedding import MODEL_NAME as EMB, para_consulta  # noqa: E402
 K = 6
 
 
@@ -103,7 +104,7 @@ def reporte():
     def recupera(i):
         p = idx[i]
         cita = norm(p["ground_truth"]["cita_anclaje"])
-        v = [float(x) for x in m.encode([p["pregunta"]], show_progress_bar=False)[0]]
+        v = [float(x) for x in m.encode([para_consulta(p["pregunta"])], show_progress_bar=False)[0]]
         r = col.query(query_embeddings=[v], n_results=K)
         return any(cita in norm(d) for d in r["documents"][0])
 

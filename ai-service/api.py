@@ -11,6 +11,10 @@ import httpx
 
 from sentence_transformers import SentenceTransformer
 
+# Contrato unico del embedder. Si esto y ingest.py dejan de coincidir, los
+# vectores del indice y los de la consulta no son comparables.
+from embedding import MODEL_NAME, para_consulta
+
 
 BASE_DIR = Path(__file__).resolve().parent
 CHROMA_DIR = BASE_DIR / "chroma_db"
@@ -46,7 +50,7 @@ async def startup_event():
     global _st_model, _chroma_client, _collection
     # Load sentence-transformers model in a thread to avoid blocking event loop
     def load_st():
-        return SentenceTransformer("all-MiniLM-L6-v2")
+        return SentenceTransformer(MODEL_NAME)
 
     _st_model = await asyncio.to_thread(load_st)
 
@@ -64,7 +68,10 @@ async def _embed_text(text: str) -> List[float]:
     if _st_model is None:
         raise RuntimeError("Embedding model not loaded")
     # run encode in thread
-    emb = await asyncio.to_thread(_st_model.encode, [text], show_progress_bar=False)
+    # para_consulta agrega el prefijo de CONSULTA. Usar el de pasaje aca
+    # invertiria la asimetria que el modelo aprendio.
+    emb = await asyncio.to_thread(
+        _st_model.encode, [para_consulta(text)], show_progress_bar=False)
     vec = emb[0]
     return [float(x) for x in vec]
 
@@ -211,7 +218,20 @@ async def chat_endpoint(payload: ChatRequest):
 
     # Retrieve top-k
     try:
-        fragments = await _query_chroma(query_vec, k=6)
+        # Iteración 1.14: k baja de 6 a 3, y es el embedder nuevo lo que lo
+        # permite. Con multilingual-e5-small, anclaje@3 es 30/37 — mejor que el
+        # 28/37 que daba MiniLM con k=6. Medido sobre el banco completo:
+        #
+        #             sensibilidad  especificidad  ALUCINACION  latencia juez
+        #   k=6          38/50         49/50          1/50         13,0 s
+        #   k=3          34/50         49/50          0/50          6,9 s
+        #
+        # Con k=6 el juez aprueba PREG-045 ("¿qué organismo recauda los impuestos
+        # girados por el SII?", cuya respuesta es la Tesorería y no está en el
+        # corpus) y el redactor la contesta mal. Con k=3 no llega ese contexto.
+        # El 98% del costo del juez es leer contexto, así que k=3 casi lo parte
+        # en dos: una consulta respondida baja de 17,5 s a 10,3 s de media.
+        fragments = await _query_chroma(query_vec, k=3)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Retrieval error: {str(e)}")
 

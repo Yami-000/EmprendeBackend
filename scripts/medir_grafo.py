@@ -30,7 +30,8 @@ sys.path.insert(0, os.path.join(RAIZ, "ai-service"))
 from ingest import _chunk_text, _parse_grafo
 
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
-EMB = "all-MiniLM-L6-v2"
+# Importado de ai-service/embedding.py para que no pueda divergir del indice.
+from embedding import MODEL_NAME as EMB  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--base", default="ai-service/docs/sii",

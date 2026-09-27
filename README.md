@@ -16,6 +16,7 @@ Tres procesos independientes que deben correr en simultáneo:
 | Proceso | Rol | Puerto |
 |---|---|---|
 | **Ollama** | Motor LLM local (`llama3.2` por defecto) | `11434` |
+| *(embedder)* | `multilingual-e5-small`, en proceso con ai-service. Se descarga solo la primera vez (~470 MB) | — |
 | **ai-service** (Python / FastAPI) | RAG: embeddings + ChromaDB + orquesta la llamada a Ollama | `11400` |
 | **Backend Node** (Express + Telegraf) | Bot de Telegram, persistencia de historial | `4000` |
 
@@ -36,6 +37,8 @@ Usuario (Telegram)
 - Python 3.10+ con un entorno virtual en `ai-service/.venv`
 - [Ollama](https://ollama.com) instalado, con al menos un modelo descargado
   (`ollama pull llama3.2`)
+- Conexión a internet la **primera** vez, para que `sentence-transformers`
+  descargue el embedder `multilingual-e5-small` (~470 MB). Después queda en caché.
 - Un token de bot de Telegram ([@BotFather](https://t.me/BotFather))
 
 ## Instalación
