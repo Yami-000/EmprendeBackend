@@ -18,102 +18,76 @@ dirigidas de 8 a 29 preguntas.
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Todo fusionado a `main`.** Las iteraciones 1.10 a 1.14 cerraron; los cinco PRs
-> (#11 a #15) están cerrados con constancia de qué entró y qué quedó afuera.
+> **Los experimentos están cerrados.** Las dos hipótesis que quedaban abiertas se
+> midieron: una refutada, una confirmada. **Ya no queda nada barato por medir en el
+> pipeline; lo que queda es ingeniería.**
 >
-> **Lo primero al retomar:** `cd ai-service && python ingest.py`. El corpus y el
-> embedder cambiaron y `chroma_db/` no está versionado.
+> **La síntesis completa está en
+> [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md)** — metodología, las 18
+> hipótesis, limitaciones y riesgos. Este bloque es solo el próximo paso.
 >
-> ### Lo que corre ahora
+> **Lo primero al retomar:** `cd ai-service && python ingest.py`. `chroma_db/` no está
+> versionado.
+>
+> ### La configuración que corre
 >
 > ```
 > embedder ..............  multilingual-e5-small (512 tokens, 384 dims)
 > k .....................  3
-> pipeline ..............  dos pasos SOLO en el arnes; /chat sigue en un paso
+> chunking ..............  1400 / 200  -> 28 fragmentos  (medido optimo, 1.15)
+> pipeline ..............  dos pasos + descomposicion de comparativas (1.16)
+>                          SOLO en el arnes; /chat sigue en un paso
 >
-> anclaje@3 / @6 / @8 ...  30/37  /  36/37  /  37/37   (28 chunks)
-> recall@6 ..............  49/50
-> sensibilidad ..........  34/50
+> sensibilidad ..........  37/50
 > especificidad del juez   49/50
 > alucinacion ...........  0/50
-> latencia juez .........  6,9 s | consulta respondida 10,3 s de media
+> anclaje@3 / @6 / @8 ...  30/37  /  36/37  /  37/37
+> latencia juez .........  6,8 s | consulta respondida 10,3 s de media
 > ```
 >
-> ### 🔴 LO MÁS IMPORTANTE QUE FALTA: llevar el pipeline de dos pasos a producción
+> ### 🔴 Lo único que importa ahora: el 2.0
 >
-> **Todo lo medido en 14 iteraciones vive en el arnés de evaluación.** `api.py` sirve
-> `/chat` de **un paso**, que es el que alucina **34%**. El bot que usa la gente no
-> tiene nada del 0% de alucinación, ni del juez, ni de la abstención.
+> **Llevar el pipeline de dos pasos a producción. No es una hipótesis: está medido.**
+> `api.py` sirve `/chat` de **un paso**, que alucina **34%**. El bot que usa la gente
+> no tiene ninguna de las mejoras de 16 iteraciones.
 >
-> Es el **2.0** y ya no hay excusa: el argumento que lo frenaba era la latencia, y la
-> 1.14 la bajó de 39 s de pico a 23 s. Lo que hay que hacer, concretamente:
+> El argumento que lo frenaba era la latencia, y la 1.14 la bajó de 39 s de pico a 23 s.
 >
-> 1. Mover la lógica de dos pasos de `evaluar_banco.py` a `api.py` — el juez decide,
->    y solo si aprueba se llama al redactor.
-> 2. **El camino `NO` no debe llamar al modelo:** devuelve `FRASE_ABSTENCION` directo,
->    que es lo que lo hace más rápido que el de un paso.
-> 3. Cuidado con el *streaming*: `/chat` devuelve SSE y el juez es una llamada
+> 1. Mover la lógica de dos pasos de `evaluar_banco.py` a `api.py`, con la
+>    descomposición incluida (`descomponer_comparativa` ya vive en `api.py`).
+> 2. **El camino `NO` no debe llamar al modelo:** devuelve `FRASE_ABSTENCION` directo.
+>    Es lo que lo hace más rápido que el de un paso.
+> 3. **Cuidado con el *streaming*:** `/chat` devuelve SSE y el juez es una llamada
 >    bloqueante previa. El primer token va a tardar ~7 s más.
-> 4. Verificar con el banco **a través del endpoint**, no del arnés, que es lo único
->    que prueba que producción se comporta como lo medido.
+> 4. **Verificar con el banco a través del endpoint**, no del arnés. Es lo único que
+>    prueba que producción se comporta como lo medido, y es justamente lo que nunca se
+>    hizo — razón por la que esta deuda pasó desapercibida 16 iteraciones.
 >
-> ### Solo quedan DOS hipótesis abiertas, y son complementarias
+> ### Después, en orden
 >
-> Triaje completo en
-> [`triaje_hipotesis_2026-09-27.md`](tests/iteraciones/triaje_hipotesis_2026-09-27.md).
-> De las 50 respondibles el juez niega 16, y se parten en dos grupos que piden trabajo
-> distinto:
->
-> ```
-> grupo A -- el dato llega y el juez lo niega ....  7 preguntas
->            010, 064, 083, 084, 104, 105, 117
->            4 de 7 son 'conceptual', y 3 preguntan "cual es la diferencia"
->
-> grupo B -- el dato no llega con k=3 ............  9 preguntas
->            006, 061, 063, 068, 087, 103, 110, 112, 116
->            es el precio de haber elegido k=3 para evitar la fuga de PREG-045
-> ```
->
-> 1. **`CHUNK_SIZE` mayor — ataca el grupo B.** Está en 1400 caracteres desde la 1.1 y
->    quedó acoplado al truncado de `api.py`. Con 512 tokens de ventana los fragmentos
->    **pueden crecer sin volverse invisibles** — antes no podían. Fragmentos más grandes
->    y más completos significan que los mismos 3 traen más dato, o sea **devolver el
->    precio de `k=3` sin tocar `k`**. Hay que subir los dos topes a la vez. Barato:
->    `medir_retrieval.py` corre en segundos, sin LLM. **Va primero por eso.**
-> 2. **B2, descomponer la pregunta solo para el juez — ataca el grupo A.** Premisa
->    validada en 2 de 3 (`sonda_descomposicion.py`), y su techo es mayor de lo que se
->    creía: el tipo que ataca domina **4 de las 7**. Cuesta una llamada más por
->    consulta. **Nunca descomponer para el retrieval ni para el redactor**, o puede
->    tocar la especificidad.
-> 2. **Robustez de la red de seguridad.** El 0% de alucinación descansa en que **el
->    redactor abstiene** en PREG-045, no en que el juez acierte (especificidad 49/50).
->    Medirlo a propósito: forzar `SI` en las 50 sin respaldo y contar cuántas ataja el
->    redactor. Dice si la garantía es sólida o casual.
-> 3. **B2 — descomponer la pregunta, solo para el juez.** Premisa validada en 2 de 3
->    (`sonda_descomposicion.py`). Compra ~2 preguntas por una llamada extra. **Nunca
->    para el retrieval ni el redactor**, o puede tocar la especificidad.
-> 4. **Remedir la 1.13 sobre e5.** Sus 20 predicados mecánicos están en
->    `generar_predicados.py --solo-si-cabe` pero **no** en el corpus: se midieron bajo
->    el prefijo escaso, que ya no existe.
+> 1. **Endurecer la garantía de especificidad.** El 0% de alucinación descansa en que
+>    **el redactor** abstiene en PREG-045, no en que el juez acierte (49/50). Medirlo a
+>    propósito: forzar `SI` en las 50 sin respaldo y contar cuántas ataja.
+> 2. **El grupo B: 9 preguntas cuyo dato no llega con `k=3`.** No se ataca desde el
+>    chunking (1.15). Queda sin medir: `k` variable en una segunda pasada cuando el juez
+>    dice `NO`, o un *reranker* sobre un `k` mayor — **eso requeriría descargar otro
+>    modelo**.
+> 3. **Extender la descomposición.** Cubre 5 de 100. Sin cubrir: PREG-084 (sin dos lados
+>    separables), PREG-010 (disyuntiva) y las `normativa` del grupo A.
+> 4. **Remedir la 1.13 sobre e5.** El generador está en `main`, su corpus no: se midió
+>    bajo el prefijo escaso. Y habría que corregir la gramática de las frases generadas,
+>    que es **texto indexado** y hay que medirlo aparte.
 >
 > ### Lo que NO hay que volver a intentar
 >
-> Está en la tabla de callejones sin salida, pero estos son los que la sesión invita a
-> repetir:
+> Tabla completa en callejones sin salida. Los que esta sesión invita a repetir:
 >
 > - **Tocar el texto del prompt del juez.** Tres refutaciones independientes.
-> - **Promediar ventanas del embedder** (1.11). Existía para exprimir 256 tokens.
+> - **Mover `CHUNK_SIZE`.** 1400/200 medido óptimo en las dos direcciones (1.15).
 > - **Subir `k` a 6.** Gana 4 preguntas de sensibilidad y **filtra PREG-045**.
-> - **Un embedder más grande que e5-small.** `bge-m3` pesa 2,2 GB: correr en hardware
->   modesto es el objetivo del proyecto.
->
-> ### Herramientas
->
-> `medir_ventana_embedder.py` (cuánto del corpus ve el embedder),
-> `comparar_corridas.py` (dos corridas pregunta por pregunta; separa especificidad del
-> juez, atajadas por el redactor y alucinación, y avisa por asimetría de los vuelcos),
-> `sonda_descomposicion.py` (valida B2 sin implementarlo), `generar_predicados.py`
-> (tablas a predicados con regla ciega).
+> - **Cambiar la métrica de similitud.** No-op: los vectores son unitarios.
+> - **Un embedder más grande.** `bge-m3` pesa 2,2 GB y contradice el propósito.
+> - **Promediar ventanas del embedder.** Existía para exprimir 256 tokens.
 >
 > ### Herramientas disponibles
 >

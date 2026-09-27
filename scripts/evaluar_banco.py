@@ -33,7 +33,8 @@ from sentence_transformers import SentenceTransformer
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AI = os.path.join(RAIZ, "ai-service")
 sys.path.insert(0, AI)
-from api import _build_system_prompt, _build_judge_prompt, FRASE_ABSTENCION, JUEZ_PROMPT_BASES
+from api import (_build_system_prompt, _build_judge_prompt, FRASE_ABSTENCION,
+                 JUEZ_PROMPT_BASES, descomponer_comparativa)
 
 # Posicionales conservados por compatibilidad: los comandos documentados en
 # README.md y resultado_1.3.md los usan. Las flags nuevas se suman sin romperlos.
@@ -48,6 +49,11 @@ ap.add_argument("--juez", default=None, help="modelo juez (default: el posiciona
 ap.add_argument("--redactor", default=None, help="modelo redactor (default: el posicional modelo)")
 ap.add_argument("--num-predict-juez", type=int, default=5,
                 help="tokens maximos del juez; alcanza para SI/NO")
+ap.add_argument("--descomponer", action="store_true",
+                help="B2: si el juez dice NO en una pregunta comparativa, la parte "
+                     "en subpreguntas por definicion y exige que TODAS den SI. Solo "
+                     "afecta al juez: el contexto y el redactor reciben la pregunta "
+                     "original.")
 ap.add_argument("--juez-prompt", default="estricto", choices=sorted(JUEZ_PROMPT_BASES),
                 help="calibracion del prompt del juez (ver JUEZ_PROMPT_BASES en api.py)")
 ap.add_argument("--limite", type=int, default=None,
@@ -181,6 +187,22 @@ def main():
                 juez_modelo, _build_judge_prompt(frags, args.juez_prompt),
                 p["pregunta"], args.num_predict_juez)
             dijo_si = parse_juicio(juicio_txt)
+            # B2: solo se intenta cuando el juez ya dijo NO, asi que no puede
+            # convertir un SI en NO y el costo extra recae unicamente en los casos
+            # que hoy se pierden. Se exige que TODAS las subpreguntas den SI: una
+            # comparacion necesita los dos lados en el contexto, y esa conjuncion
+            # es lo que protege la especificidad.
+            subs_usadas, subs_veredictos = [], []
+            if args.descomponer and not dijo_si:
+                subs_usadas = descomponer_comparativa(p["pregunta"])
+                for sub in subs_usadas:
+                    t, lat = llamar_ollama(
+                        juez_modelo, _build_judge_prompt(frags, args.juez_prompt),
+                        sub, args.num_predict_juez)
+                    juez_lat += lat
+                    subs_veredictos.append(parse_juicio(t))
+                if subs_veredictos and all(subs_veredictos):
+                    dijo_si = True
             if dijo_si:
                 ans, redactor_lat = llamar_ollama(
                     redactor_modelo, _build_system_prompt(frags), p["pregunta"], args.num_predict)
@@ -200,7 +222,8 @@ def main():
                     "abstuvo": abstuvo(ans), "anclas": sorted(anc), "anclas_ok": sorted(cub),
                     "cobertura": round(len(cub) / len(anc), 2) if anc else None,
                     "respuesta": ans,
-                    "modo": "dos_pasos" if args.dos_pasos else "un_paso",
+                    "modo": "dos_pasos", "subpreguntas": subs_usadas,
+                    "subpreguntas_si": subs_veredictos if args.dos_pasos else "un_paso",
                     "juez_prompt": args.juez_prompt if args.dos_pasos else None,
                     "juez_respuesta": juicio_txt,
                     "juez_dijo_si": dijo_si,
