@@ -160,6 +160,15 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   fragmentos es el solape por caracteres (`chunk[-150:]`), que hace que el 62%
   empiece a mitad de frase. Ver la sección 5 de `CONTEXTO.md`.
 
+- **No propongas cambiar la métrica de similitud del índice (OP-5).** Es un no-op:
+  los vectores son unitarios porque el modelo trae capa `Normalize`, y para vectores
+  unitarios el orden por L2 y por coseno es el mismo. Verificado: top-6 idéntico en
+  **50 de 50** preguntas.
+- **Solo quedan dos hipótesis abiertas**, y son complementarias: subir `CHUNK_SIZE`
+  —ahora posible, porque con 512 tokens de ventana un fragmento más grande no se
+  vuelve invisible— y **B2**, descomponer la pregunta solo para el juez. Ver
+  `tests/iteraciones/triaje_hipotesis_2026-09-27.md` antes de proponer otra cosa.
+
 ## Idioma
 
 Documentación, commits y pull requests en **español**, salvo tecnicismos.

@@ -57,12 +57,34 @@ dirigidas de 8 a 29 preguntas.
 > 4. Verificar con el banco **a través del endpoint**, no del arnés, que es lo único
 >    que prueba que producción se comporta como lo medido.
 >
-> ### Después de eso, en orden de retorno
+> ### Solo quedan DOS hipótesis abiertas, y son complementarias
 >
-> 1. **`CHUNK_SIZE`, que la 1.14 reabrió.** Está en 1400 caracteres desde la 1.1 y
+> Triaje completo en
+> [`triaje_hipotesis_2026-09-27.md`](tests/iteraciones/triaje_hipotesis_2026-09-27.md).
+> De las 50 respondibles el juez niega 16, y se parten en dos grupos que piden trabajo
+> distinto:
+>
+> ```
+> grupo A -- el dato llega y el juez lo niega ....  7 preguntas
+>            010, 064, 083, 084, 104, 105, 117
+>            4 de 7 son 'conceptual', y 3 preguntan "cual es la diferencia"
+>
+> grupo B -- el dato no llega con k=3 ............  9 preguntas
+>            006, 061, 063, 068, 087, 103, 110, 112, 116
+>            es el precio de haber elegido k=3 para evitar la fuga de PREG-045
+> ```
+>
+> 1. **`CHUNK_SIZE` mayor — ataca el grupo B.** Está en 1400 caracteres desde la 1.1 y
 >    quedó acoplado al truncado de `api.py`. Con 512 tokens de ventana los fragmentos
->    **pueden crecer sin volverse invisibles** — antes no podían. Hay que subir los dos
->    a la vez. Barato de evaluar: `medir_retrieval.py` corre en segundos.
+>    **pueden crecer sin volverse invisibles** — antes no podían. Fragmentos más grandes
+>    y más completos significan que los mismos 3 traen más dato, o sea **devolver el
+>    precio de `k=3` sin tocar `k`**. Hay que subir los dos topes a la vez. Barato:
+>    `medir_retrieval.py` corre en segundos, sin LLM. **Va primero por eso.**
+> 2. **B2, descomponer la pregunta solo para el juez — ataca el grupo A.** Premisa
+>    validada en 2 de 3 (`sonda_descomposicion.py`), y su techo es mayor de lo que se
+>    creía: el tipo que ataca domina **4 de las 7**. Cuesta una llamada más por
+>    consulta. **Nunca descomponer para el retrieval ni para el redactor**, o puede
+>    tocar la especificidad.
 > 2. **Robustez de la red de seguridad.** El 0% de alucinación descansa en que **el
 >    redactor abstiene** en PREG-045, no en que el juez acierte (especificidad 49/50).
 >    Medirlo a propósito: forzar `SI` en las 50 sin respaldo y contar cuántas ataja el
@@ -193,12 +215,12 @@ la auditoría no había visto.
 | OP-3 | Modelo de generación | ❌ **Refutada** | 1.3 — escalar a 7-8B no baja la alucinación; B1 — tampoco ayuda escalar solo el juez |
 | OP-6 | Discriminación en dos pasos | ✅ **Confirmada** | 1.6 — alucinación 34% a 0% |
 | OP-1 | Chunking | ✅ **Parcial** | 1.1 — el tamaño era la causa; 25 → 21 abstenciones |
-| OP-5 | Métrica de similitud | ⏳ Pendiente | sin medir, costo ~1 línea |
-| OP-4 | Deduplicación del corpus | ⏳ Pendiente | incluido en el techo de retrieval |
+| OP-5 | Métrica de similitud | ❌ **No-op, cerrada** | los vectores son unitarios (capa `Normalize`), así que L2 y coseno dan el **mismo** orden: verificado, top-6 idéntico en **50 de 50**. Ver `triaje_hipotesis_2026-09-27.md` |
+| OP-4 | Deduplicación del corpus | 🟢 **Sin objeto** | la concentración es real (dos documentos se llevan el 60% del top-6) pero el techo que justificaba atacarla ya no existe: `recall@6` 49/50 y `anclaje@6` 36/37, un fallo de cada tipo |
 | OP-7 | RAG basado en nodos | ◐ **Parcial** | 1.7 — declarar las aristas sirve, recorrerlas no |
 | — | Palabras clave derivadas del corpus | ✅ **Confirmada** | 1.8 — anclaje 25 → 29, el mejor retrieval del proyecto |
 | — | Reescritura estructurada del corpus | ✅ **Confirmada** | **1.10 Fase 2 — el mayor avance del proyecto en el juez.** Declarar las relaciones como predicados lleva el núcleo duro de 0 a 5 de 8 y la sensibilidad de 18/29 a 23/29, con especificidad 50/50 y alucinación 0%. `anclaje@1` casi se duplica (7 → 12/37) |
-| — | Estabilidad del juez | 🟠 **Parcialmente resuelta** | la inferencia relacional era la causa, y se ataca desde el corpus (1.10 Fase 2: 5 de 8). Lo que resiste son las preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado les llega en el puesto 1 y el juez dice `NO` igual |
+| — | Estabilidad del juez | 🔴 **Es lo que queda** | la inferencia relacional era la causa, y se ataca desde el corpus (1.10 Fase 2: 5 de 8). Lo que resiste son las preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado les llega en el puesto 1 y el juez dice `NO` igual |
 | — | Presentación del contexto al juez | ❌ **Refutada** | Fase 1 de la 1.10 — des-aplanar las tablas recupera 1 de 8 y 0 end-to-end. PREG-088, el caso de tabla que motivó el cambio, sigue en `NO` con la tabla bien formateada |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
@@ -368,7 +390,24 @@ cumplió el criterio de éxito.
 Lo que sí dejó esta iteración: la evidencia de que el problema es arquitectónico
 y no de capacidad, que es justamente lo que la 1.6 confirmó.
 
-### OP-5 — Métrica de similitud del índice ⏳ **PENDIENTE**
+### OP-5 — Métrica de similitud del índice ❌ **NO-OP, CERRADA 2026-09-27**
+
+**La premisa de esta línea era falsa.** Decía que `sentence-transformers.encode()`
+no normaliza y que por eso L2 y coseno darían rankings distintos. Los dos modelos
+que usa el proyecto —`all-MiniLM-L6-v2` y `multilingual-e5-small`— incluyen capa
+`Normalize`, así que los vectores salen **unitarios**, y para vectores unitarios
+`‖a−b‖² = 2 − 2·cos`: el orden es el **mismo** por construcción.
+
+Verificado sobre el índice: normas 1,000000 y **top-6 idéntico en 50 de 50
+preguntas**. Cambiar `hnsw:space` no puede mover ningún número.
+
+Declararlo explícito sigue valiendo como **documentación** —es deuda que dejó la
+auditoría— pero **no es una hipótesis de mejora**. Detalle en
+`tests/iteraciones/triaje_hipotesis_2026-09-27.md`.
+
+### Texto original de la línea, conservado
+
+
 
 Rama: `iteracion_1.5_similitud` · Plan: pendiente
 
@@ -385,7 +424,16 @@ Mejor relación costo/beneficio del conjunto: el cambio es de una línea y
 **Riesgo:** ninguno relevante. Si no mejora, se revierte y al menos queda
 documentado qué métrica usa el índice — deuda que la auditoría dejó abierta.
 
-### OP-4 — Deduplicación del corpus ⏳ **PENDIENTE**
+### OP-4 — Deduplicación del corpus 🟢 **SIN OBJETO desde 2026-09-27**
+
+La concentración que describe **sigue siendo real**: dos documentos se llevan el
+60% de los slots del top-6 (32,7% y 27,7%). Pero su justificación era explicar el
+techo del retrieval, y ese techo lo levantó la 1.14: `recall@6` 49/50 y `anclaje@6`
+36/37, con **un solo fallo de cada tipo** (PREG-116 y PREG-106). Un arreglo perfecto
+compraría 1 o 2 preguntas.
+
+**No está refutada: quedó sin objeto.** Si el corpus creciera mucho volvería a
+importar.
 
 Rama: `iteracion_1.4_corpus` · Plan: `iteracion_1.4_corpus/plan_1.4.md`
 
