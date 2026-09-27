@@ -307,7 +307,7 @@ por esa razón.
 | 2 | Métrica de similitud del índice sin especificar (L2 por defecto, vectores sin normalizar) | 🟡 OP-5 |
 | 3 | Código muerto del proyecto anterior en `src/config/` y `src/graphql/` | 🟡 Limpieza pendiente |
 | 4 | `langchain`, `ollama` y cuatro paquetes npm declarados sin uso | 🟢 Limpieza de manifests |
-| 5 | Pipeline de dos pasos solo en el arnés, no en `/chat` | 🟡 Portar a producción — candidato a 2.0 |
+| 5 | **Pipeline de dos pasos solo en el arnés, no en `/chat`.** Producción sirve el de un paso, que alucina **34%**: el bot que usa la gente no tiene nada de las 14 iteraciones de mejora | 🔴 **La deuda más importante del proyecto.** Es el 2.0, y el argumento que lo frenaba —la latencia— cayó con la 1.14: de 39 s de pico a 23 s |
 | 6 | Sanitización de fragments contra prompt injection | 🟢 Baja — OP-2 |
 | 8 | ~~El juez recibe las tablas aplanadas, sin estructura~~ — **cerrada 2026-09-25**: des-aplanar recupera 1 de 8 del núcleo duro y 0 end-to-end, y el contexto no crece (28415 caracteres en ambas versiones). No era el formato | ✅ Medida y descartada (1.10 Fase 1) |
 | 9 | ~~El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas~~ — **resuelta 2026-09-26**: declarar la relación en prosa antes de la tabla lleva el núcleo duro de 0 a 5 de 8 y la sensibilidad a 23/29 | ✅ 1.10 Fase 2 |
