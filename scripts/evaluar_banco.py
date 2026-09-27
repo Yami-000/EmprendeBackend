@@ -79,7 +79,9 @@ def leer_ids(spec):
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
 OUT = os.path.join(RAIZ, "tests", "iteraciones", "resultados_%s.json" % args.etiqueta)
 OLLAMA = "http://localhost:11434/api/chat"
-EMB = "all-MiniLM-L6-v2"                      # debe coincidir con ingest.py y api.py
+# El contrato del embedder vive en ai-service/embedding.py. Igual que los prompts,
+# se IMPORTA en vez de copiarse: una copia divergente mide otra cosa.
+from embedding import MODEL_NAME as EMB, para_consulta  # noqa: E402
 
 ABST = ["no incluye esa informaci", "base de conocimientos", "lo siento",
         "no puedo responder", "no está en el contexto", "no dispongo",
@@ -168,7 +170,7 @@ def main():
         esperado = gt["md_origen"] is not None
         esp = {os.path.basename(x) for x in ([gt["md_origen"]] + gt.get("md_alternativos", [])) if x}
 
-        vec = [float(x) for x in m.encode([p["pregunta"]], show_progress_bar=False)[0]]
+        vec = [float(x) for x in m.encode([para_consulta(p["pregunta"])], show_progress_bar=False)[0]]
         q = col.query(query_embeddings=[vec], n_results=args.k)
         frags = [{"document": doc, "metadata": mt}
                  for doc, mt in zip(q["documents"][0], q["metadatas"][0])]

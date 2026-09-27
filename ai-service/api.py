@@ -11,6 +11,10 @@ import httpx
 
 from sentence_transformers import SentenceTransformer
 
+# Contrato unico del embedder. Si esto y ingest.py dejan de coincidir, los
+# vectores del indice y los de la consulta no son comparables.
+from embedding import MODEL_NAME, para_consulta
+
 
 BASE_DIR = Path(__file__).resolve().parent
 CHROMA_DIR = BASE_DIR / "chroma_db"
@@ -46,7 +50,7 @@ async def startup_event():
     global _st_model, _chroma_client, _collection
     # Load sentence-transformers model in a thread to avoid blocking event loop
     def load_st():
-        return SentenceTransformer("all-MiniLM-L6-v2")
+        return SentenceTransformer(MODEL_NAME)
 
     _st_model = await asyncio.to_thread(load_st)
 
@@ -64,7 +68,10 @@ async def _embed_text(text: str) -> List[float]:
     if _st_model is None:
         raise RuntimeError("Embedding model not loaded")
     # run encode in thread
-    emb = await asyncio.to_thread(_st_model.encode, [text], show_progress_bar=False)
+    # para_consulta agrega el prefijo de CONSULTA. Usar el de pasaje aca
+    # invertiria la asimetria que el modelo aprendio.
+    emb = await asyncio.to_thread(
+        _st_model.encode, [para_consulta(text)], show_progress_bar=False)
     vec = emb[0]
     return [float(x) for x in vec]
 

@@ -22,9 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent
 DOCS_DIR = BASE_DIR / "docs" / "sii"
 CHROMA_DIR = BASE_DIR / "chroma_db"
 
-# Debe coincidir exactamente con el modelo que usa api.py para embeber las queries:
-# indexar y consultar con modelos distintos produce vectores incomparables.
-MODEL_NAME = "all-MiniLM-L6-v2"
+# El contrato del embedder vive en embedding.py, en un solo lugar: indexar y
+# consultar con modelos distintos produce vectores incomparables, y con el nombre
+# repetido en siete archivos la divergencia era cuestion de tiempo.
+from embedding import MODEL_NAME, para_pasaje
 
 
 def find_markdown_files(root_dir: Path):
@@ -314,11 +315,16 @@ def create_vector_store(documents):
         # trabaja en el recuperador sin meter ruido en el contexto del modelo.
         # A nivel de retrieval ambas variantes miden igual (48/50 y 29/37); se
         # elige esta porque no altera lo que el modelo ve.
+        # para_pasaje agrega el prefijo que el modelo espera para texto indexado
+        # (vacio en los modelos que no usan prefijos). Va DESPUES de las palabras
+        # clave, envolviendo el texto completo: el prefijo describe el rol del
+        # texto, no compite con el.
         indexables = []
         for d, t in zip(documents, texts):
             pal = d.get("metadata", {}).get("claves", "")
             sep = chr(10) * 2
-            indexables.append(("Palabras clave: " + pal + sep + t) if pal else t)
+            crudo = ("Palabras clave: " + pal + sep + t) if pal else t
+            indexables.append(para_pasaje(crudo))
 
         embeddings_list = st_model.encode(indexables, show_progress_bar=False)
         # Ensure embeddings are plain Python floats (avoid numpy types that print verbosely)

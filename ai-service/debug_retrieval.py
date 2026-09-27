@@ -4,7 +4,8 @@ from pathlib import Path
 from sentence_transformers import SentenceTransformer
 
 CHROMA_DIR = Path(__file__).resolve().parent / "chroma_db"
-model = SentenceTransformer("all-MiniLM-L6-v2")
+from embedding import MODEL_NAME, para_consulta
+model = SentenceTransformer(MODEL_NAME)
 client = chromadb.PersistentClient(path=str(CHROMA_DIR))
 col = client.get_collection("sii_markdown")
 

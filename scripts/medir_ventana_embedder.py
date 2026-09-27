@@ -24,7 +24,7 @@ No invoca al LLM: corre en segundos.
 
 Uso:  python scripts/medir_ventana_embedder.py
 """
-import json, io, os, re, unicodedata, statistics, logging
+import json, io, os, sys, re, unicodedata, statistics, logging
 logging.disable(logging.WARNING)
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -32,7 +32,8 @@ from sentence_transformers import SentenceTransformer
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AI = os.path.join(RAIZ, "ai-service")
 BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json")
-EMB = "all-MiniLM-L6-v2"
+sys.path.insert(0, AI)
+from embedding import MODEL_NAME as EMB, para_consulta  # noqa: E402
 K = 6
 
 
@@ -77,8 +78,10 @@ def reporte():
           f"min {min(toks)}, max {max(toks)}")
     print(f"chunks que exceden la ventana: {sum(1 for t in toks if t > W)} de {len(docs)}")
     invis = sum(max(0, t - W) for t in toks)
-    print(f"tokens invisibles para el retrieval: {invis} de {sum(toks)} "
-          f"({100 * invis / sum(toks):.0f}% del corpus)\n")
+    print(f"tokens fuera de la ventana: {invis} de {sum(toks)} "
+          f"({100 * invis / sum(toks):.0f}% del corpus)")
+    print("  (fuera de la ventana no implica invisible: depende de como ingest.py")
+    print("   calcule el vector. Truncando si lo es; promediando ventanas, no.)\n")
 
     resp = [p for p in banco if p["ground_truth"].get("md_origen")]
     dentro, fuera = [], []
@@ -101,7 +104,7 @@ def reporte():
     def recupera(i):
         p = idx[i]
         cita = norm(p["ground_truth"]["cita_anclaje"])
-        v = [float(x) for x in m.encode([p["pregunta"]], show_progress_bar=False)[0]]
+        v = [float(x) for x in m.encode([para_consulta(p["pregunta"])], show_progress_bar=False)[0]]
         r = col.query(query_embeddings=[v], n_results=K)
         return any(cita in norm(d) for d in r["documents"][0])
 
@@ -112,8 +115,10 @@ def reporte():
           f"({100 * d_ok / max(1, len(dentro)):.0f}%)")
     print(f"  fuera de la ventana:  {f_ok}/{len(fuera)} "
           f"({100 * f_ok / max(1, len(fuera)):.0f}%)")
-    print("\nLa brecha entre esas dos filas es el costo de indexar fragmentos mas")
-    print("largos que la ventana del embedder.")
+    print("\nLA BRECHA ENTRE ESAS DOS FILAS ES EL NUMERO QUE IMPORTA.")
+    print("Con el vector truncado a la ventana medía 91% contra 50%: 41 puntos, y")
+    print("era el techo del retrieval. La 1.11 promedia ventanas para cerrarla; si")
+    print("vuelve a abrirse, algo rompió _embeber_completo en ingest.py.")
 
 
 if __name__ == "__main__":
