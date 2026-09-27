@@ -62,10 +62,15 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
 
 ## Trampas conocidas
 
-- **El embedder solo lee 256 tokens.** `all-MiniLM-L6-v2` tiene
-  `max_seq_length = 256` y los fragmentos tienen mediana 402: un tercio del
-  corpus es invisible para el retrieval. Lo que se agregue al corpus para mejorar
-  la recuperación tiene que caer dentro de esa ventana.
+- **El embedder solo lee 256 tokens, y está cuantificado.** `all-MiniLM-L6-v2`
+  tiene `max_seq_length = 256` y los fragmentos tienen mediana 382 tokens: **32%
+  del corpus es invisible para el retrieval**, aunque el juez sí lo lea. Medido con
+  `scripts/medir_ventana_embedder.py`: cuando la cita cae dentro de la ventana,
+  `anclaje@6` acierta **21/23 (91%)**; cuando cae fuera, **7/14 (50%)**. Lo que se
+  agregue al corpus para mejorar la recuperación tiene que caer dentro de esa
+  ventana, o es **texto muerto**: así falló el arreglo de PREG-118, cuyo predicado
+  quedó en el token 313. **No confundir con el truncado de `api.py` (1400
+  caracteres):** ese decide qué lee el juez, la ventana decide qué se recupera.
 - **El juez es inestable en ~6 de 50 preguntas** ante cambios cosméticos del
   contexto, con `temperature=0`. Decidir con `recall@k` y `anclaje@k`, que son
   deterministas; el end-to-end solo confirma, y con banda de ±6.
@@ -79,20 +84,43 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
 - **El orden del system prompt no es arbitrario.** Mover la regla de abstención
   tras el contexto subió la alucinación de 34% a 78%. Hay un comentario de
   advertencia en `api.py`.
-- **El juez lee las tablas aplanadas.** `_build_judge_prompt` hace
-  `doc.replace('
-', ' ')[:1400]`, así que una tabla markdown llega al modelo
-  como una fila de pipes sin estructura. El dato **no** se pierde (ningún chunk
-  supera los 1400 caracteres), pero `anclaje@k` se mide sobre texto estructurado y
-  el juez lee texto plano. Al verificarlo, ojo: el normalizador de
+- **El juez lee las tablas aplanadas, y ya está medido que no importa.**
+  `_build_judge_prompt` hace `doc.replace('\n', ' ')[:1400]`, así que una tabla
+  markdown llega al modelo como una fila de pipes. La Fase 1 de la 1.10 quitó el
+  aplanado: recupera **1 de 8** del núcleo duro y **0 end-to-end**, y está
+  revertido. **No volver a proponerlo sin un argumento nuevo.** El dato no se
+  pierde y el contexto no crece: 28415 caracteres en ambas versiones, ningún chunk
+  supera los 1400 (máx. 1378). Al verificarlo a mano, ojo: el normalizador de
   `medir_retrieval.py` quita las viñetas solo al inicio de línea, y sobre texto
   aplanado quedan en medio, lo que produce falsas "pérdidas" de cita.
-- **El juez niega 8 preguntas con el dato delante, y ya está descartado por qué
-  no es.** No es capacidad del modelo (un 7B recupera 0 de 8), no es la
-  calibración del prompt (`flexible` recupera 1 de 8) y no es la redacción de la
-  pregunta (PREG-065 contiene textual el encabezado del documento). Lo que falta
-  en el contexto es el **verbo**: el corpus codifica las relaciones como columnas
-  de tabla y el prompt del juez veta la inferencia que hace falta para leerlas.
+- **El veredicto del juez es determinista ante el mismo contexto.** Dos corridas
+  idénticas del núcleo duro dan 0 vuelcos de 8. La inestabilidad de ~6 de 50
+  aplica a cambios *del* contexto, no a repetir una corrida.
+
+- **El juez negaba 8 preguntas con el dato delante, y la 1.10 recuperó 5.** La
+  causa era que el corpus codificaba las relaciones como columnas de tabla
+  (`| Notaría | Escritura pública |`) mientras el prompt del juez veta la
+  inferencia necesaria para leerlas. La solución **no** fue tocar el modelo ni el
+  prompt: fue **declarar la relación en prosa antes de la tabla** —*"La Notaría
+  elabora la escritura pública de constitución"*— sin borrar la fila. Núcleo duro
+  0 → 5 de 8, sensibilidad 18/29 → 23/29, especificidad y alucinación intactas.
+- **Lo que resiste son las preguntas comparativas y disyuntivas.** PREG-010, 064 y
+  084 reciben el predicado en el contexto —en el **puesto 1** dos de ellas— y el
+  juez dice `NO` igual. Piden una **relación entre dos datos**, no un dato. Es el
+  trabajo de la 1.11 y hace falta un mecanismo nuevo: más prosa del mismo tipo es
+  retrabajo.
+- **Al agregar texto al corpus, vigilar el conteo de chunks.** Dos frases de más
+  partieron `tipos_sociedad_chile.md` en 3 chunks, bajaron `recall@6` de 48/50 a
+  47/50 y *bajaron* la sensibilidad de 23/29 a 22/29. Un predicado que parte una
+  sección cuesta más de lo que compra.
+- **`anclaje@k` exige adyacencia.** Compara `cita in norm(doc)`, una subcadena
+  contigua. Varias citas abarcan dos o tres líneas seguidas, así que **insertar
+  texto entre las líneas de una cita la destruye**. Verificar que las citas siguen
+  presentes **antes** de reingestar.
+- **No regenerar un subconjunto para compararlo con su propio control.** Se derivan
+  del índice; si el corpus cambió, el denominador se mueve. Los 29 IDs del control
+  están congelados en `tests/dataset/dato_integro_k6_control_1.9.txt`. Y al
+  redirigirlos, **no usar `2>&1`**: la línea de resumen de stderr se colaría como ID.
 - **El chunking ya divide por encabezados markdown.** Lo que rompe los
   fragmentos es el solape por caracteres (`chunk[-150:]`), que hace que el 62%
   empiece a mitad de frase. Ver la sección 5 de `CONTEXTO.md`.

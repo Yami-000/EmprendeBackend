@@ -1,0 +1,252 @@
+[
+  {
+    "id": "PREG-010",
+    "pregunta": "¿El trámite de Patente Municipal se gestiona directamente en el SII o en otra institución?",
+    "respondible": true,
+    "esperado": [
+      "patente_municipal.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SII",
+      "municipalidad"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 0.5,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 3.12,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-064",
+    "pregunta": "¿Qué diferencia existe entre una SA Cerrada y una SA Abierta?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_empresa_decision.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SA"
+    ],
+    "anclas_ok": [
+      "SA"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 3.0,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-065",
+    "pregunta": "¿Cuál es el costo total de formalizar una empresa bajo el régimen simplificado (Tu Empresa en un Día)?",
+    "respondible": true,
+    "esperado": [
+      "costos_y_plazos_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "0 CLP",
+      "diario oficial"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 3.02,
+    "redactor_latencia_s": 3.73
+  },
+  {
+    "id": "PREG-075",
+    "pregunta": "¿Qué registro electrónico deben mantener todas las empresas en el SII?",
+    "respondible": true,
+    "esperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "constitucion_empresa_simplificada.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SII"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 2.99,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-080",
+    "pregunta": "¿Quién inscribe la empresa en el Registro de Comercio?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "conservador"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 11.64,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-084",
+    "pregunta": "¿Cuál es la diferencia entre los tipos de socios en una Sociedad Comanditaria?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_empresa_decision.md",
+      "tipos_sociedad_chile.md",
+      "tipos_sociedad_chile.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 3.0,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-088",
+    "pregunta": "¿Quién es responsable de la elaboración de la escritura pública en el régimen tradicional?",
+    "respondible": true,
+    "esperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "planificacion_formalizacion.md",
+      "tipos_empresa_decision.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "notario",
+      "notaría"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 10.66,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-115",
+    "pregunta": "¿Qué información entrega el Certificado de Informaciones Previas y quién lo emite?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_sii.md",
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 2.96,
+    "redactor_latencia_s": 0.0
+  }
+]

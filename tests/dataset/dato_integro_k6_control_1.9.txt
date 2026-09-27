@@ -1,0 +1,32 @@
+# Los 29 IDs exactos del control de sensibilidad (18/29, corpus 1.8).
+# Se reusan tal cual en vez de regenerar el subconjunto: el indice cambio con
+# la Fase 2 y regenerarlo moveria el denominador, rompiendo la comparacion.
+PREG-001
+PREG-002
+PREG-010
+PREG-019
+PREG-062
+PREG-064
+PREG-065
+PREG-066
+PREG-067
+PREG-068
+PREG-070
+PREG-073
+PREG-074
+PREG-075
+PREG-078
+PREG-080
+PREG-081
+PREG-083
+PREG-084
+PREG-088
+PREG-089
+PREG-101
+PREG-106
+PREG-107
+PREG-108
+PREG-113
+PREG-114
+PREG-115
+PREG-118

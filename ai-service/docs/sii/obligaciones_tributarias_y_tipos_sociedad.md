@@ -17,6 +17,8 @@
 
 ## Costos Reales de Formalización
 
+Formalizar una empresa bajo el régimen simplificado (Tu Empresa en un Día) tiene un costo total de $0: formalizar por esa vía es gratuito.
+
 ### Régimen Simplificado (Tu Empresa en un Día)
 - **Costo total: $0 (gratuito)**
 - Incluye constitución, publicación en Diario Oficial e inscripción en Registro de Comercio
@@ -62,6 +64,8 @@
 - Las boletas electrónicas son obligatorias para ventas a consumidores finales
 
 ### Libros de Contabilidad
+
+Todas las empresas deben mantener un registro electrónico en el SII: el Libro de Compras y Ventas electrónico.
 - Las empresas deben llevar Libro de Compras y Ventas (electrónico en SII)
 - Las SA y SpA deben llevar contabilidad completa con balance y estado de resultados
 - Las empresas bajo régimen simplificado pueden llevar registro de ingresos y egresos
@@ -84,6 +88,9 @@
 - Exento de Impuesto de Primera Categoría a nivel de empresa
 
 ## Instituciones del Proceso de Formalización en Chile
+
+La Notaría elabora la escritura pública de constitución del régimen tradicional: el notario público es el responsable de su elaboración.
+El Conservador de Bienes Raíces inscribe la empresa en el Registro de Comercio.
 
 | Institución | Rol |
 |---|---|
