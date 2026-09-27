@@ -88,9 +88,10 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   deterministas; el end-to-end solo confirma, y con banda de ±6.
 - **`retrieval_hit@k` se mide por archivo, no por chunk** — es optimista. Ver
   las advertencias de método en `ESTADO_INVESTIGACION.md`.
-- **El modelo de embeddings debe coincidir** entre `ingest.py` y `api.py`
-  (`all-MiniLM-L6-v2`, 384 dims). Ya hubo un caso en que divergían y coincidían
-  por accidente.
+- **El modelo de embeddings debe coincidir** entre indexación y consulta
+  (`multilingual-e5-small`, 384 dims). Ya hubo un caso en que divergían y coincidían
+  por accidente. **Desde la 1.14 eso ya no depende de la disciplina:** el nombre vive
+  solo en `ai-service/embedding.py` y todo lo demás lo importa.
 - **Tras un `pull` hay que reconstruir el índice**: `cd ai-service && python ingest.py`.
   `chroma_db/` no está versionado.
 - **El orden del system prompt no es arbitrario.** Mover la regla de abstención

@@ -27,7 +27,7 @@ Telegram ──> src/bot.js ──HTTP──> ai-service/api.py ──> ChromaDB
 | Bot + API HTTP | Node.js **ESM** (`"type": "module"`), `express`, `telegraf` |
 | Servicio RAG | Python, `fastapi` + `uvicorn` |
 | Vector store | ChromaDB persistente en `ai-service/chroma_db/` |
-| Embeddings | `sentence-transformers`, `all-MiniLM-L6-v2` (384 dims) |
+| Embeddings | `sentence-transformers`, `multilingual-e5-small` (384 dims, ventana 512 tokens). El nombre vive solo en `ai-service/embedding.py` |
 | LLM | Ollama, `llama3.2` (3B) |
 | Historial | `sequelize` → Postgres (Supabase), fallback SQLite en archivo |
 
@@ -112,18 +112,30 @@ Definida en `ai-service/api.py`:
 | `stream` | `True` | cuerpo de la petición |
 | timeout HTTP | `60` s | `httpx.AsyncClient(timeout=60)` |
 
-**⚠️ Ventana del embedder: 256 tokens.** `all-MiniLM-L6-v2` tiene
-`max_seq_length = 256`, y los fragmentos actuales tienen mediana 402 tokens y
-máximo 496: **24 de 28 exceden la ventana y un 33% del corpus no influye en el
-retrieval**. Lo que está más allá del token 256 solo lo lee el juez, no el
-recuperador. Es la restricción que gobierna cualquier cambio de `CHUNK_SIZE` o de
-vocabulario del corpus.
+**Ventana del embedder: 512 tokens, y ya no es una restricción.**
+`multilingual-e5-small` lee 512 y los fragmentos tienen mediana **283** tokens y
+máximo **380**: **0 de 28 exceden la ventana**, así que todo el corpus influye en el
+retrieval.
 
-**Embeddings:** `all-MiniLM-L6-v2` en `ingest.py` **y** en `api.py`. La
-constante en `ingest.py` lleva un comentario explícito de que ambos deben
-coincidir: indexar y consultar con modelos distintos produce vectores
-incomparables. Antes del 2026-09-17 `ingest.py` intentaba `nomic-embed-text`
-(768 dims) con respaldo silencioso a MiniLM (384) — coincidían por accidente.
+**Hasta la 1.14 esto era el techo del proyecto.** Con `all-MiniLM-L6-v2` (256
+tokens) 22 de 28 fragmentos lo excedían y el 32% del corpus era invisible para el
+recuperador. Medido entonces: `anclaje@6` acertaba 91% cuando la cita caía dentro de
+la ventana y 50% cuando caía fuera. **Cualquier número medido antes de la 1.14
+pertenece a ese régimen.**
+
+Consecuencia práctica: **`CHUNK_SIZE` se puede volver a discutir.** Estaba limitado
+por esta ventana además del truncado de `api.py`; ahora hay margen de 512 tokens.
+
+**Embeddings:** `multilingual-e5-small`, definido **en un solo lugar**
+(`ai-service/embedding.py`) e importado por `ingest.py`, `api.py` y los scripts de
+medición. Indexar y consultar con modelos distintos produce vectores incomparables, y
+eso ya pasó: antes del 2026-09-17 `ingest.py` intentaba `nomic-embed-text` (768 dims)
+con respaldo silencioso a MiniLM (384) — coincidían por accidente. Hasta la 1.14 el
+nombre estaba escrito a mano en **siete** archivos y la protección era la disciplina;
+ahora es estructural.
+
+Ese módulo también define los prefijos `query:` y `passage:`, que la familia E5
+exige: sin ellos rinde peor, y con el prefijo cambiado **peor que sin ninguno**.
 
 ---
 

@@ -125,13 +125,16 @@ dirigidas de 8 a 29 preguntas.
 
 ## 🚨 Dos restricciones que invalidan supuestos previos
 
-**1. El embedder solo lee los primeros 256 tokens de cada fragmento.**
-`all-MiniLM-L6-v2` tiene `max_seq_length = 256`. Los fragmentos actuales tienen
-mediana 402 tokens y máximo 496: **24 de 28 exceden la ventana y un 33% del
-corpus es invisible para el recuperador**. Todo lo que esté más allá del token
-256 no influye en si un fragmento se recupera — solo en lo que el juez lee
-después. Esto explica por qué subir `CHUNK_SIZE` de 800 a 1400 en la 1.1 mejoró
-el `anclaje` (más datos por fragmento) y casi no movió el `recall` (44 → 46).
+**1. ~~El embedder solo lee los primeros 256 tokens de cada fragmento.~~
+RESUELTA POR LA 1.14.** `multilingual-e5-small` lee **512** y los fragmentos tienen
+mediana 283 tokens y máximo 380: **0 de 28 exceden la ventana**.
+
+Se conserva enunciada porque **gobernó el proyecto hasta la 1.14 y explica los
+números anteriores**: con MiniLM, 22 de 28 fragmentos excedían la ventana y el 32%
+del corpus era invisible para el recuperador. Eso explica por qué subir `CHUNK_SIZE`
+de 800 a 1400 en la 1.1 mejoró el `anclaje` (más datos por fragmento) y casi no movió
+el `recall` (44 → 46). **Cualquier número medido antes de la 1.14 pertenece a ese
+régimen y no se compara de frente con uno de ahora.**
 
 **2. El veredicto del juez se mueve en ~6 de 50 preguntas ante cambios
 cosméticos del contexto.** Medido entre la 1.1 y la 1.7: en 49 de 50 preguntas la
@@ -303,14 +306,14 @@ nuevo es retrabajo.
   47/50 y la sensibilidad a 22/29. Con 6, el índice volvió a 28 chunks, `recall@6`
   a 48/50 y la sensibilidad subió a 23/29. **Vigilar el conteo de chunks al tocar
   el corpus.**
-- **La ventana del embedder y el truncado de `api.py` son DOS recortes distintos,
-  y el primero decide el retrieval.** `all-MiniLM-L6-v2` lee 256 tokens; los chunks
-  tienen mediana 382, así que **32% del corpus es invisible para la búsqueda
-  vectorial** aunque el juez sí lo lea. Medido: cuando la cita cae dentro de la
-  ventana, `anclaje@6` acierta 21/23 (91%); cuando cae fuera, 7/14 (50%). **41
-  puntos de brecha.** Herramienta: `scripts/medir_ventana_embedder.py`. Agregar
-  texto más allá del token 256 de un fragmento no cambia su ranking: es texto muerto
-  para el retrieval.
+- **La ventana del embedder y el truncado de `api.py` son DOS recortes distintos, y
+  el primero decide el retrieval.** Sigue valiendo como advertencia de método, aunque
+  hoy no muerda: `multilingual-e5-small` lee 512 tokens y ningún fragmento los excede.
+  **Con MiniLM (256 tokens) mordía fuerte:** el 32% del corpus no influía en la
+  búsqueda vectorial aunque el juez sí lo leyera, y `anclaje@6` acertaba 21/23 (91%)
+  cuando la cita caía dentro de la ventana contra 7/14 (50%) cuando caía fuera — **41
+  puntos**. Si alguna vez se sube `CHUNK_SIZE` por encima de 512 tokens, el problema
+  vuelve. Vigilarlo con `scripts/medir_ventana_embedder.py`.
 - **El tope del chunking está acoplado al truncado de `api.py`** (1400
   caracteres por fragmento). Subir uno sin el otro anula la mejora: el recorte
   vuelve a partir el dato justo antes de que el modelo lo lea.
