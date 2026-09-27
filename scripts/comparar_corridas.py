@@ -92,13 +92,27 @@ def main():
     if fug:
         print("\nFUGAS NUEVAS en preguntas sin respaldo (esto no se negocia): %s"
               % ", ".join(fug))
-    neto = a["juez_si"] - b["juez_si"]
-    if len(gan) + len(per) > abs(neto):
-        print("\nAVISO: %d vuelcos para un cambio neto de %+d. El neto no se distingue"
-              % (len(gan) + len(per), -neto))
-        print("de la banda de inestabilidad del juez (~6 ante cambios del contexto).")
-        print("No concluir de este numero solo: mirar tambien recall@k y anclaje@k,")
-        print("que son deterministas.")
+    # Cuantos vuelcos hubo importa menos que si fueron para un lado.
+    # La inestabilidad del juez ante cambios del contexto (~6 preguntas) mueve
+    # veredictos en las DOS direcciones; un efecto real los mueve en una. Avisar
+    # solo por la cantidad de vuelcos desestimaba resultados buenos: la 1.14 dio
+    # 9 ganadas contra 1 perdida, que es asimetria, no ruido.
+    vuelcos = len(gan) + len(per)
+    neto = b["juez_si"] - a["juez_si"]
+    if vuelcos:
+        mayor, menor = max(len(gan), len(per)), min(len(gan), len(per))
+        print("reparto: %d en la direccion dominante, %d en la contraria" % (mayor, menor))
+    if vuelcos > abs(neto) and menor * 3 >= mayor:
+        print("\nAVISO: %d vuelcos repartidos casi parejo (%d contra %d) para un neto"
+              % (vuelcos, mayor, menor))
+        print("de %+d. Eso es lo que parece la banda de inestabilidad del juez ante" % neto)
+        print("cambios del contexto. No concluir de este numero solo: mirar recall@k y")
+        print("anclaje@k, que son deterministas.")
+    elif vuelcos and menor * 3 < mayor:
+        print("\nLos vuelcos son asimetricos (%d contra %d), asi que el cambio no se"
+              % (mayor, menor))
+        print("explica bien por la inestabilidad del juez, que mueve veredictos en las")
+        print("dos direcciones. Confirmar igual con recall@k y anclaje@k.")
 
 
 if __name__ == "__main__":
