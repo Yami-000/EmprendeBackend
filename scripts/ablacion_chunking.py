@@ -27,8 +27,15 @@ BANCO = os.path.join(RAIZ, "tests", "dataset", "banco_preguntas_respuestas.json"
 import sys, os as _os
 sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "ai-service"))
 # Importado de ai-service/embedding.py para que no pueda divergir del indice.
-from embedding import MODEL_NAME as EMB  # noqa: E402
+from embedding import MODEL_NAME as EMB, para_consulta, para_pasaje  # noqa: E402
+# Los prefijos importan: la familia E5 se entreno con 'query:' y 'passage:',
+# y medir sin ellos daria numeros que no se pueden comparar con el pipeline
+# real. Se aplican igual que en ingest.py y api.py.
 TRUNCADO_API = 1400                        # api.py recorta cada fragmento a esto
+# La ventana del embedder es el otro limite, y desde la 1.14 es el que manda al
+# subir el tope: un fragmento que la excede vuelve a ser parcialmente invisible
+# para el retrieval. Se reporta por variante.
+VENTANA = None                             # se lee del modelo al cargarlo
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--topes", default="800,1200,1400,1600",
@@ -106,12 +113,14 @@ def evaluar(tope, solape):
             docs.append(c)
             metas.append({"source": nombre})
     col = CLIENTE.create_collection(name="abl_" + uuid.uuid4().hex[:8])
+    indexables = [para_pasaje(d) for d in docs]
     col.add(ids=[str(uuid.uuid4()) for _ in docs],
-            embeddings=[[float(x) for x in e] for e in M.encode(docs, show_progress_bar=False)],
+            embeddings=[[float(x) for x in e]
+                        for e in M.encode(indexables, show_progress_bar=False)],
             documents=docs, metadatas=metas)
 
     def top(q, k):
-        v = [float(x) for x in M.encode([q], show_progress_bar=False)[0]]
+        v = [float(x) for x in M.encode([para_consulta(q)], show_progress_bar=False)[0]]
         r = col.query(query_embeddings=[v], n_results=k)
         return r["documents"][0], [m["source"] for m in r["metadatas"][0]]
 
@@ -136,9 +145,13 @@ def evaluar(tope, solape):
 print("respondibles: %d    con cita literal en el corpus (techo del anclaje): %d"
       % (len(RESP), len(VERIF)))
 print()
+VENTANA = M.max_seq_length
+print("ventana del embedder: %d tokens (%s)" % (VENTANA, EMB))
+print()
 cab = "  ".join("k=%-2d rec/anc" % k for k in KS)
-print("%-22s %7s %6s %6s | %s" % ("tope / solape", "chunks", "media", ">1400", cab))
-print("-" * (52 + len(cab)))
+print("%-22s %7s %6s %6s %7s | %s"
+      % ("tope / solape", "chunks", "media", ">api", ">ventana", cab))
+print("-" * (61 + len(cab)))
 for tope in [int(x) for x in args.topes.split(",")]:
     for solape in [int(x) for x in args.solapes.split(",")]:
         if solape >= tope:
@@ -148,11 +161,20 @@ for tope in [int(x) for x in args.topes.split(",")]:
         # Un fragmento por encima del truncado de api.py vuelve a perder el dato
         # justo antes de que el modelo lo lea: la mejora se anula ahi.
         exceden = sum(1 for l in largos if l > TRUNCADO_API)
-        print("%-22s %7d %6d %6s | %s" % (
+        # Y el otro limite, que desde la 1.14 es el que manda al subir el tope:
+        # un fragmento mas largo que la ventana vuelve a ser parcialmente
+        # invisible para el retrieval, que es el problema que la 1.14 resolvio.
+        fuera = sum(1 for d in docs if len(M.tokenizer.tokenize(d)) > VENTANA)
+        print("%-22s %7d %6d %6s %7s | %s" % (
             "%d / %d" % (tope, solape), len(docs), sum(largos) // len(largos),
             ("%d !" % exceden) if exceden else "0",
+            ("%d !!" % fuera) if fuera else "0",
             "  ".join("%2d/%2d" % (r[k][0], r[k][1]) for k in KS)))
 print()
-print("anc = preguntas cuya cita llega INTEGRA, sobre %d. '>1400' = fragmentos que"
-      % len(VERIF))
-print("api.py truncaria, reintroduciendo la mutilacion que esta metrica detecta.")
+print("anc = preguntas cuya cita llega INTEGRA, sobre %d." % len(VERIF))
+print("'>api'     = fragmentos que api.py truncaria a %d caracteres, reintroduciendo" % TRUNCADO_API)
+print("             la mutilacion que esta metrica detecta. Subir el tope obliga a")
+print("             subir ese truncado tambien, o la mejora se anula ahi.")
+print("'>ventana' = fragmentos mas largos que los %d tokens del embedder. Esos vuelven" % VENTANA)
+print("             a ser parcialmente invisibles para el retrieval: es el techo que")
+print("             la 1.14 levanto y que subir el tope puede volver a bajar.")
