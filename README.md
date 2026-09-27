@@ -9,6 +9,29 @@ propio.
 > mayo 2026) que describía un proyecto anterior ("Krrete", con autenticación
 > Firebase). Esa integración ya no existe en el código.
 
+## Estado medido del sistema
+
+Medido sobre un banco de 100 preguntas —50 respondibles con el corpus y 50 que no—
+al cierre de la iteración 1.16:
+
+| | Valor | Baseline |
+|---|---|---|
+| **Alucinación** | **0 / 50** | 17 / 50 (34%) |
+| Especificidad del juez | 49 / 50 | — |
+| Sensibilidad | 37 / 50 | — |
+| `recall@6` / `anclaje@6` | 49/50 · 36/37 | 44/50 · 22/37 |
+| Latencia de una consulta respondida | 10,3 s de media | 17,5 s |
+
+Se llegó ahí **sin cambiar de modelo**: `llama3.2` de 3,2B, local, en una GTX 1650.
+Escalar a 7-8B se probó y **empeoró** la alucinación. La síntesis de las 18 hipótesis
+está en [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md).
+
+> **⚠️ Esos números son del arnés de evaluación, no del bot.** `/chat` sirve todavía un
+> pipeline de **un paso**, que es el que alucina 34%. El pipeline de dos pasos que
+> consigue el 0% está implementado en `scripts/evaluar_banco.py` y **portarlo a
+> producción es el próximo paso del proyecto.** Ver
+> [`Diagramas.md`](Diagramas.md), sección 3.
+
 ## Arquitectura
 
 Tres procesos independientes que deben correr en simultáneo:
@@ -24,12 +47,18 @@ Tres procesos independientes que deben correr en simultáneo:
 Usuario (Telegram)
       │
       ▼
- src/bot.js  ──POST──▶  ai-service/api.py  ──▶  ChromaDB (retrieval)
+ src/bot.js  ──POST──▶  ai-service/api.py  ──▶  ChromaDB (k=3)
       │                        │
       ▼                        ▼
  Postgres/SQLite          Ollama (llama3.2)
  (historial)
+
+ ingest.py ──(proceso aparte, offline)──▶ ChromaDB
+ lee ai-service/docs/sii/ (13 archivos .md) -> 28 fragmentos
 ```
+
+Diagramas completos, incluida la diferencia entre el pipeline que corre y el que se
+midió, en [`Diagramas.md`](Diagramas.md).
 
 ## Requisitos previos
 

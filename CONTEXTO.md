@@ -53,6 +53,7 @@ directamente, y `api.py` habla con Ollama por HTTP con `httpx`.
 |---|---|
 | `ai-service/api.py` | FastAPI. Expone `POST /chat` con respuesta en streaming (SSE). Orquesta embedding → recuperación → Ollama |
 | `ai-service/ingest.py` | Script CLI offline. Lee `docs/sii/*.md`, los fragmenta, embebe y **recrea** la colección de ChromaDB |
+| `ai-service/embedding.py` | **Contrato único del embedder:** `MODEL_NAME` y los prefijos `query:`/`passage:`. Lo importan `ingest.py`, `api.py` y los scripts de medición. Antes el nombre del modelo estaba escrito a mano en siete archivos |
 | `ai-service/convert_docx.py` | Convierte `.docx` a `.md`. Pre-procesamiento, fuera del flujo de ejecución |
 | `ai-service/debug_*.py` | Cuatro scripts de diagnóstico manual (`chunk`, `inspect`, `retrieval`, `run`) |
 | `ai-service/chroma_db/` | Persistencia del vector store. **No versionado** |
@@ -76,6 +77,14 @@ directamente, y `api.py` habla con Ollama por HTTP con `httpx`.
 | `scripts/medir_retrieval.py` | Recall@k y anclaje@k sin invocar al LLM (segundos). El informe vive en `reporte()` bajo `__main__`, para que otros scripts importen `verificables` y `anclaje_presente` sin disparar la impresión |
 | `scripts/subconjunto_dato_integro.py` | IDs cuyo dato de anclaje llega íntegro al juez. Sobre ese subconjunto la sensibilidad del juez se mide sin fallos de retrieval de por medio |
 | `scripts/subconjunto_sin_respaldo.py` | IDs sin respaldo en el corpus, leídos de `md_origen`. Mitad de control: mide alucinación y especificidad |
+| `scripts/medir_ventana_embedder.py` | Cuánto del corpus ve el embedder, y `anclaje@6` partido según la cita caiga dentro o fuera de la ventana. **La brecha entre esas dos filas** reveló el techo del retrieval. Segundos, sin LLM |
+| `scripts/ablacion_chunking.py` | Compara configuraciones de chunking en colecciones temporales **en memoria**: no toca el índice real ni invoca al LLM, ~10 s por variante. Reporta los fragmentos que exceden el truncado de `api.py` y los que exceden la ventana del embedder |
+| `scripts/comparar_corridas.py` | Dos corridas pregunta por pregunta. Separa **especificidad del juez**, **atajadas por el redactor** y **alucinación**, que no son lo mismo, y avisa por la **asimetría** de los vuelcos y no por su cantidad |
+| `scripts/sonda_descomposicion.py` | Aísla la forma de la pregunta del retrieval: recupera el contexto con la pregunta original y luego consulta al juez la original y cada subpregunta. Validó la premisa de B2 sin implementarlo |
+| `scripts/generar_predicados.py` | Convierte filas de tabla del corpus en frases-predicado, con plantillas derivadas de los **encabezados de cada tabla** y ciegas al banco. `--solo-si-cabe` aplica solo donde el archivo conserva su número de fragmentos |
+| `scripts/medir_palabras_clave.py`, `medir_grafo.py` | Mediciones dirigidas de las iteraciones 1.8 y 1.7. Históricas: sirven para reproducirlas |
+| `scripts/populate_ground_truth.py`, `generate_ground_truth_csv.py`, `generate_ground_truth_report.py`, `apply_exclusion_filter.py` | Herramientas de construcción y auditoría del ground truth (2026-09-17). No se usan en el ciclo de medición |
+| `scripts/run_baseline_test.py` | Runner del baseline 1.0. Superado por `evaluar_banco.py` |
 | `tests/dataset/` | Banco de 100 preguntas: las 50 primeras respondibles, las 50 siguientes sin respaldo |
 
 ### Código muerto detectado
@@ -181,21 +190,26 @@ re-ingesta duplicaba los fragmentos.
 ### Fragmentación — 🔴 problema activo
 
 `_chunk_text(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)`, en caracteres.
-Los valores vigentes son **1400 y 200** desde la iteración 1.1; los pasos de abajo
-describen el algoritmo con los valores originales de 800 y 150:
+Los valores vigentes son **1400 y 200** desde la iteración 1.1, y la iteración 1.15
+confirmó por barrido que son el **óptimo**: subirlos degrada el `anclaje@3` y bajarlos
+también.
 
 1. Divide por encabezados markdown — `re.split(r'(?m)(?=^#{1,6}\s)', text)`. Si
    no hay encabezados, por doble salto de línea.
-2. **Acumula** secciones consecutivas hasta llegar a 800 caracteres, de modo que
+2. **Acumula** secciones consecutivas hasta llegar a 1400 caracteres, de modo que
    un fragmento puede mezclar varias secciones distintas.
 3. El solape se toma como **rebanada cruda de caracteres** del fragmento
-   anterior: `overlap_text = chunk[-150:]`.
+   anterior: `overlap_text = chunk[-200:]`.
 
-El paso 3 es el que causa daño. Medido sobre el índice actual:
+El paso 3 es el que causa daño. Medido sobre el índice actual (28 fragmentos,
+embedder e5-small):
 
 ```
-30 de 48 fragmentos (62%) empiezan a mitad de frase
+13 de 28 fragmentos (46%) empiezan a mitad de frase
 ```
+
+Era 30 de 48 (62%) cuando el chunking usaba 800 caracteres. Bajó porque fragmentos
+más grandes necesitan menos cortes, no porque el solape haya cambiado de naturaleza.
 
 Empiezan con una cola de 150 caracteres arrancada del fragmento previo, que
 suele pertenecer a otra sección. Ejemplos reales del índice:
@@ -229,12 +243,17 @@ caracteres y la equivalencia tokens↔caracteres no está calibrada.
 ### Recuperación
 
 - Vector store: `chromadb.PersistentClient`, colección `sii_markdown`.
-- Top-k: `_query_chroma(query_vec, k=6)` en `chat_endpoint`.
-- **Métrica de similitud: no especificada.** La colección se crea sin
-  `hnsw:space`, así que ChromaDB usa **L2** por defecto. `encode()` **no
-  normaliza** salvo que se le pase `normalize_embeddings=True`, y sin normalizar
-  L2 y coseno no producen el mismo ranking. Es deuda técnica abierta — línea
-  OP-5 en `ESTADO_INVESTIGACION.md`.
+- Top-k: `_query_chroma(query_vec, k=3)` en `chat_endpoint`. **Bajó de 6 a 3 en la
+  iteración 1.14** y es el embedder nuevo lo que lo permite: `anclaje@3` con e5 es
+  30/37, mejor que el 28/37 que daba MiniLM con `k=6`. Con `k=6` el juez filtra
+  PREG-045. De paso bajó la latencia del juez de 12,7 s a 6,9 s.
+- **Métrica de similitud: no especificada, y es indistinto.** La colección se crea
+  sin `hnsw:space`, así que ChromaDB usa **L2** por defecto. **Eso no afecta el
+  ranking:** el modelo incluye capa `Normalize` y los vectores salen **unitarios**, y
+  para vectores unitarios `‖a−b‖² = 2 − 2·cos`, o sea el mismo orden por construcción.
+  Verificado el 2026-09-27: normas 1,000000 y **top-6 idéntico en 50 de 50 preguntas**.
+  Declararlo explícito sigue valiendo como documentación, pero **no es una hipótesis de
+  mejora** — la línea OP-5 quedó cerrada como no-op.
 
 ### Generación
 
