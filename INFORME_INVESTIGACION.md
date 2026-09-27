@@ -71,23 +71,219 @@ también lo que hace que un retrieval *mejor* pueda empeorar la especificidad.
 
 ### Las métricas, y cuál decide
 
-```
-DETERMINISTAS  (deciden)
-  recall@k    ¿alguno de los k fragmentos viene de un archivo con la respuesta?
-              Se mide por ARCHIVO, así que es OPTIMISTA.
-  anclaje@k   ¿la cita literal del ground truth aparece ÍNTEGRA en algún fragmento?
-              Se mide por CHUNK. Es lo que realmente ve el juez.
+El proyecto usa **dos familias** de métricas, y la distinción no es cosmética: decide
+cuál se usa para tomar decisiones.
 
-END-TO-END     (confirman, con banda de ±6 preguntas)
-  sensibilidad     el juez dice SI en una pregunta respondible
-  especificidad    el juez dice NO en una pregunta sin respaldo
-  alucinación      una respuesta sin respaldo LLEGÓ AL USUARIO
-  abstención indebida  el sistema calló teniendo el dato
+```
+DETERMINISTAS  (deciden)          mismo indice -> mismo numero, siempre
+  recall@k      retrieval a nivel de ARCHIVO
+  anclaje@k     retrieval a nivel de CHUNK
+
+END-TO-END     (confirman, con banda de +-6 preguntas)
+  sensibilidad            del juez
+  especificidad           del juez
+  abstencion indebida     del sistema completo
+  ALUCINACION             del sistema completo
+  cobertura de datos      del redactor
+  latencia                del sistema completo
 ```
 
-**Especificidad y alucinación no son lo mismo**, y confundirlas oculta fallos reales:
-entre las dos está el redactor, que puede abstenerse pese al `SI` del juez. Hoy eso
-está ocurriendo (ver [riesgos abiertos](#10-riesgos-abiertos)).
+**Se decide con las deterministas y el end-to-end solo confirma.** La razón está en
+[advertencias de método](#8-advertencias-de-método): el juez mueve ~6 veredictos ante
+cambios del contexto aunque corra con `temperature=0`, así que una diferencia neta
+menor a 6 preguntas no se puede afirmar con un banco de 100.
+
+---
+
+### Las métricas, una por una
+
+#### `recall@k` — ¿se recuperó el archivo correcto?
+
+**Qué mide.** De las 50 preguntas respondibles, en cuántas alguno de los `k`
+fragmentos recuperados viene de un archivo que contiene la respuesta.
+
+**Cómo se calcula.** Compara el `basename` del archivo de cada fragmento recuperado
+contra el `md_origen` del ground truth más sus `md_alternativos`. Determinista.
+
+**Para qué sirve.** Detecta fallos gruesos de recuperación: la pregunta trajo
+documentos del tema equivocado.
+
+**Su limitación, y es grande.** Se mide **por archivo**, así que cuenta acierto aunque
+el fragmento concreto **no traiga el dato**. Es **optimista por construcción**: las
+coberturas de las iteraciones 1.0 y 1.3 están infladas por esto. En el arnés aparece
+como `retrieval_hit@k`.
+
+#### `anclaje@k` — ¿llegó el dato, íntegro?
+
+**Qué mide.** En cuántas preguntas la **cita literal** del ground truth aparece
+completa dentro de alguno de los `k` fragmentos recuperados.
+
+**Cómo se calcula.** `cita in norm(fragmento)`, donde `norm()` ignora tildes,
+mayúsculas, espaciado y marcadores de lista al inicio de línea. Es una comparación de
+**subcadena contigua**.
+
+**Para qué sirve.** Es la métrica de retrieval que importa, porque **es lo que el juez
+realmente ve**. Fue la que reveló que `recall@k` escondía el problema real.
+
+**Sus dos limitaciones:**
+
+- **Su techo es 37, no 50.** Trece de las 50 citas del ground truth están
+  parafraseadas y no existen literalmente en ningún `.md`. Para esas preguntas ninguna
+  técnica puede dar positivo, así que se reporta sobre el subconjunto verificable.
+  **Comparar el numerador contra 50 subestima el retrieval en 26 puntos.**
+- **Exige adyacencia.** Varias citas abarcan dos o tres líneas seguidas, así que
+  insertar texto **entre** las líneas de una cita la destruye aunque el dato siga ahí.
+
+**Y una que se descubrió midiendo:** `anclaje@k` **no es un proxy suficiente del
+juez**. Pregunta si la cita está entre los `k`, **no qué más hay ahí**. La iteración
+1.11 lo llevó al mejor valor del proyecto y la sensibilidad bajó.
+
+#### Sensibilidad del juez — ¿aprueba cuando debe?
+
+**Qué mide.** De las 50 respondibles, en cuántas el juez binario dijo `SI`.
+
+**Cómo se calcula.** Se parsea la respuesta del juez con `parse_juicio()`, que devuelve
+`True` solo si el texto **empieza** con `SI` o `SÍ`. **Cualquier otra cosa —ambigüedad,
+error, respuesta vacía— cuenta como `NO`.** Ese *fail-safe* es deliberado: un falso
+`NO` cuesta una abstención indebida, un falso `SI` cuesta una alucinación.
+
+**Para qué sirve.** Es la métrica que el proyecto estuvo intentando mover durante 16
+iteraciones. Aísla el eslabón del juez del resto del pipeline.
+
+**Su limitación.** Es end-to-end, así que le aplica la banda de ±6.
+
+#### Especificidad del juez — ¿rechaza cuando debe?
+
+**Qué mide.** De las 50 preguntas **sin respaldo**, en cuántas el juez dijo `NO`.
+
+**Para qué sirve.** Es **la mitad de la restricción que no se negocia**. Varias de esas
+50 son adversarias por diseño, así que esta métrica es la que detecta cuando una mejora
+del retrieval hace que un contexto irrelevante *parezca* pertinente.
+
+**Cuidado al leerla:** mide **al juez**, no lo que recibió el usuario. Entre las dos
+está el redactor. Hoy la especificidad es 49/50 y la alucinación 0/50 justamente por
+esa diferencia.
+
+#### Alucinación — ¿llegó al usuario una respuesta sin respaldo?
+
+**Qué mide.** De las 50 sin respaldo, en cuántas el sistema **no** se abstuvo.
+
+**Cómo se calcula, y esto importa:** `alucinación = (preguntas sin respaldo) − (las que
+abstuvieron)`. **Se calcula por resta, y no verifica que lo dicho sea falso.** Mide "no
+calló cuando debía", no "dijo una falsedad".
+
+En el único caso que ocurrió —PREG-045— la respuesta *además* era factualmente errónea,
+pero eso se verificó **a mano**, no con la métrica.
+
+**Para qué sirve.** Es **la métrica más importante del proyecto**. El dominio es
+normativa tributaria: una respuesta inventada es peor que ninguna. Tolerancia **cero**.
+
+#### Abstención indebida — ¿calló teniendo el dato?
+
+**Qué mide.** De las 50 respondibles, en cuántas el sistema se abstuvo.
+
+**Para qué sirve.** Es **el costo de la prudencia**, y el complemento honesto de la
+alucinación: un sistema que calla siempre tiene 0% de alucinación y es inútil. Mirar
+las dos juntas es lo que evita optimizar una a costa de la otra.
+
+**No es lo mismo que "el juez dijo `NO`".** Un juez que aprueba y un redactor que se
+abstiene igual cuentan como abstención indebida, y esa diferencia es un fallo
+silencioso: se paga la segunda llamada al modelo y el usuario recibe una negativa.
+
+#### El detector de abstención — la pieza de la que dependen las dos anteriores
+
+**Cómo funciona.** `abstuvo(texto)` busca si el texto contiene alguna de ~13
+subcadenas: *"no incluye esa informaci"*, *"base de conocimientos"*, *"lo siento"*,
+*"no se especifica"*, *"no se menciona"*, y otras.
+
+**Es un heurístico léxico, no una señal estructural**, y conviene saberlo porque **la
+alucinación y la abstención indebida se calculan sobre él**:
+
+- Un modelo que exprese la abstención con otras palabras se contaría como
+  **respondiendo** → alucinación falsa. La lista tuvo que ampliarse tras la corrida de
+  `llama3.1:8b`, porque los modelos grandes **razonan** la ausencia del dato en vez de
+  usar la frase canónica del prompt.
+- Una respuesta correcta que contenga *"no se especifica"* se contaría como
+  **abstención** → abstención indebida falsa.
+
+#### Cobertura de datos — ¿la respuesta contiene los datos verificables?
+
+**Qué mide.** Qué fracción de los "anclas" de la respuesta esperada aparece en la
+respuesta que el sistema generó.
+
+**Cómo se calcula.** `anclas()` extrae por expresión regular, desde
+`respuesta_esperada` + `cita_anclaje`: cifras con unidad (`UF`, `UTM`, `CLP`, `%`),
+siglas de una lista fija (`F29`, `EIRL`, `SpA`, `SII`, `RUT`, `IVA`…) e instituciones
+de otra lista fija (`notaría`, `municipalidad`, `diario oficial`, `conservador`…).
+Después cuenta cuántas de esas cadenas aparecen en la respuesta.
+
+**Para qué sirve.** Distingue una respuesta que *parece* correcta de una que trae los
+datos concretos. Fue la que mostró que en la 1.11 **llegaba más dato y el juez aprobaba
+menos**.
+
+**Su limitación.** Es un proxy **léxico**, no semántico. Una respuesta correcta puede
+tener cobertura 0 si expresa el dato de otra forma: PREG-065 respondió *"el costo total
+es $0"*, que es correcto, con cobertura 0,0 porque el ancla del banco era `0 CLP`.
+
+#### Latencia — ¿cuánto tarda?
+
+**Qué mide.** Tres cosas distintas, y conviene no confundirlas:
+
+- **Latencia del juez:** la primera llamada. Incluye las subllamadas de la
+  descomposición cuando se dispara.
+- **Latencia del redactor:** la segunda llamada, **solo en el camino `SI`**.
+- **Camino `NO` sin segunda llamada:** cuántas preguntas se resolvieron con una sola
+  llamada. Es lo que hace que el pipeline de dos pasos sea **más rápido** que el de un
+  paso cuando el juez rechaza.
+
+**Para qué sirve.** No es una métrica de calidad: es una **restricción de propósito**.
+El objetivo es correr en hardware modesto, así que una mejora que duplique la latencia
+no es gratis.
+
+**Su limitación.** Muy sensible al calentamiento del modelo. Una misma configuración
+midió 13,6 s en frío y 5,0 s en caliente. **No concluir de una sola corrida.**
+
+#### `fallos de generación` vs `fallos de retrieval` — dónde está el problema
+
+**Qué miden.** El arnés reparte los fallos en dos: `fallos de retrieval` = respondibles
+sin `retrieval_hit`; `fallos de generación` = abstención indebida + alucinación.
+
+**Para qué sirve.** Es el primer diagnóstico ante un número malo: dice si hay que mirar
+el recuperador o el modelo. El baseline tenía 22 de generación contra 9 de retrieval, y
+eso orientó toda la investigación.
+
+#### Métricas de diagnóstico, no de evaluación
+
+No miden al sistema: miden al **instrumento**.
+
+- **`chunks fuera de la ventana`** (`medir_ventana_embedder.py`): cuántos fragmentos
+  exceden los tokens que el embedder alcanza a leer, y `anclaje@6` partido según la
+  cita caiga dentro o fuera. **La brecha entre esas dos filas** es lo que reveló el
+  techo del proyecto: 91% contra 50%.
+- **Vuelcos y su asimetría** (`comparar_corridas.py`): cuántos veredictos cambiaron
+  entre dos corridas y en qué dirección. **La asimetría es lo que distingue señal de
+  ruido:** el ruido del juez mueve veredictos en las dos direcciones, un efecto real
+  los mueve en una.
+- **`atajadas por el redactor`**: preguntas sin respaldo donde el juez dijo `SI` y el
+  redactor abstuvo igual. Existe porque confundir esto con la especificidad **ocultaba
+  un fallo real**.
+
+---
+
+### Por qué estas y no otras
+
+Faltan a propósito dos familias que un proyecto de RAG suele reportar:
+
+**Métricas de *ranking* (MRR, nDCG).** Con 28 fragmentos y `k=3` el espacio es tan
+chico que aportarían poco sobre `anclaje@k`, que además responde la pregunta operativa:
+*¿el dato llegó?*
+
+**Evaluación automática de la calidad de la redacción** (por ejemplo, un LLM juez que
+puntúe de 1 a 5). Se descartó por una razón concreta: **el proyecto ya descubrió que un
+juez LLM es inestable en ~6 de 50 preguntas ante cambios cosméticos del contexto.**
+Usar esa misma herramienta como métrica de calidad agregaría ruido en vez de
+resolverlo. La corrección de las respuestas se verificó **a mano** contra el
+`criterio_esperado` en los casos que importaban.
 
 ### La restricción que no se negocia
 
@@ -584,6 +780,25 @@ en 26 puntos.
 Se mide **por archivo**: cuenta acierto si alguno de los k fragmentos viene de un
 archivo que contiene la respuesta, aunque ese fragmento no traiga el dato. Las
 coberturas de las iteraciones 1.0 y 1.3 están infladas por esto.
+
+### La alucinación se mide por ausencia de abstención, no por falsedad
+
+`alucinación = (sin respaldo) − (las que abstuvieron)`. La métrica **no verifica que
+lo dicho sea falso**: mide que el sistema no calló cuando debía.
+
+En la práctica coinciden, porque si el corpus no tiene el dato cualquier afirmación es
+infundada. Pero **una respuesta infundada y casualmente correcta cuenta igual como
+alucinación**, y una respuesta que se abstiene con palabras raras cuenta como
+respuesta. El único caso real del proyecto —PREG-045— se verificó **a mano** como
+factualmente erróneo; la métrica sola no lo habría dicho.
+
+### El detector de abstención es un heurístico léxico
+
+Las dos métricas end-to-end más importantes —alucinación y abstención indebida— se
+calculan sobre una **lista de ~13 subcadenas**. Ya tuvo que ampliarse una vez, cuando
+`llama3.1:8b` empezó a razonar la ausencia del dato en vez de usar la frase canónica.
+**Un cambio de modelo o de prompt puede invalidarlo en silencio**, y el fallo se vería
+como un salto brusco en la alucinación sin causa aparente.
 
 ### El corpus es chico
 
