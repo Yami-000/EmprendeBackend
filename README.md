@@ -221,7 +221,8 @@ qué se descartó y por qué) está en
 
 | Documento | Contenido |
 |---|---|
-| [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md) | **Mapa del proyecto.** Líneas de investigación abiertas, qué se confirmó, qué se refutó y con qué evidencia |
+| [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md) | **Síntesis de la investigación.** Metodología, las 18 hipótesis con su resultado, la configuración óptima, limitaciones y próximos pasos. Empezar por acá si no participaste de las sesiones |
+| [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md) | **Mapa operativo.** Dónde retomar, líneas abiertas, callejones sin salida con su evidencia |
 | [`CLAUDE.md`](CLAUDE.md) | Orientación para asistentes de IA: reglas de trabajo, cómo se mide y trampas conocidas |
 | [`CONTEXTO.md`](CONTEXTO.md) | Auditoría técnica detallada: inventario de archivos, configuración de Ollama/ChromaDB, seguridad, roadmap |
 | [`Bitacora.md`](Bitacora.md) | Registro histórico de cambios de arquitectura, con pasos de rollback |

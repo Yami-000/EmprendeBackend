@@ -17,6 +17,11 @@ El punto de partida acordado está al inicio de
 [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md), en el bloque
 "Punto de partida de la próxima sesión". Léelo antes que nada.
 
+Si necesitas el panorama completo y no solo el próximo paso,
+[`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md) es la síntesis: metodología,
+las 18 hipótesis con su resultado, la configuración óptima, limitaciones y riesgos
+abiertos.
+
 ## Antes de proponer cambios al pipeline RAG
 
 **Lee [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md).** Contiene las siete
@@ -117,11 +122,18 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   prompt: fue **declarar la relación en prosa antes de la tabla** —*"La Notaría
   elabora la escritura pública de constitución"*— sin borrar la fila. Núcleo duro
   0 → 5 de 8, sensibilidad 18/29 → 23/29, especificidad y alucinación intactas.
-- **Lo que resiste son las preguntas comparativas y disyuntivas, y ya se sabe por
-  qué.** El juez de 3B **verifica un hecho a la vez**: con el mismo contexto y el
-  mismo prompt, PREG-084 da `NO` como *"¿cuál es la diferencia entre los tipos de
-  socios?"* y `SI` a las dos subpreguntas por separado
+- **El juez de 3B verifica un hecho a la vez, no una relación entre dos.** Con el
+  mismo contexto y el mismo prompt, PREG-084 da `NO` como *"¿cuál es la diferencia
+  entre los tipos de socios?"* y `SI` a las dos subpreguntas por separado
   (`scripts/sonda_descomposicion.py`). No es la instrucción: es la tarea.
+- **Eso ya está explotado, y la solución fue una regla, no un modelo.**
+  `descomponer_comparativa()` en `api.py` parte *"diferencia entre X y Y"* en dos
+  preguntas por definición y **exige que TODAS den `SI`**. Suma 3 preguntas (34/50 a
+  37/50) sin costo de latencia ni de especificidad. Tres cosas la hacen segura y hay
+  que preservarlas: **solo se dispara cuando el juez ya dijo `NO`**, **exige la
+  conjunción** —de las 5 preguntas que el patrón cubre, 2 son sin respaldo y la
+  conjunción es lo que las protege— y **no toca el retrieval ni el redactor**, que
+  reciben la pregunta original.
 - **No editar el texto del prompt del juez para esos casos.** Tres refutaciones
   independientes: `flexible` (1 de 8), un juez de 7B (0 de 8) y ampliar la
   enumeración de tipos de dato (1.12, **0 de 3** y 9 juicios idénticos con las dos

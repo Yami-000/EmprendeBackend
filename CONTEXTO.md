@@ -337,6 +337,7 @@ por esa razón.
 
 | Documento | Contenido |
 |---|---|
+| [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md) | Síntesis: metodología, las 18 hipótesis con su resultado, configuración óptima, limitaciones y próximos pasos |
 | [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md) | Mapa de las líneas de investigación y callejones sin salida ya medidos |
 | [`CLAUDE.md`](CLAUDE.md) | Reglas de trabajo para asistentes de IA |
 | [`Bitacora.md`](Bitacora.md) | Registro cronológico de cambios con pasos de rollback |
