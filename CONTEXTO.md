@@ -314,6 +314,7 @@ por esa razón.
 | 11 | Preguntas **comparativas y disyuntivas**: el juez de 3B verifica un hecho a la vez. Mismo contexto y mismo prompt, PREG-084 da `NO` compuesta y `SI` a sus dos subpreguntas. Tocar el prompt está refutado tres veces | 🔴 Alta — **B2 con premisa validada** (2 de 3), pendiente de decidir por su costo de latencia. PREG-064 no entra: su cita cae fuera de la ventana del embedder |
 | 12 | PREG-118 regresó con la Fase 2: su chunk de anclaje quedó en el puesto 7. Es el punto que falta de `anclaje@6` (28/37) | 🟡 Barata — mover el predicado de PREG-115 dentro de su archivo |
 | 10 | ~~El redactor puede abstenerse pese al `SI` del juez~~ — **medida 2026-09-26**: 6 de 185 casos (3,2%) en 12 corridas, y **0 en la configuración de la 1.10**. Los predicados arreglaron ese eslabón de paso: no eran dos problemas, era uno | ✅ Marginal, no amerita iteración. Vigilar: es un fallo silencioso que solo aparece en `abstuvo indebidamente`, no en `sensibilidad` |
+| 13 | **El presupuesto de 256 tokens del prefijo es el techo estructural del retrieval.** El embedder lee 256 tokens y los fragmentos tienen mediana 382: 32% del corpus no influye en qué se recupera. Las palabras clave (1.8) y los predicados (1.10) compiten por el mismo espacio | 🔴 **La decisión pendiente más importante.** Un embedder de ventana mayor lo resuelve de raíz y **requiere descargar un modelo** |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 
 ---

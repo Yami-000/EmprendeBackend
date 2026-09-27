@@ -1,0 +1,955 @@
+[
+  {
+    "id": "PREG-001",
+    "pregunta": "¿Qué rol cumple el Servicio de Impuestos Internos (SII) en el proceso de formalización de una empresa?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "RUT",
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El Servicio de Impuestos Internos (SII) es la institución encargada de: rut, inicio de actividades, declaración de impuestos.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.47,
+    "redactor_latencia_s": 17.36
+  },
+  {
+    "id": "PREG-002",
+    "pregunta": "¿Qué canales ofrece el SII para realizar el trámite de Inicio de Actividades?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "tipos_empresa_decision.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "1.",
+      "2.",
+      "3.",
+      "4.",
+      "5.",
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 0.14,
+    "respuesta": "El Servicio de Impuestos Internos (SII) ofrece el trámite de Inicio de Actividades tanto en línea como presencialmente.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 13.16,
+    "redactor_latencia_s": 12.11
+  },
+  {
+    "id": "PREG-010",
+    "pregunta": "¿El trámite de Patente Municipal se gestiona directamente en el SII o en otra institución?",
+    "respondible": true,
+    "esperado": [
+      "patente_municipal.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SII",
+      "municipalidad"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 0.5,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 2.96,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-019",
+    "pregunta": "¿Qué es el Formulario 29 (F29) y qué obligaciones tributarias principales se declaran en él?",
+    "respondible": true,
+    "esperado": [
+      "formularios_tributarios_chile.md"
+    ],
+    "recuperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "12",
+      "19%",
+      "29",
+      "F29",
+      "IVA"
+    ],
+    "anclas_ok": [
+      "12",
+      "19%",
+      "29",
+      "F29",
+      "IVA"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El Formulario 29 (F29) es la Declaración Mensual y Pago de IVA. Se presenta de forma mensual, con plazo hasta el día 12 del mes siguiente, y declara IVA (19%), PPM, retenciones.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 15.46,
+    "redactor_latencia_s": 20.27
+  },
+  {
+    "id": "PREG-062",
+    "pregunta": "¿Qué es una Microempresa Familiar (MEF) y cuál es su límite de ventas anuales?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "2.400 UF",
+      "MEF",
+      "UF"
+    ],
+    "anclas_ok": [
+      "2.400 UF",
+      "MEF",
+      "UF"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Una Microempresa Familiar (MEF) en Chile es una empresa que opera desde el domicilio familiar, sin separación patrimonial entre la persona natural y el negocio. Su límite de ventas anuales es de 2.400 UF (Unidades Fijas). No puede tener trabajadores externos, solo familiares directos.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 16.61,
+    "redactor_latencia_s": 20.5
+  },
+  {
+    "id": "PREG-064",
+    "pregunta": "¿Qué diferencia existe entre una SA Cerrada y una SA Abierta?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_empresa_decision.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "formularios_tributarios_chile.md",
+      "documentacion_formalizacion.md"
+    ],
+    "retrieval_hit": false,
+    "abstuvo": true,
+    "anclas": [
+      "SA"
+    ],
+    "anclas_ok": [
+      "SA"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 3.03,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-065",
+    "pregunta": "¿Cuál es el costo total de formalizar una empresa bajo el régimen simplificado (Tu Empresa en un Día)?",
+    "respondible": true,
+    "esperado": [
+      "costos_y_plazos_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "0 CLP",
+      "diario oficial"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "El costo total de formalizar una empresa bajo el régimen simplificado (Tu Empresa en un Día) es $0: formalizar por esa vía es gratuito.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 3.04,
+    "redactor_latencia_s": 4.12
+  },
+  {
+    "id": "PREG-066",
+    "pregunta": "¿Cuál es el rango de costo estimado para la escritura pública en notaría en el régimen tradicional?",
+    "respondible": true,
+    "esperado": [
+      "costos_y_plazos_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "costos_y_plazos_formalizacion.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "200.000 CLP",
+      "50.000",
+      "notaría"
+    ],
+    "anclas_ok": [
+      "200.000 CLP",
+      "50.000",
+      "notaría"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El rango de costo estimado para la escritura pública en notaría en el régimen tradicional es $50.000 - $200.000 CLP.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 15.04,
+    "redactor_latencia_s": 13.21
+  },
+  {
+    "id": "PREG-067",
+    "pregunta": "¿Cuál es el costo total estimado del régimen tradicional incluyendo todos los trámites?",
+    "respondible": true,
+    "esperado": [
+      "costos_y_plazos_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "costos_y_plazos_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "110.000",
+      "380.000 CLP"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 14.74,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-068",
+    "pregunta": "¿Cómo se calcula el costo de la Patente Municipal?",
+    "respondible": true,
+    "esperado": [
+      "costos_y_plazos_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "costos_y_plazos_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "0,25%",
+      "0,5%",
+      "1 UTM",
+      "8.000 UTM",
+      "UTM"
+    ],
+    "anclas_ok": [
+      "0,25%",
+      "0,5%",
+      "1 UTM",
+      "8.000 UTM",
+      "UTM"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El costo de la Patente Municipal es entre 0,25% y 0,5% del capital inicial declarado, con un mínimo de 1 UTM (Unidad Tributaria Mínima) y un máximo de 8.000 UTM anuales.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 9.72,
+    "redactor_latencia_s": 18.41
+  },
+  {
+    "id": "PREG-070",
+    "pregunta": "¿Cuál es la tasa de IVA que se declara en el Formulario 29?",
+    "respondible": true,
+    "esperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "documentacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "19%",
+      "IVA"
+    ],
+    "anclas_ok": [
+      "19%",
+      "IVA"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "La tasa de IVA que se declara en el Formulario 29 es del 19%.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 11.48,
+    "redactor_latencia_s": 12.32
+  },
+  {
+    "id": "PREG-073",
+    "pregunta": "¿Quién debe emitir Boletas Electrónicas obligatoriamente?",
+    "respondible": true,
+    "esperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Las empresas deben emitir boletas electrónicas obligatoriamente para las ventas a consumidores finales.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 13.79,
+    "redactor_latencia_s": 14.86
+  },
+  {
+    "id": "PREG-074",
+    "pregunta": "¿Qué empresas deben llevar contabilidad completa con balance y estado de resultados?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "tipos_empresa_decision.md",
+      "constitucion_empresa_tradicional.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "SA",
+      "SpA"
+    ],
+    "anclas_ok": [
+      "SA",
+      "SpA"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Las SA y SpA deben llevar contabilidad completa con balance y estado de resultados.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 13.8,
+    "redactor_latencia_s": 11.73
+  },
+  {
+    "id": "PREG-075",
+    "pregunta": "¿Qué registro electrónico deben mantener todas las empresas en el SII?",
+    "respondible": true,
+    "esperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_simplificada.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "SII"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Todas las empresas deben mantener un registro electrónico en el SII: el Libro de Compras y Ventas electrónico.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 11.55,
+    "redactor_latencia_s": 12.6
+  },
+  {
+    "id": "PREG-078",
+    "pregunta": "¿Qué institución es responsable de otorgar el RUT y realizar el Inicio de Actividades?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_empresa_decision.md",
+      "planificacion_formalizacion.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "RUT",
+      "SII"
+    ],
+    "anclas_ok": [
+      "RUT",
+      "SII"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "El Servicio de Impuestos Internos (SII) es la institución responsable de otorgar el RUT y realizar el Inicio de Actividades.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.22,
+    "redactor_latencia_s": 13.11
+  },
+  {
+    "id": "PREG-080",
+    "pregunta": "¿Quién inscribe la empresa en el Registro de Comercio?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "constitucion_empresa_simplificada.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "conservador"
+    ],
+    "anclas_ok": [
+      "conservador"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "La institución Conservador de Bienes Raíces se encarga de inscribir la empresa en el Registro de Comercio.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 11.45,
+    "redactor_latencia_s": 12.49
+  },
+  {
+    "id": "PREG-081",
+    "pregunta": "¿Cuál es el plazo para presentar el Formulario 22 de Declaración Anual de Renta?",
+    "respondible": true,
+    "esperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "formularios_tributarios_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "22",
+      "30",
+      "F22",
+      "abril"
+    ],
+    "anclas_ok": [
+      "22",
+      "30",
+      "abril"
+    ],
+    "cobertura": 0.75,
+    "respuesta": "El plazo para presentar el Formulario 22 de Declaración Anual de Renta es hasta el día 30 de abril del año tributario anterior.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 12.6,
+    "redactor_latencia_s": 14.04
+  },
+  {
+    "id": "PREG-083",
+    "pregunta": "¿Qué características tiene una Sociedad Colectiva Comercial?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md",
+      "tipos_empresa_decision.md",
+      "tipos_sociedad_chile.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 11.51,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-084",
+    "pregunta": "¿Cuál es la diferencia entre los tipos de socios en una Sociedad Comanditaria?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "recuperado": [
+      "tipos_empresa_decision.md",
+      "tipos_sociedad_chile.md",
+      "tipos_sociedad_chile.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 3.08,
+    "redactor_latencia_s": 0.0
+  },
+  {
+    "id": "PREG-088",
+    "pregunta": "¿Quién es responsable de la elaboración de la escritura pública en el régimen tradicional?",
+    "respondible": true,
+    "esperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "planificacion_formalizacion.md",
+      "tipos_empresa_decision.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "notario",
+      "notaría"
+    ],
+    "anclas_ok": [
+      "notaría"
+    ],
+    "cobertura": 0.5,
+    "respuesta": "La institución Notaría se encarga de la elaboración de la escritura pública de constitución del régimen tradicional.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 12.35,
+    "redactor_latencia_s": 12.29
+  },
+  {
+    "id": "PREG-089",
+    "pregunta": "¿Qué documento debe publicarse en el Diario Oficial en el régimen tradicional?",
+    "respondible": true,
+    "esperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "recuperado": [
+      "constitucion_empresa_tradicional.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "diario oficial"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "La escritura pública de constitución.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 15.44,
+    "redactor_latencia_s": 17.69
+  },
+  {
+    "id": "PREG-101",
+    "pregunta": "¿Qué se entiende por formalización de un emprendimiento en Chile?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "tipos_sociedad_chile.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "La formalización de un emprendimiento en Chile implica el conjunto de trámites y procedimientos necesarios para que una iniciativa de emprendimiento se constituya como una entidad propia y cumpla con las normativas y regulaciones laborales, sanitarias, municipales y tributarias.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 12.82,
+    "redactor_latencia_s": 14.82
+  },
+  {
+    "id": "PREG-106",
+    "pregunta": "¿En qué portal web se constituye una empresa bajo el régimen simplificado?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_simplificada.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_sociedad_chile.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "1."
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "Se constituye una empresa bajo el régimen simplificado en el portal www.tuempresaenundia.cl.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 15.24,
+    "redactor_latencia_s": 17.76
+  },
+  {
+    "id": "PREG-107",
+    "pregunta": "¿Qué es la Patente Provisional y cuándo se convierte en definitiva?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "patente_municipal.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "permisos_complementarios.md",
+      "constitucion_empresa_simplificada.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "30"
+    ],
+    "anclas_ok": [],
+    "cobertura": 0.0,
+    "respuesta": "La Patente Provisional es un tipo de patente municipal que se otorga a una empresa para operar en una comuna determinada. Se requiere para que un negocio utilice un local, oficina o instalación física. El trámite de la Patente Municipal se gestiona en la Municipalidad, que es una institución distinta del SII: el SII no tramita ni cobra la patente municipal.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.2,
+    "redactor_latencia_s": 18.5
+  },
+  {
+    "id": "PREG-108",
+    "pregunta": "¿Qué categorías de patente municipal existen?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "documentacion_formalizacion.md",
+      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [
+      "MEF"
+    ],
+    "anclas_ok": [
+      "MEF"
+    ],
+    "cobertura": 1.0,
+    "respuesta": "Existen las siguientes categorías de patente municipal: \n\n- Microempresa Familiar (MEF)\n- Comercial\n- Profesional\n- Industrial\n- De Alcoholes.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 9.05,
+    "redactor_latencia_s": 10.28
+  },
+  {
+    "id": "PREG-113",
+    "pregunta": "¿Cómo se llama el documento de identidad en Chile?",
+    "respondible": true,
+    "esperado": [
+      "documentacion_formalizacion.md"
+    ],
+    "recuperado": [
+      "documentacion_formalizacion.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "tipos_sociedad_chile.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "El documento de identidad en Chile se llama **Cédula de Identidad**.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 17.1,
+    "redactor_latencia_s": 19.46
+  },
+  {
+    "id": "PREG-114",
+    "pregunta": "Además de la patente municipal, ¿qué otros cobros puede aplicar la municipalidad?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "patente_municipal.md",
+      "documentacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "permisos_complementarios.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "Además de la patente municipal, la municipalidad puede aplicar otros cobros asociados a un negocio. Estos incluyen: \n\n- Derechos de aseo del local\n- Derechos de publicidad (según tamaño de letreros)",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 14.26,
+    "redactor_latencia_s": 14.0
+  },
+  {
+    "id": "PREG-115",
+    "pregunta": "¿Qué información entrega el Certificado de Informaciones Previas y quién lo emite?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "constitucion_empresa_simplificada.md",
+      "obligaciones_tributarias_y_tipos_sociedad.md",
+      "inicio_actividades_sii.md",
+      "planificacion_formalizacion.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": false,
+    "anclas": [],
+    "anclas_ok": [],
+    "cobertura": null,
+    "respuesta": "El Certificado de Informaciones Previas contiene normas de edificación y destinos posibles del inmueble. Lo emite la Dirección de Obras Municipales.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "SI.",
+    "juez_dijo_si": true,
+    "juez_latencia_s": 2.98,
+    "redactor_latencia_s": 3.9
+  },
+  {
+    "id": "PREG-118",
+    "pregunta": "¿Cuáles son los sitios web oficiales para realizar los trámites de formalización?",
+    "respondible": true,
+    "esperado": [
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "recuperado": [
+      "planificacion_formalizacion.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "constitucion_empresa_tradicional.md",
+      "inicio_actividades_sii.md",
+      "inicio_actividades_formalizacion_sii.md",
+      "inicio_actividades_formalizacion_sii.md"
+    ],
+    "retrieval_hit": true,
+    "abstuvo": true,
+    "anclas": [
+      "SII",
+      "diario oficial"
+    ],
+    "anclas_ok": [
+      "SII"
+    ],
+    "cobertura": 0.5,
+    "respuesta": "Lo siento, mi base de conocimientos actual no incluye esa información específica sobre las normativas del SII.",
+    "modo": "dos_pasos",
+    "juez_prompt": "estricto",
+    "juez_respuesta": "NO.",
+    "juez_dijo_si": false,
+    "juez_latencia_s": 13.78,
+    "redactor_latencia_s": 0.0
+  }
+]
