@@ -13,7 +13,13 @@ Complementa, no reemplaza, a los otros dos documentos vivos:
 |---|---|
 | [`ESTADO_INVESTIGACION.md`](ESTADO_INVESTIGACION.md) | **El mapa operativo.** Dónde retomar, qué está abierto, callejones sin salida con su evidencia |
 | [`CONTEXTO.md`](CONTEXTO.md) | **El código verificado.** Inventario, configuración, deuda técnica |
-| Este archivo | **La síntesis.** Metodología, hipótesis, resultados, próximos pasos |
+| Este archivo | **La síntesis técnica.** Metodología, hipótesis, resultados, próximos pasos |
+
+**No confundir con [`Informe_Desarrollo.md`](Informe_Desarrollo.md)**, que es la
+narrativa del proyecto —cómo se llegó al problema, el análisis y el diseño de
+producto— y es **anterior** a toda la investigación que este documento cubre. Los dos
+son informes y no se solapan: aquel cuenta *por qué* se construyó esto, este cuenta
+*qué se midió*.
 
 ---
 

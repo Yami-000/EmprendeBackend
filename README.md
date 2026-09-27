@@ -227,3 +227,5 @@ qué se descartó y por qué) está en
 | [`CONTEXTO.md`](CONTEXTO.md) | Auditoría técnica detallada: inventario de archivos, configuración de Ollama/ChromaDB, seguridad, roadmap |
 | [`Bitacora.md`](Bitacora.md) | Registro histórico de cambios de arquitectura, con pasos de rollback |
 | [`METODOLOGIA_TESTING.md`](METODOLOGIA_TESTING.md) | Protocolo de evaluación del chatbot y estrategia de branching por iteración |
+| [`Informe_Desarrollo.md`](Informe_Desarrollo.md) | **Narrativa del proyecto:** cómo se llegó al problema, el análisis, el diseño y las decisiones de producto. Anterior a la investigación del pipeline RAG — **no** describe el sistema actual |
+| [`Diagramas.md`](Diagramas.md) | Diagramas de arquitectura y base de datos |
