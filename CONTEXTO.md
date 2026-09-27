@@ -314,6 +314,9 @@ por esa razón.
 | 11 | Preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado llega en el puesto 1 y el juez dice `NO`. Piden una relación entre dos datos, no un dato | 🔴 Alta — trabajo de la 1.11 |
 | 12 | PREG-118 regresó con la Fase 2: su chunk de anclaje quedó en el puesto 7. Es el punto que falta de `anclaje@6` (28/37) | 🟡 Barata — mover el predicado de PREG-115 dentro de su archivo |
 | 10 | El redactor puede abstenerse pese al `SI` del juez: en PREG-065 corrió 18,3 s y emitió la frase de abstención igual. Un `SI` del juez no garantiza respuesta | 🟠 Sin medir — detectado en la 1.10 Fase 1 |
+| 14 | ~~La ventana de 256 tokens del embedder es el techo del retrieval~~ — **resuelta 2026-09-27**: `multilingual-e5-small` lee 512 y ningún fragmento la excede. `anclaje@6` 28 → **36/37** | ✅ 1.14 |
+| 15 | La especificidad del juez es 49/50 y el 0% de alucinación depende de que **el redactor** abstenga en PREG-045, no de que el juez acierte | 🟠 Garantía frágil. Un cambio que toque al redactor puede destapar la fuga |
+| 16 | `CHUNK_SIZE` sigue en 1400 caracteres, acoplado al truncado de `api.py`. Con 512 tokens de ventana los fragmentos podrían crecer **sin volverse invisibles** | 🟡 Variable nueva, sin medir. Se reabrió con la 1.14 |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 
 ---

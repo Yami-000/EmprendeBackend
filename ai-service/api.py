@@ -192,7 +192,20 @@ async def chat_endpoint(payload: ChatRequest):
 
     # Retrieve top-k
     try:
-        fragments = await _query_chroma(query_vec, k=6)
+        # Iteración 1.14: k baja de 6 a 3, y es el embedder nuevo lo que lo
+        # permite. Con multilingual-e5-small, anclaje@3 es 30/37 — mejor que el
+        # 28/37 que daba MiniLM con k=6. Medido sobre el banco completo:
+        #
+        #             sensibilidad  especificidad  ALUCINACION  latencia juez
+        #   k=6          38/50         49/50          1/50         13,0 s
+        #   k=3          34/50         49/50          0/50          6,9 s
+        #
+        # Con k=6 el juez aprueba PREG-045 ("¿qué organismo recauda los impuestos
+        # girados por el SII?", cuya respuesta es la Tesorería y no está en el
+        # corpus) y el redactor la contesta mal. Con k=3 no llega ese contexto.
+        # El 98% del costo del juez es leer contexto, así que k=3 casi lo parte
+        # en dos: una consulta respondida baja de 17,5 s a 10,3 s de media.
+        fragments = await _query_chroma(query_vec, k=3)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Retrieval error: {str(e)}")
 

@@ -62,15 +62,27 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
 
 ## Trampas conocidas
 
-- **El embedder solo lee 256 tokens, y está cuantificado.** `all-MiniLM-L6-v2`
-  tiene `max_seq_length = 256` y los fragmentos tienen mediana 382 tokens: **32%
-  del corpus es invisible para el retrieval**, aunque el juez sí lo lea. Medido con
-  `scripts/medir_ventana_embedder.py`: cuando la cita cae dentro de la ventana,
-  `anclaje@6` acierta **21/23 (91%)**; cuando cae fuera, **7/14 (50%)**. Lo que se
-  agregue al corpus para mejorar la recuperación tiene que caer dentro de esa
-  ventana, o es **texto muerto**: así falló el arreglo de PREG-118, cuyo predicado
-  quedó en el token 313. **No confundir con el truncado de `api.py` (1400
-  caracteres):** ese decide qué lee el juez, la ventana decide qué se recupera.
+- **El embedder es `multilingual-e5-small` y su ventana ya no es el techo.** Lee
+  **512 tokens** y los fragmentos tienen mediana 283, así que **0 de 28 exceden la
+  ventana**: todo el corpus influye en el retrieval. Antes, con `all-MiniLM-L6-v2`
+  (256 tokens), el 32% era invisible y eso era el techo del proyecto. Verificable con
+  `scripts/medir_ventana_embedder.py`.
+- **El contrato del embedder vive en `ai-service/embedding.py`, en un solo lugar.**
+  El modelo y los prefijos. Estaba escrito a mano en siete archivos y eso ya causó un
+  incidente. **No volver a escribir el nombre del modelo en ningún otro sitio.**
+- **Los prefijos `query:` y `passage:` no son opcionales.** La familia E5 se entrenó
+  con esa asimetría: sin prefijo rinde peor, y con el prefijo cambiado rinde **peor
+  que sin ninguno**. Usar `para_consulta()` para lo que se busca y `para_pasaje()`
+  para lo que se indexa.
+- **`k=3` en producción, y es el embedder lo que lo permite.** `anclaje@3` con e5 es
+  30/37, mejor que el 28/37 que daba MiniLM con `k=6`. Con `k=6` el juez filtra
+  PREG-045 (pregunta quién recauda los impuestos girados por el SII: la Tesorería, que
+  no está en el corpus) y el redactor contesta mal. Bajar el contexto a la mitad
+  también bajó la latencia del juez de 12,7 s a 6,9 s.
+- **La especificidad del juez es 49/50, no 50/50, y el 0% de alucinación descansa en
+  el redactor.** El juez aprueba PREG-045 y el redactor abstiene igual. Cumple la
+  restricción, pero es una garantía más frágil que la de la 1.10: **cualquier cambio
+  que toque al redactor puede destapar esa fuga.**
 - **El juez es inestable en ~6 de 50 preguntas** ante cambios cosméticos del
   contexto, con `temperature=0`. Decidir con `recall@k` y `anclaje@k`, que son
   deterministas; el end-to-end solo confirma, y con banda de ±6.

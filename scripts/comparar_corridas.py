@@ -31,7 +31,19 @@ def cargar(etiqueta):
 
 
 def resumen(D, ids):
-    """Cuenta lo que importa sobre el subconjunto comparable."""
+    """Cuenta lo que importa sobre el subconjunto comparable.
+
+    ESPECIFICIDAD Y ALUCINACION NO SON LO MISMO, y confundirlas oculta un fallo
+    real. La especificidad mide al JUEZ (dijo NO en una pregunta sin respaldo); la
+    alucinacion mide lo que LLEGO AL USUARIO. Entre las dos esta el redactor, que
+    puede abstenerse pese al SI del juez.
+
+    Paso en la 1.14 con k=3: el juez aprobo PREG-045 -especificidad 49/50- y el
+    redactor abstuvo igual, asi que la alucinacion quedo en 0/50. Una version
+    anterior de este script calculaba la especificidad desde `abstuvo` y reportaba
+    50/50, escondiendo que el juez habia fallado y que el 0% dependia de una
+    segunda linea de defensa que nadie diseno para eso.
+    """
     sub = [D[i] for i in ids]
     resp = [r for r in sub if r.get("respondible")]
     nores = [r for r in sub if not r.get("respondible")]
@@ -41,7 +53,10 @@ def resumen(D, ids):
         "juez_si": sum(1 for r in resp if r.get("juez_dijo_si")),
         "abstuvo_mal": sum(1 for r in resp if r.get("abstuvo")),
         "sin_respaldo": len(nores),
-        "especificidad": sum(1 for r in nores if r.get("abstuvo")),
+        # el juez dijo NO, que es lo que evaluar_banco.py llama especificidad
+        "especificidad": sum(1 for r in nores if not r.get("juez_dijo_si")),
+        # el juez dijo SI pero el redactor abstuvo: fallo atajado, no llego al usuario
+        "atajadas": sum(1 for r in nores if r.get("juez_dijo_si") and r.get("abstuvo")),
         "alucino": sum(1 for r in nores if not r.get("abstuvo")),
     }
 
@@ -63,8 +78,9 @@ def main():
         ("juez dice SI", "juez_si", "respondibles"),
         ("abstuvo indebidamente", "abstuvo_mal", "respondibles"),
         ("sin respaldo", "sin_respaldo", None),
-        ("especificidad", "especificidad", "sin_respaldo"),
-        ("ALUCINO", "alucino", "sin_respaldo"),
+        ("especificidad (juez)", "especificidad", "sin_respaldo"),
+        ("atajadas por el redactor", "atajadas", "sin_respaldo"),
+        ("ALUCINO (llego al usuario)", "alucino", "sin_respaldo"),
     ]
     print("%-24s %14s %14s" % ("", ctl_n[:14], new_n[:14]))
     for etiq, k, den in filas:
@@ -75,7 +91,9 @@ def main():
             sa, sb = str(va), str(vb)
         flecha = ""
         if den and va != vb:
-            flecha = "  <-- " + ("mejora" if (vb > va) != (k in ("abstuvo_mal", "alucino")) else "empeora")
+            # para abstuvo_mal, alucino y atajadas, mas es peor
+            peor_si_sube = k in ("abstuvo_mal", "alucino", "atajadas")
+            flecha = "  <-- " + ("mejora" if (vb > va) != peor_si_sube else "empeora")
         print("%-24s %14s %14s%s" % (etiq, sa, sb, flecha))
 
     # lo que de verdad importa: los vuelcos
