@@ -34,7 +34,11 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AI = os.path.join(RAIZ, "ai-service")
 sys.path.insert(0, AI)
 from api import (_build_system_prompt, _build_judge_prompt, FRASE_ABSTENCION,
-                 JUEZ_PROMPT_BASES, descomponer_comparativa)
+                 JUEZ_PROMPT_BASES, descomponer_comparativa, parse_juicio,
+                 abstuvo)
+# parse_juicio se IMPORTA, no se copia. Vivia duplicada aca y en api.py, y si
+# las dos versiones divergieran el arnes mediria un criterio distinto del que
+# usa produccion para decidir -- justo el problema que la 2.0 corrige.
 
 # Posicionales conservados por compatibilidad: los comandos documentados en
 # README.md y resultado_1.3.md los usan. Las flags nuevas se suman sin romperlos.
@@ -88,34 +92,6 @@ OLLAMA = "http://localhost:11434/api/chat"
 # El contrato del embedder vive en ai-service/embedding.py. Igual que los prompts,
 # se IMPORTA en vez de copiarse: una copia divergente mide otra cosa.
 from embedding import MODEL_NAME as EMB, para_consulta  # noqa: E402
-
-ABST = ["no incluye esa informaci", "base de conocimientos", "lo siento",
-        "no puedo responder", "no está en el contexto", "no dispongo",
-        "no tengo informaci", "no se encuentra en el contexto",
-        "no cuento con", "no aparece en el contexto",
-        # Detectados en la corrida llama3.1:8b (2026-09-22): modelos más grandes
-        # razonan la ausencia de dato en vez de usar la frase canónica del prompt.
-        "no se especifica", "no se menciona", "no se indica",
-        "no está especificado", "no se detalla", "no proporciona"]
-
-
-def abstuvo(t):
-    b = t.lower()
-    return any(p in b for p in ABST)
-
-
-def parse_juicio(texto):
-    """SI/NO del juez. Ante ambiguedad, error o vacio devuelve False.
-
-    El fail-safe apunta deliberadamente hacia NO: un falso NO cuesta una
-    abstencion indebida, un falso SI cuesta una alucinacion. Preferimos lo
-    primero.
-    """
-    t = (texto or "").strip().upper()
-    if re.match(r"^\W*(SI|SÍ)\b", t):
-        return True
-    return False
-
 
 def llamar_ollama(modelo, system_prompt, pregunta, num_predict):
     """Devuelve (texto, latencia_s). Los errores viajan como texto <<ERROR: ...>>."""
