@@ -32,6 +32,35 @@ FRASE_ABSTENCION = (
     "específica sobre las normativas del SII."
 )
 
+import logging
+logger = logging.getLogger(__name__)
+
+# Detector de abstencion. Vive JUNTO a FRASE_ABSTENCION porque depende de ella: la
+# primera entrada de la lista es un fragmento de esa frase.
+#
+# Es un heuristico LEXICO, y conviene saberlo porque las dos metricas end-to-end mas
+# importantes -alucinacion y abstencion indebida- se calculan sobre el. Un modelo que
+# exprese la abstencion con otras palabras se contaria como respondiendo. La lista
+# tuvo que ampliarse tras la corrida de llama3.1:8b, porque los modelos grandes
+# RAZONAN la ausencia del dato en vez de usar la frase canonica del prompt.
+#
+# Lo importan tanto evaluar_banco.py como evaluar_endpoint.py: una copia divergente
+# haria que las dos mediciones no fueran comparables.
+ABST = ["no incluye esa informaci", "base de conocimientos", "lo siento",
+        "no puedo responder", "no está en el contexto", "no dispongo",
+        "no tengo informaci", "no se encuentra en el contexto",
+        "no cuento con", "no aparece en el contexto",
+        # Detectados en la corrida llama3.1:8b (2026-09-22): modelos más grandes
+        # razonan la ausencia de dato en vez de usar la frase canónica del prompt.
+        "no se especifica", "no se menciona", "no se indica",
+        "no está especificado", "no se detalla", "no proporciona"]
+
+
+def abstuvo(t):
+    b = t.lower()
+    return any(p in b for p in ABST)
+
+
 app = FastAPI(title="ai-service RAG API")
 
 
@@ -246,6 +275,97 @@ def _build_judge_prompt(fragments: List[Dict[str, Any]], variante: str = "estric
     return base + "\n" + "\n".join(ctx_lines)
 
 
+# Iteración 2.0. El juez en producción, y el parseo de su veredicto.
+#
+# Hasta acá el pipeline de dos pasos vivía SOLO en scripts/evaluar_banco.py. Todo
+# lo medido en 16 iteraciones era del arnés, no del bot: /chat servía un paso, que
+# alucina 34%. Esto lo porta.
+#
+# num_predict=5 porque el juez solo responde SI o NO. No es una micro-optimización:
+# el 98% de su costo es leer el contexto, pero dejarle 300 tokens de salida invita a
+# que explique su veredicto y eso rompe el parseo.
+NUM_PREDICT_JUEZ = 5
+
+
+def parse_juicio(texto: str) -> bool:
+    """SI/NO del juez. Ante ambiguedad, error o vacio devuelve False.
+
+    El fail-safe apunta deliberadamente hacia NO: un falso NO cuesta una abstencion
+    indebida, un falso SI cuesta una alucinacion. En normativa tributaria preferimos
+    lo primero.
+
+    Es la MISMA funcion que scripts/evaluar_banco.py usa para medir. Si las dos
+    divergieran, produccion se comportaria distinto de lo que dicen las metricas —
+    que es exactamente el problema que esta iteracion corrige.
+    """
+    t = (texto or "").strip().upper()
+    return bool(re.match(r"^\W*(SI|SÍ)\b", t))
+
+
+async def _juzgar(fragments: List[Dict[str, Any]], pregunta: str) -> bool:
+    """Una llamada NO streameada al juez. True si el contexto contiene el dato."""
+    body = {
+        "model": OLLAMA_MODEL,
+        "messages": [
+            {"role": "system", "content": _build_judge_prompt(fragments)},
+            {"role": "user", "content": pregunta},
+        ],
+        "stream": False,
+        "options": {"temperature": 0.0, "top_p": 0.1,
+                    "num_predict": NUM_PREDICT_JUEZ, "num_ctx": 4096},
+    }
+    # Timeout propio y mas corto que el del redactor: el juez emite 5 tokens, asi
+    # que si tarda mas de 60 s algo esta mal y conviene fallar hacia la abstencion
+    # en vez de dejar al usuario esperando el timeout del bot.
+    async with httpx.AsyncClient(timeout=60) as client:
+        r = await client.post(OLLAMA_URL, json=body)
+        r.raise_for_status()
+        return parse_juicio((r.json().get("message") or {}).get("content", ""))
+
+
+async def decidir_si_responder(fragments: List[Dict[str, Any]],
+                               pregunta: str) -> bool:
+    """El juez, con la descomposicion de comparativas como segunda oportunidad.
+
+    Devuelve True si hay que llamar al redactor.
+
+    NOTA SOBRE EL ORDEN, que no es arbitrario: la descomposicion solo se intenta
+    cuando el juez ya dijo NO, asi que no puede convertir un SI en NO y su costo
+    recae unicamente en los casos que de otro modo se perderian. Y se exige que
+    TODAS las subpreguntas den SI: una comparacion necesita los dos lados en el
+    contexto, y esa conjuncion es lo que protege la especificidad. Medido: de las 5
+    preguntas del banco que el patron cubre, 2 son sin respaldo y las dos dieron NO
+    en ambas subpreguntas.
+
+    Si el juez falla por red o por error de Ollama, se devuelve False: abstenerse.
+    Preferimos callar antes que responder sin haber verificado.
+    """
+    try:
+        if await _juzgar(fragments, pregunta):
+            return True
+        subs = descomponer_comparativa(pregunta)
+        if not subs:
+            return False
+        for sub in subs:
+            if not await _juzgar(fragments, sub):
+                return False
+        return True
+    except Exception as exc:
+        logger.warning("El juez fallo (%s). Se abstiene por precaucion.", exc)
+        return False
+
+
+def _sse_texto(texto: str) -> str:
+    """Un texto suelto, con la forma que el bot ya sabe parsear.
+
+    src/bot.js separa por lineas, quita el prefijo 'data: ', intenta JSON.parse y
+    usa message.content. Emitir el mismo sobre que Ollama evita tocar el bot: el
+    camino de abstencion se ve igual que una respuesta, solo que sin modelo detras.
+    """
+    return "data: %s\n\n" % json.dumps(
+        {"message": {"role": "assistant", "content": texto}, "done": True},
+        ensure_ascii=False)
+
 async def _query_chroma(query_vec: List[float], k: int = 4) -> List[Dict[str, Any]]:
     if _collection is None:
         raise RuntimeError("Chroma collection not available")
@@ -291,6 +411,21 @@ async def chat_endpoint(payload: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Retrieval error: {str(e)}")
 
+    # Iteración 2.0: PRIMER PASO. El juez decide si el contexto contiene el dato
+    # antes de que nadie redacte nada. Es lo que lleva la alucinación de 34% a 0%,
+    # y hasta esta iteración vivía solo en el arnés de evaluación.
+    if not await decidir_si_responder(fragments, payload.query):
+        # El camino NO **no llama al modelo**: devuelve la frase canónica directo.
+        # Por eso el pipeline de dos pasos es MAS RAPIDO que el de un paso cuando
+        # rechaza — medido sobre el banco, 62 de 100 preguntas se resuelven con una
+        # sola llamada.
+        async def solo_abstencion() -> AsyncGenerator[str, None]:
+            yield _sse_texto(FRASE_ABSTENCION)
+        return StreamingResponse(solo_abstencion(),
+                                 media_type="text/event-stream")
+
+    # SEGUNDO PASO: el redactor. Recibe la pregunta ORIGINAL, nunca las
+    # subpreguntas de la descomposición: esas son un instrumento del juez.
     system_prompt = _build_system_prompt(fragments)
 
     # Build messages for Ollama

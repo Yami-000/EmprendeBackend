@@ -99,13 +99,33 @@ No hay `.env.example` en el repo — crea un `.env` en la raíz con:
 
 ## Cómo levantar el proyecto
 
-Los tres procesos se levantan por separado, en este orden:
+### La forma corta, en Windows
+
+```
+iniciar.bat
+```
+
+Levanta los tres procesos en el orden correcto, cada uno en su ventana, y **espera
+a que cada uno responda antes de arrancar el siguiente**.
+
+Esa espera no es cosmética: el servicio RAG tarda ~30 s en aceptar consultas porque
+carga el modelo de embeddings (470 MB) al arrancar. Si el bot arranca antes, los
+primeros mensajes fallan con *"el servicio no respondió"*.
+
+El script también comprueba lo que suele faltar y **se detiene con un mensaje claro
+en vez de arrancar a medias**: `node` y `ollama` en el `PATH`, un `.env` que defina
+`TELEGRAM_BOT_TOKEN`, el entorno virtual `ai-service/.venv`, `node_modules`, el
+modelo `llama3.2` descargado y el índice vectorial. **Si el índice no existe lo
+construye solo** — `chroma_db/` no está versionado, así que tras clonar o hacer
+`pull` no está ahí.
+
+### A mano, en este orden
 
 ```powershell
 # 1. Ollama
 ollama serve
 
-# 2. Servicio RAG (en otra terminal)
+# 2. Servicio RAG (en otra terminal). Esperar a que diga "Application startup complete"
 cd ai-service
 .venv/Scripts/Activate.ps1
 uvicorn api:app --host 0.0.0.0 --port 11400
@@ -113,6 +133,14 @@ uvicorn api:app --host 0.0.0.0 --port 11400
 # 3. Backend + bot de Telegram (en otra terminal)
 npm run dev      # o: npm start
 ```
+
+### Qué esperar del bot
+
+- La **primera** respuesta tarda más: el modelo se carga en memoria.
+- Después, una consulta respondida ronda los **10 s**.
+- **Si preguntás algo que el corpus no cubre, el bot se abstiene a propósito.** No es
+  un error: es el pipeline de dos pasos evitando inventar. Con el pipeline de un paso
+  esa misma pregunta se respondía mal en 34% de los casos.
 
 ### Indexar / re-indexar el corpus
 
