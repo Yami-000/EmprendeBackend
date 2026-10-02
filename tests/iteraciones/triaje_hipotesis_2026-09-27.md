@@ -5,6 +5,18 @@
 "pendientes" ya no lo están por razones distintas, y el conjunto de preguntas que
 falla es **otro**.
 
+> **Instantánea del 2026-09-27. Dos cosas de este documento ya no son ciertas,**
+> y se dejan sin corregir porque es un registro fechado:
+>
+> - Dice que `/chat` sirve el pipeline de **un paso**. Dejó de ser cierto el
+>   **2026-09-30** con la iteración 2.0, que lo portó a producción y lo verificó por
+>   el endpoint.
+> - Dice que quedan **dos** hipótesis abiertas. `CHUNK_SIZE` se refutó (1.15) y B2 se
+>   confirmó (1.16): **las hipótesis del pipeline están cerradas.**
+>
+> El estado vigente está en el bloque de arranque de
+> [`ESTADO_INVESTIGACION.md`](../../ESTADO_INVESTIGACION.md).
+
 ## Dos líneas que se cierran sin gastar una iteración
 
 ### OP-5 — Métrica de similitud del índice: **no-op, cerrada**
