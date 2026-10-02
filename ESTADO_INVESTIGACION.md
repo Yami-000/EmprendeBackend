@@ -11,16 +11,17 @@ documentadas abajo con el número que las refutó.
 > la 1.0 y quedó atrapado en un PR sin fusionar, de modo que las ramas 1.6 y
 > posteriores citaban oportunidades (OP-6) que no existían en su árbol.
 
-**Última actualización:** 2026-09-26, al cerrar la 1.10 con la Fase 2 positiva. Las
-métricas de abajo son las de la 1.8, que sigue siendo la última corrida completa:
-la Fase 0, la B1 y el análisis del núcleo duro se resolvieron con pruebas
-dirigidas de 8 a 29 preguntas.
+**Última actualización:** 2026-09-30, al cerrar la 2.1 (veto de preguntas compuestas).
+Las métricas del arnés siguen siendo las de la 1.16; las del endpoint son de la 2.1.
+
+
 
 > ## ⏭️ Punto de partida de la próxima sesión
 >
-> **Los experimentos están cerrados.** Las dos hipótesis que quedaban abiertas se
-> midieron: una refutada, una confirmada. **Ya no queda nada barato por medir en el
-> pipeline; lo que queda es ingeniería.**
+> **Los experimentos del pipeline están cerrados y el pipeline ya corre en
+> producción.** La 2.0 lo portó a `/chat` y lo verificó por el endpoint; la 2.1 tapó
+> una fuga de alucinación reportada desde Telegram. **Lo que queda es ingeniería y
+> endurecimiento, no medición barata.**
 >
 > **La síntesis completa está en
 > [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md)** — metodología, las 18
@@ -29,52 +30,45 @@ dirigidas de 8 a 29 preguntas.
 > **Lo primero al retomar:** `cd ai-service && python ingest.py`. `chroma_db/` no está
 > versionado.
 >
-> ### La configuración que corre
+> ### La configuración que corre, y dónde corre
 >
 > ```
 > embedder ..............  multilingual-e5-small (512 tokens, 384 dims)
 > k .....................  3
 > chunking ..............  1400 / 200  -> 28 fragmentos  (medido optimo, 1.15)
-> pipeline ..............  dos pasos + descomposicion de comparativas (1.16)
->                          SOLO en el arnes; /chat sigue en un paso
+> pipeline ..............  dos pasos + descomposicion comparativa + veto de
+>                          compuestas, EN PRODUCCION (/chat) desde la 2.0/2.1
 >
-> sensibilidad ..........  37/50
-> especificidad del juez   49/50
-> alucinacion ...........  0/50
-> anclaje@3 / @6 / @8 ...  30/37  /  36/37  /  37/37
-> latencia juez .........  6,8 s | consulta respondida 10,3 s de media
+> medido por el ARNES            medido por el ENDPOINT (lo que recibe el usuario)
+> sensibilidad ....... 37/50     abstencion indebida ...... 14/50
+> especificidad juez . 49/50     ALUCINACION ..............  0/50
+> alucinacion ........  0/50     latencia .................  6,8 s de media
+> anclaje@3 .......... 30/37                                17,5 s de pico
 > ```
 >
-> ### 🔴 Lo único que importa ahora: el 2.0
+> Las dos columnas **no son la misma métrica y no se restan entre sí**: el arnés ve el
+> veredicto del juez, el endpoint solo ve si el usuario recibió respuesta o no. Ver
+> [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md), sección de métricas.
 >
-> **Llevar el pipeline de dos pasos a producción. No es una hipótesis: está medido.**
-> `api.py` sirve `/chat` de **un paso**, que alucina **34%**. El bot que usa la gente
-> no tiene ninguna de las mejoras de 16 iteraciones.
+> ### Lo que sigue, en orden
 >
-> El argumento que lo frenaba era la latencia, y la 1.14 la bajó de 39 s de pico a 23 s.
->
-> 1. Mover la lógica de dos pasos de `evaluar_banco.py` a `api.py`, con la
->    descomposición incluida (`descomponer_comparativa` ya vive en `api.py`).
-> 2. **El camino `NO` no debe llamar al modelo:** devuelve `FRASE_ABSTENCION` directo.
->    Es lo que lo hace más rápido que el de un paso.
-> 3. **Cuidado con el *streaming*:** `/chat` devuelve SSE y el juez es una llamada
->    bloqueante previa. El primer token va a tardar ~7 s más.
-> 4. **Verificar con el banco a través del endpoint**, no del arnés. Es lo único que
->    prueba que producción se comporta como lo medido, y es justamente lo que nunca se
->    hizo — razón por la que esta deuda pasó desapercibida 16 iteraciones.
->
-> ### Después, en orden
->
-> 1. **Endurecer la garantía de especificidad.** El 0% de alucinación descansa en que
->    **el redactor** abstiene en PREG-045, no en que el juez acierte (49/50). Medirlo a
->    propósito: forzar `SI` en las 50 sin respaldo y contar cuántas ataja.
-> 2. **El grupo B: 9 preguntas cuyo dato no llega con `k=3`.** No se ataca desde el
+> 1. **Endurecer la garantía de especificidad.** Sigue siendo la parte más frágil: el
+>    0% de alucinación descansa en que **el redactor** abstiene en PREG-045, no en que
+>    el juez acierte (49/50). Medirlo a propósito: forzar `SI` en las 50 sin respaldo y
+>    contar cuántas ataja el redactor. **Esto es lo primero.**
+> 2. **El *fallback* ante fallo de Ollama devuelve el contexto en crudo al usuario.**
+>    Deuda anterior a la 2.0, sigue abierta. Es un bug de producto, no una hipótesis.
+> 3. **El historial no llega al juez.** Deliberado, pero sin medir. La conversación de
+>    Telegram que originó la 2.1 tenía cuatro turnos previos.
+> 4. **La traza escribe la pregunta del usuario en claro** en `logs/traza.log`. Sirve
+>    para desarrollar; con usuarios reales hay que decidir qué se guarda y cuánto tiempo.
+> 5. **El grupo B: 9 preguntas cuyo dato no llega con `k=3`.** No se ataca desde el
 >    chunking (1.15). Queda sin medir: `k` variable en una segunda pasada cuando el juez
 >    dice `NO`, o un *reranker* sobre un `k` mayor — **eso requeriría descargar otro
 >    modelo**.
-> 3. **Extender la descomposición.** Cubre 5 de 100. Sin cubrir: PREG-084 (sin dos lados
+> 6. **Extender la descomposición.** Cubre 5 de 100. Sin cubrir: PREG-084 (sin dos lados
 >    separables), PREG-010 (disyuntiva) y las `normativa` del grupo A.
-> 4. **Remedir la 1.13 sobre e5.** El generador está en `main`, su corpus no: se midió
+> 7. **Remedir la 1.13 sobre e5.** El generador está en `main`, su corpus no: se midió
 >    bajo el prefijo escaso. Y habría que corregir la gramática de las frases generadas,
 >    que es **texto indexado** y hay que medirlo aparte.
 >
@@ -83,6 +77,10 @@ dirigidas de 8 a 29 preguntas.
 > Tabla completa en callejones sin salida. Los que esta sesión invita a repetir:
 >
 > - **Tocar el texto del prompt del juez.** Tres refutaciones independientes.
+> - **Bajar la severidad del juez para "arreglar" abstenciones.** La 2.1 lo midió al
+>   revés de lo que parecía: en el caso de Telegram, **4 de las 5 abstenciones eran
+>   correctas** y la falla era la quinta respuesta. Bajar el umbral habría roto cuatro
+>   aciertos y dejado la fuga intacta.
 > - **Mover `CHUNK_SIZE`.** 1400/200 medido óptimo en las dos direcciones (1.15).
 > - **Subir `k` a 6.** Gana 4 preguntas de sensibilidad y **filtra PREG-045**.
 > - **Cambiar la métrica de similitud.** No-op: los vectores son unitarios.
@@ -96,8 +94,14 @@ dirigidas de 8 a 29 preguntas.
 > generan los subconjuntos. Una prueba dirigida de 8 preguntas tarda ~3 min y una
 > de 29 unos 15, contra 20-45 min de la corrida completa. La 1.9 se resolvió
 > entera sin pagar una corrida completa.
+>
+> **`evaluar_endpoint.py`** mide el banco por HTTP contra `/chat` (~11 min) y es la
+> única que prueba lo que recibe el usuario. **`sonda_compuestas.py`** interroga al juez
+> sobre una compuesta y sus mitades, para diagnosticar un caso suelto.
 
-## 🚨 Dos restricciones que invalidan supuestos previos
+---
+
+## 🚨 Tres restricciones que invalidan supuestos previos
 
 **1. ~~El embedder solo lee los primeros 256 tokens de cada fragmento.~~
 RESUELTA POR LA 1.14.** `multilingual-e5-small` lee **512** y los fragmentos tienen
@@ -123,6 +127,25 @@ modelos con el mismo contexto. Decidir con `recall@k` y `anclaje@k`, que
 son deterministas, y usar la corrida end-to-end como confirmación declarando la
 banda.
 
+**3. El veredicto del juez depende de la *ortografía* de la pregunta, no solo de su
+contenido.** Descubierto al diagnosticar la 2.1. Con el **mismo trío de documentos
+recuperados**, estas dos preguntas —que son la misma— reciben veredictos opuestos, y
+cada una de forma determinística (3 de 3):
+
+```
+¿Qué es el servicio de impuestos internos (SII) y cuál es su misión institucional?   SI
+Que es el servicio de impuestos internos (SII) y cual es su mision institucional?     NO
+```
+
+**No es la banda de ±6 de la restricción 2.** Esa es sensibilidad a cambios del
+*contexto*; esta es sensibilidad al *texto de la pregunta*, con el contexto fijo.
+Reproducible con `python scripts/sonda_compuestas.py --reps 3`.
+
+**Consecuencia de método:** un caso que no reproduce no prueba que la fuga no exista —
+puede que no se escribió la variante correcta. La 2.1 aprendió esto por el camino
+caro: un comentario en `api.py` llegó a afirmar que la fuga reproducía en cuatro
+variantes, y al remedirlas con la sonda solo reproducía en **una**.
+
 ---
 
 ## Estado actual del sistema
@@ -140,14 +163,20 @@ MÉTRICAS DETERMINISTAS  (deciden)
   chunks fuera de la ventana del embedder ...... 0 de 28
 
 MÉTRICAS END-TO-END     (confirman, con banda de ±6 preguntas)
-  sensibilidad del juez .. 34/50 (68%, banco completo con k=3)
-  abstuvo indebidamente .. 16/50 (era 25/50 en la 1.8 y 20/50 en la 1.10)
-  cobertura de datos ..... 54%
+  sensibilidad del juez .. 37/50 (74%, banco completo, con descomposición — 1.16)
+  abstuvo indebidamente .. 13/50 (era 25/50 en la 1.8 y 20/50 en la 1.10)
   ALUCINACIÓN ............  0/50 (0%)
   especificidad del juez . 49/50 (98%)  <- el juez falla PREG-045 y el redactor
                                            la ataja. Garantía más frágil.
 
-Latencia ... juez 6,9 s | consulta respondida 10,3 s de media, 23 s de pico
+MEDIDO POR EL ENDPOINT  (lo que recibe el usuario — 2.0 y 2.1)
+  abstuvo indebidamente .. 14/50   (1 más que el arnés: PREG-117)
+  ALUCINACIÓN ............  0/50
+  errores de transporte ..  0/100
+  el veto de compuestas se disparó 0 veces en 100 preguntas
+
+Latencia ... juez 6,9 s | consulta respondida 10,3 s de media (arnés)
+            por el endpoint: 6,8 s de media, 17,5 s de pico
             (era 12,7 s / 17,5 s / 39 s con MiniLM y k=6)
 ```
 
@@ -199,6 +228,8 @@ la auditoría no había visto.
 | — | Reescritura estructurada del corpus | ✅ **Confirmada** | **1.10 Fase 2 — el mayor avance del proyecto en el juez.** Declarar las relaciones como predicados lleva el núcleo duro de 0 a 5 de 8 y la sensibilidad de 18/29 a 23/29, con especificidad 50/50 y alucinación 0%. `anclaje@1` casi se duplica (7 → 12/37) |
 | — | Estabilidad del juez | 🔴 **Es lo que queda** | la inferencia relacional era la causa, y se ataca desde el corpus (1.10 Fase 2: 5 de 8). Lo que resiste son las preguntas **comparativas y disyuntivas** (PREG-010, 064, 084): el predicado les llega en el puesto 1 y el juez dice `NO` igual |
 | — | Presentación del contexto al juez | ❌ **Refutada** | Fase 1 de la 1.10 — des-aplanar las tablas recupera 1 de 8 y 0 end-to-end. PREG-088, el caso de tabla que motivó el cambio, sigue en `NO` con la tabla bien formateada |
+| — | Composición de la pregunta (el juez ante una compuesta) | ✅ **Confirmada** | **2.1 — el juez aprueba una pregunta `"X y Y"` con las DOS mitades en `NO`.** Determinístico (3 de 3) en la forma exacta que filtró desde Telegram. El veto la bloquea y cuesta 0: cero vuelcos en 100 preguntas, y se disparó 0 veces en el banco. Es el espejo del caso comparativo de la 1.16 |
+| — | Ortografía de la pregunta | 🔴 **Riesgo abierto** | 2.1 — con el mismo contexto, la misma pregunta con y sin tildes recibe veredictos opuestos, cada uno determinístico. No es la banda de ±6. Sin cuantificar |
 | OP-2 | Sanitización de fragments | 🟢 Baja | 0 casos observados |
 
 ---
@@ -349,8 +380,9 @@ nivel arriba — no se materializó. La hipótesis de que duplicaría la latenci
 tampoco: el juez cuesta ~6,4 s, de los cuales el 98% es leer el contexto, pero
 evitar la segunda llamada compensa de sobra.
 
-Queda implementado **solo en el arnés de evaluación**. `api.py` conserva el
-endpoint `/chat` de un paso: llevarlo a producción es trabajo pendiente.
+**Está en producción desde la 2.0.** `/chat` sirve el pipeline de dos pasos, y la
+verificación se hizo **por el endpoint**: 99 de 100 preguntas dan el mismo resultado
+que el arnés, con 0 de 50 alucinaciones. La 2.1 le agregó el veto de compuestas.
 
 ### OP-3 — Modelo de generación ❌ **REFUTADA**
 

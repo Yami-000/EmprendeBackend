@@ -266,10 +266,30 @@ abstención a un cierre después del contexto subió la alucinación de 34% a 78
 Hay un comentario de advertencia en el código; leer
 `tests/iteraciones/experimento_prompt_v2.md` antes de reordenarlo.
 
-`api.py` también expone `_build_judge_prompt` y `JUEZ_PROMPT_BASES`, del
-pipeline de dos pasos de la iteración 1.6. **El endpoint `/chat` sigue siendo de
-un paso**: el pipeline de dos pasos vive por ahora solo en el arnés de
-evaluación. Llevarlo a producción es trabajo pendiente.
+`api.py` también expone `_build_judge_prompt` y `JUEZ_PROMPT_BASES`, del pipeline de
+dos pasos de la iteración 1.6. **Desde la 2.0 el endpoint `/chat` sirve ese pipeline**:
+`decidir_si_responder()` juzga antes de redactar, y el camino `NO` devuelve
+`FRASE_ABSTENCION` **sin llamar al modelo** — por eso rechazar es más rápido que
+responder.
+
+Alrededor de esa decisión hay tres reglas, todas **fuera** del modelo:
+
+| Regla | Cuándo actúa | Qué hace |
+|---|---|---|
+| `es_saludo()` | antes del retrieval | contesta un saludo sin consultar al modelo |
+| `partir_compuesta()` + veto (2.1) | el juez ya dijo `SI` | **anula** el `SI` si ninguna mitad de una pregunta `"X y Y"` se verifica |
+| `descomponer_comparativa()` (1.16) | el juez ya dijo `NO` | **rescata** una comparativa si TODAS sus subpreguntas dan `SI` |
+
+Las dos últimas son simétricas y **no se solapan**: una solo puede rechazar y la otra
+solo puede aprobar, y cada una se dispara en la rama opuesta del veredicto.
+
+⚠️ **El texto de ayuda de la abstención vive en el endpoint, no en el system prompt**,
+y va como **sufijo** de `FRASE_ABSTENCION` sin reemplazarla: `abstuvo()` detecta un
+fragmento de esa frase y sobre él se calculan la alucinación y la abstención indebida
+de 19 iteraciones.
+
+`traza.py` registra ese recorrido en `logs/traza.log` y en stdout, para mirarlo en
+vivo. **No es un log de producción:** escribe la pregunta del usuario en claro.
 
 ---
 
@@ -342,12 +362,15 @@ por esa razón.
 | 6 | Sanitización de fragments contra prompt injection | 🟢 Baja — OP-2 |
 | 8 | ~~El juez recibe las tablas aplanadas, sin estructura~~ — **cerrada 2026-09-25**: des-aplanar recupera 1 de 8 del núcleo duro y 0 end-to-end, y el contexto no crece (28415 caracteres en ambas versiones). No era el formato | ✅ Medida y descartada (1.10 Fase 1) |
 | 9 | ~~El corpus codifica relaciones como columnas de tabla; el prompt del juez veta inferirlas~~ — **resuelta 2026-09-26**: declarar la relación en prosa antes de la tabla lleva el núcleo duro de 0 a 5 de 8 y la sensibilidad a 23/29 | ✅ 1.10 Fase 2 |
-| 11 | Preguntas **comparativas y disyuntivas**: el juez de 3B verifica un hecho a la vez. Mismo contexto y mismo prompt, PREG-084 da `NO` compuesta y `SI` a sus dos subpreguntas. Tocar el prompt está refutado tres veces | 🔴 Alta — **B2 con premisa validada** (2 de 3), pendiente de decidir por su costo de latencia. PREG-064 no entra: su cita cae fuera de la ventana del embedder |
+| 11 | ~~Preguntas **comparativas y disyuntivas**: el juez de 3B verifica un hecho a la vez~~ — **atacada 2026-09-27 (1.16)**: `descomponer_comparativa()` combina los veredictos **fuera** del modelo y suma 3 preguntas (34/50 → 37/50) sin costo de especificidad | ◐ Parcial. Sin cubrir: PREG-084 (sin dos lados separables), PREG-010 (disyuntiva). PREG-064 no entra: su cita caía fuera de la ventana del embedder |
 | 12 | PREG-118 regresó con la Fase 2: su chunk de anclaje quedó en el puesto 7. Es el punto que falta de `anclaje@6` (28/37) | 🟡 Barata — mover el predicado de PREG-115 dentro de su archivo |
 | 10 | ~~El redactor puede abstenerse pese al `SI` del juez~~ — **medida 2026-09-26**: 6 de 185 casos (3,2%) en 12 corridas, y **0 en la configuración de la 1.10**. Los predicados arreglaron ese eslabón de paso: no eran dos problemas, era uno | ✅ Marginal, no amerita iteración. Vigilar: es un fallo silencioso que solo aparece en `abstuvo indebidamente`, no en `sensibilidad` |
 | 13 | ~~El presupuesto de 256 tokens del prefijo es el techo estructural del retrieval~~ — **resuelta 2026-09-27**: `multilingual-e5-small` lee **512 tokens** y ningún fragmento la excede (0 de 28, contra 22 de 28). `anclaje@6` 28 → **36/37**, `anclaje@8` **37/37**. El prefijo dejó de ser escaso, así que las palabras clave y los predicados ya no compiten | ✅ 1.14 |
 | 15 | La especificidad del juez es 49/50 y el 0% de alucinación depende de que **el redactor** abstenga en PREG-045, no de que el juez acierte | 🟠 Garantía frágil. Un cambio que toque al redactor puede destapar la fuga |
 | 16 | `CHUNK_SIZE` sigue en 1400 caracteres, acoplado al truncado de `api.py`. Con 512 tokens de ventana los fragmentos podrían crecer **sin volverse invisibles** | 🟡 Variable nueva, sin medir. Se reabrió con la 1.14 |
+| 17 | El juez aprueba una pregunta compuesta `"X y Y"` reconociendo **una** parte, o ninguna: filtró una alucinación real desde Telegram | ◐ **Tapada 2026-09-30 (2.1)** por el veto, a costo cero (0 vuelcos en 100). El patrón es léxico: una compuesta unida por coma o `"además"` no se parte |
+| 18 | El veredicto del juez depende de la **ortografía** de la pregunta: con el mismo contexto, la misma pregunta con y sin tildes recibe veredictos opuestos, cada uno determinístico | 🔴 Sin cuantificar. **Un caso que no reproduce no prueba que la fuga no exista.** Reproducible con `scripts/sonda_compuestas.py` |
+| 19 | La traza escribe la **pregunta del usuario en claro** en `logs/traza.log` | 🟠 Aceptable para desarrollar. Con usuarios reales hay que decidir qué se guarda y por cuánto tiempo |
 | 7 | Sin reintentos ni circuit breaker hacia Ollama | 🟢 Baja |
 
 ---

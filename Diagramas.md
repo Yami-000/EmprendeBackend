@@ -83,11 +83,21 @@ sequenceDiagram
   B->>TA: mensaje provisional, para poder editarlo
   B->>RAG: POST /chat {query, history}
 
+  RAG->>RAG: es_saludo(query)?
   RAG->>RAG: para_consulta(query) + encode
   RAG->>VEC: query top-3
   VEC-->>RAG: 3 fragmentos
+
+  RAG->>OLL: JUEZ, no streameado, num_predict=5
+  OLL-->>RAG: SI | NO
+
+  alt el juez dice NO, o el veto anula su SI
+    RAG-->>B: data: FRASE_ABSTENCION + AYUDA_ABSTENCION
+    Note over RAG,OLL: el camino NO no vuelve a llamar al modelo
+  end
+
   RAG->>RAG: _build_system_prompt(fragmentos)
-  RAG->>OLL: POST /api/chat stream=true
+  RAG->>OLL: REDACTOR, POST /api/chat stream=true
 
   loop por cada token
     OLL-->>RAG: chunk
@@ -103,17 +113,77 @@ sequenceDiagram
   end
 ```
 
+**Nota sobre la latencia:** el juez es una llamada **bloqueante previa** al *streaming*, así que el primer token de una respuesta tarda ~7 s más que en el pipeline de un paso. En cambio una abstención llega antes, porque no hay segunda llamada.
+
 **Nota sobre el fallback:** cuando Ollama falla, `api.py` devuelve **el contexto
 recuperado en crudo**. Es un texto útil para depurar, pero **no es una respuesta
 redactada**, y el bot lo envía tal cual al usuario. Está anotado como deuda.
 
 ---
 
-## 3. Los dos pipelines: el que corre y el que se midió
+## 3. El pipeline que corre, y el de un paso que quedó atrás
 
-Esta es la distinción central del proyecto y la razón de ser de su documentación.
+Durante 16 iteraciones esta sección describía **dos** pipelines: el que corría en
+producción y el que se medía. La 2.0 los unificó. Se conserva el de un paso porque
+explica de dónde salen los números con los que todo se compara.
 
-### 3.1. Lo que corre en producción — un paso
+### 3.1. Lo que corre en producción — dos pasos, con tres reglas alrededor
+
+```mermaid
+flowchart TD
+  Q["mensaje del usuario"] --> SAL{"es_saludo()<br/>¿es un saludo o un comando?"}
+  SAL -->|"sí"| BV["BIENVENIDA<br/>sin retrieval ni modelo"]
+  SAL -->|"no"| E["embebe la consulta<br/>query: + encode"]
+  E --> S["ChromaDB<br/>top-3"]
+  S --> J["JUEZ<br/>_build_judge_prompt<br/>¿el contexto tiene el dato?<br/>responde SI o NO"]
+
+  J -->|"SI"| C{"partir_compuesta()<br/>¿es una pregunta 'X y Y'?"}
+  C -->|"no aplica"| W
+  C -->|"sí"| MIT["JUEZ sobre cada mitad"]
+  MIT -->|"alguna dice SI"| W
+  MIT -->|"ninguna dice SI"| VETO["VETO<br/>se anula el SI"]
+
+  J -->|"NO"| D{"descomponer_comparativa()<br/>¿es una comparativa?"}
+  D -->|"no aplica"| AB["FRASE_ABSTENCION + AYUDA_ABSTENCION<br/>sin segunda llamada al modelo"]
+  D -->|"sí"| SUB["JUEZ sobre cada subpregunta"]
+  SUB -->|"no todas dicen SI"| AB
+  SUB -->|"todas dicen SI"| W
+
+  VETO --> AB
+  W["REDACTOR<br/>_build_system_prompt<br/>redacta con el contexto"] --> R["respuesta al usuario"]
+  AB --> R
+  BV --> R
+
+  style J fill:#dbeafe,stroke:#1d4ed8
+  style MIT fill:#dbeafe,stroke:#1d4ed8
+  style SUB fill:#dbeafe,stroke:#1d4ed8
+  style W fill:#dcfce7,stroke:#15803d
+  style AB fill:#fef9c3,stroke:#a16207
+  style VETO fill:#fee2e2,stroke:#b91c1c
+  style BV fill:#f3e8ff,stroke:#7e22ce
+```
+
+**Medido por el endpoint** (`scripts/evaluar_endpoint.py`, no el arnés): alucinación
+**0/50**, abstención indebida 14/50, 0 errores de transporte, 6,8 s de media.
+**Medido por el arnés**, que es lo único que ve el veredicto: sensibilidad 37/50,
+especificidad del juez 49/50.
+
+Cuatro propiedades del diseño que el diagrama hace visibles:
+
+- **El camino `NO` no llama al modelo:** devuelve la frase de abstención directo. Por
+  eso rechazar es **más rápido** que responder, y por eso el pipeline de dos pasos
+  resulta más rápido que el de un paso: 64 de las 100 preguntas se resuelven con una
+  sola llamada.
+- **El veto y la descomposición son simétricos y no se solapan.** Cuelgan de ramas
+  opuestas del veredicto: el veto **solo puede rechazar** y cuelga del `SI`; la
+  descomposición **solo puede aprobar** y cuelga del `NO`. Ninguna de las dos puede
+  deshacer el trabajo de la otra.
+- **El redactor recibe siempre la pregunta original**, nunca las mitades ni las
+  subpreguntas. Esas existen solo para decidir.
+- **Las tres reglas están fuera del modelo.** Son expresiones regulares y comparaciones
+  de texto. Ninguna de las mejoras de esta capa costó un modelo más grande.
+
+### 3.2. Lo que corría antes de la 2.0 — un paso
 
 ```mermaid
 flowchart LR
@@ -127,47 +197,64 @@ flowchart LR
   style R fill:#fee2e2,stroke:#b91c1c
 ```
 
-**El modelo decide por sí mismo si el contexto alcanza, mientras redacta.** Medido
-sobre el banco: **alucina en 17 de las 50 preguntas sin respaldo (34%)**.
+**El modelo decidía por sí mismo si el contexto alcanzaba, mientras redactaba.** Medido
+sobre el banco: **alucinaba en 17 de las 50 preguntas sin respaldo (34%)**.
 
-### 3.2. Lo que se evaluó durante 16 iteraciones — dos pasos
+> **Este era el pipeline que usaba la gente hasta el 2026-09-30**, mientras las
+> métricas del proyecto describían el otro. La causa de que pasara desapercibido 16
+> iteraciones está en el método: el arnés **replicaba** el pipeline consultando ChromaDB
+> y Ollama directamente, en vez de hablar con el endpoint. Ver
+> [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md), sección 11.
 
-```mermaid
-flowchart TD
-  Q["pregunta"] --> E["embebe la consulta"]
-  E --> S["ChromaDB top-3"]
-  S --> J["JUEZ<br/>_build_judge_prompt<br/>¿el contexto tiene el dato?<br/>responde SI o NO"]
+### 3.3. La traza — ver la decisión por dentro
 
-  J -->|NO| D{"¿es comparativa?<br/>descomponer_comparativa()"}
-  D -->|no aplica| AB["FRASE_ABSTENCION<br/>sin segunda llamada al modelo"]
-  D -->|sí| SUB["JUEZ sobre cada subpregunta<br/>¿todas dicen SI?"]
-  SUB -->|no todas| AB
-  SUB -->|todas sí| W
-  J -->|SI| W["REDACTOR<br/>_build_system_prompt<br/>redacta con el contexto"]
+`ai-service/traza.py` registra el recorrido completo de cada consulta en
+`logs/traza.log` y en stdout. `iniciar.bat` abre una ventana que lo sigue en vivo.
 
-  W --> R["respuesta al usuario"]
-  AB --> R
-
-  style J fill:#dbeafe,stroke:#1d4ed8
-  style W fill:#dcfce7,stroke:#15803d
-  style AB fill:#fef9c3,stroke:#a16207
-  style SUB fill:#dbeafe,stroke:#1d4ed8
+```
+==================================================================
+20:27:49  [003]  ¿Que es el servicio de impuestos internos (SII)…
+------------------------------------------------------------------
+  RETRIEVE  k=3   (0.0 s)
+            1  inicio_actividades_sii.md
+            2  documentacion_formalizacion.md
+            3  documentacion_formalizacion.md
+  JUEZ      SI   respondio: 'SI.'   (6.1 s)
+  COMPUESTA es compuesta: se comprueba cada mitad
+            NO  ¿Qué es el servicio de impuestos internos (S
+            NO  ¿cuál es su misión institucional?
+  VETO      ninguna mitad se verifica -> se ANULA el SI
+  ABSTIENE  sin segunda llamada al modelo
+  TIEMPO    8.6 s en total
 ```
 
-**Medido:** alucinación **0/50**, sensibilidad 37/50, especificidad del juez 49/50.
+Muestra el veredicto del juez **en crudo** (`'SI.'`), no solo interpretado: eso delata
+un problema de parseo si el juez alguna vez explica en vez de contestar `SI`/`NO`.
 
-Dos propiedades del diseño que el diagrama hace visibles:
+**El `TIEMPO` es el tiempo real de punta a punta**, incluida la redacción. La primera
+versión cerraba la traza antes de llamar al redactor, así que una consulta respondida
+reportaba solo lo que tardó en *decidir* — el número más engañoso posible, porque la
+redacción es la parte lenta. Ahora la traza se cierra dentro del *stream*, y la última
+línea dice cómo terminó:
 
-- **El camino `NO` no llama al modelo:** devuelve la frase de abstención directo. Por
-  eso el pipeline de dos pasos es **más rápido** que el de un paso cuando rechaza — 62
-  de las 100 preguntas se resuelven con una sola llamada.
-- **La descomposición solo cuelga del `NO`.** No puede convertir un `SI` en `NO`, y su
-  costo recae únicamente en los casos que de otro modo se perderían. Y **el redactor
-  recibe siempre la pregunta original**, nunca las subpreguntas.
+| Última línea | Qué pasó |
+|---|---|
+| `LISTO` | el redactor respondió y el *stream* se completó |
+| `ABSTIENE` | el juez dijo `NO`, o el veto anuló su `SI` |
+| `SALUDO` | no era una pregunta |
+| `FALLBACK` | **Ollama falló y se envió el contexto EN CRUDO** al usuario (deuda conocida) |
+| `ERROR` | falló el retrieval o el redactor |
 
-> **Este pipeline vive en `scripts/evaluar_banco.py`, no en `api.py`.** Llevarlo a
-> producción es el próximo paso del proyecto. Ver
-> [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md), sección 11.
+Cada consulta se acumula y se vuelca **entera** al cerrarse. Escribir línea a línea
+intercalaba las líneas de dos consultas en vuelo y la traza quedaba ilegible. El costo
+es que el bloque aparece cuando la consulta termina.
+
+**Es lo que permitió auditar el veto por dentro** en lugar de confiar en el saldo del
+banco: la traza de la corrida completa muestra que el juez aprobó 5 compuestas y que las
+5 tenían al menos una mitad verificable, así que el veto se disparó **0 veces**.
+
+> ⚠️ **No es un log de producción.** Escribe la pregunta del usuario en claro en un
+> archivo local.
 
 ---
 
@@ -233,9 +320,14 @@ Transporte. `src/bot.js` usa **Telegraf** con *long polling*.
 - Embebe la consulta, recupera `k=3` de ChromaDB, construye el prompt y consulta a
   Ollama por *streaming*.
 - Globales inicializados en el arranque: `_st_model`, `_chroma_client`, `_collection`.
-- **Sirve `/chat` de un paso.** El juez y la descomposición están definidos acá
-  (`_build_judge_prompt`, `descomponer_comparativa`) pero **`/chat` no los usa**: los
-  usa el arnés de evaluación.
+- **Sirve `/chat` de dos pasos** desde la 2.0: `decidir_si_responder()` llama al juez
+  y, según el veredicto, aplica el veto de compuestas (`partir_compuesta`) o el
+  rescate por descomposición (`descomponer_comparativa`).
+- **El juez tiene su propio timeout, más corto (60 s).** Emite 5 tokens: si tarda
+  más, algo está mal y conviene abstenerse antes de que el bot llegue a su propio
+  timeout. **Y falla hacia la abstención**: si Ollama se cae en esa llamada,
+  `decidir_si_responder` devuelve `False`.
+- Registra el recorrido de cada consulta vía `traza.py`.
 
 ### Contrato del embedder — `ai-service/embedding.py`
 - Define `MODEL_NAME` y los prefijos `query:` / `passage:` de la familia E5.
@@ -264,7 +356,9 @@ cabecera de grafo (`Nodo:`, `Requiere antes:`, `Habilita después:`).
 
 | # | Qué | Dónde |
 |---|---|---|
-| 1 | **El pipeline de dos pasos no está en producción.** `/chat` sirve el de un paso, que alucina 34% | sección 3 |
+| 1 | ~~El pipeline de dos pasos no está en producción~~ — **cerrada 2026-09-30 (2.0)**, verificada por el endpoint | sección 3.1 |
+| 5 | El veredicto del juez depende de la **ortografía** de la pregunta; sin cuantificar | sección 3.1 |
+| 6 | La traza escribe la **pregunta del usuario en claro** en un archivo local | sección 3.3 |
 | 2 | El fallback ante fallo de Ollama envía **el contexto en crudo** al usuario, no una respuesta | sección 2 |
 | 3 | Código muerto en `src/config/` y `src/graphql/`, del proyecto anterior | sección 1 |
 | 4 | Sin reintentos ni *circuit breaker* hacia Ollama | sección 1 |

@@ -1,6 +1,6 @@
 # Ecia — Informe de investigación del pipeline RAG
 
-**Última actualización:** 2026-09-27 · **Iteraciones cubiertas:** 1.0 a 1.16
+**Última actualización:** 2026-09-30 · **Iteraciones cubiertas:** 1.0 a 2.1
 **Estado del sistema:** ver la sección [Configuración óptima](#6-configuración-óptima)
 
 Este documento es la **síntesis** de la investigación: qué se buscaba, cómo se midió,
@@ -274,6 +274,29 @@ No miden al sistema: miden al **instrumento**.
   redactor abstuvo igual. Existe porque confundir esto con la especificidad **ocultaba
   un fallo real**.
 
+#### Las dos que solo existen midiendo por el endpoint
+
+Desde la 2.0 hay un segundo instrumento, `evaluar_endpoint.py`, que habla HTTP con
+`/chat` en vez de replicar el pipeline. Mide **menos** cosas, y a propósito.
+
+- **`abstención indebida` por el endpoint.** La misma definición que en el arnés
+  —preguntas respondibles donde el usuario no recibió el dato— pero medida sobre lo que
+  sale del endpoint. **No se puede descomponer en sensibilidad y especificidad**, porque
+  desde afuera no se distingue «el juez dijo `NO`» de «el juez dijo `SI` y el redactor
+  abstuvo igual». Es más pobre y más verdadera: es lo que recibe la persona.
+- **`errores de transporte`.** Consultas que no obtuvieron respuesta HTTP: el endpoint
+  caído, un timeout, una excepción. **Un error se cuenta como abstención**, porque para
+  el usuario el resultado es el mismo. Eso la vuelve una métrica de integridad del
+  instrumento: si no es 0, las otras dos están sesgadas hacia el lado bueno —menos
+  alucinación, más abstención— y hay que descartar la corrida. **Ya pasó una vez**, por
+  reiniciar el endpoint en medio de una medición.
+
+**Las dos columnas, la del arnés y la del endpoint, no se restan entre sí.** Son dos
+vistas del mismo sistema desde distinta distancia, y las dos hacen falta: el arnés es el
+único que ve por qué se decidió algo, el endpoint el único que prueba qué se entregó.
+Y hay lógica que **solo** el endpoint ejecuta —el veto de compuestas, el atajo de
+saludos—, así que un cambio en esa capa **el arnés no lo mediría**.
+
 ---
 
 ### Por qué estas y no otras
@@ -296,7 +319,7 @@ resolverlo. La corrección de las respuestas se verificó **a mano** contra el
 > **Nada entra si la especificidad baja de 48/50 o si la alucinación sube de 0%.**
 
 No es una métrica más: es el criterio que hace al sistema apto para su dominio. Se
-respetó en las 16 iteraciones.
+respetó en las 19 iteraciones.
 
 ---
 
@@ -381,6 +404,13 @@ Extraída de las 35 corridas registradas en `tests/iteraciones/`.
 | 1.14 | e5-small, `k=6` | 38/50 | 13/50 | 49/50 | **1** |
 | 1.14 | e5-small, `k=3` | 34/50 | 16/50 | 49/50 | 0 |
 | **1.16** | **+ descomposición comparativa** | **37/50** | **13/50** | 49/50 | **0** |
+| **2.0** | **el mismo pipeline, medido POR EL ENDPOINT** | — | 14/50 | — | **0** |
+| 2.1 | + veto de compuestas, por el endpoint | — | 14/50 | — | 0 |
+
+Las dos últimas filas **no son comparables de frente con las de arriba**: están medidas
+por HTTP contra `/chat`, que no expone el veredicto del juez, así que las columnas de
+sensibilidad y especificidad quedan vacías a propósito. Lo que prueban es otra cosa:
+que **producción se comporta como lo medido**.
 
 **Retrieval en paralelo:**
 
@@ -636,6 +666,73 @@ Tres decisiones de diseño hacen que no tenga efectos colaterales:
 **Una regla, no un LLM:** generar subpreguntas con un modelo costaría una llamada más
 por consulta y produciría texto fuera del corpus.
 
+### H19 — El juez ante una pregunta compuesta ✅ **confirmada, y es el espejo de H18**
+
+**Iteración 2.1.** Esta hipótesis no salió del banco: salió de **un fallo reportado
+desde Telegram**, el primero de todo el proyecto que vino del uso real y no de una
+medición.
+
+El bot se abstuvo cuatro veces seguidas y a la quinta respondió inventando que el SII
+se encarga de *"la recaudación de los ingresos públicos"* — que no está en el corpus
+**y además es falso**: el SII gira los impuestos, la Tesorería los recauda.
+
+**El diagnóstico fue el contrario de lo que parecía.** A primera vista el problema
+eran las cuatro abstenciones —un juez demasiado severo— y la quinta respuesta parecía
+el sistema funcionando por fin. Contra el corpus resultó que **las cuatro abstenciones
+eran correctas** y la única falla era la quinta. Bajar la severidad del juez, que era
+la reacción natural, habría roto cuatro aciertos y dejado la fuga intacta.
+
+El mecanismo, aislado con `scripts/sonda_compuestas.py` (3 repeticiones, retrieval
+real, veredicto determinístico en las 7 variantes):
+
+```
+pregunta                                                    juez x3
+¿Qué es el SII?                                              NO NO NO
+¿Cuál es su misión institucional?                            NO NO NO
+¿Qué es el servicio de impuestos internos (SII) y            SI SI SI   <- LA FUGA
+ cuál es su misión institucional?
+ ... la misma, escrita sin tildes                            NO NO NO
+```
+
+**El juez aprueba el conjunto `"X y Y"` mientras rechaza las dos mitades.** Es el
+**espejo exacto de H18**: allí el juez exigía los dos lados de una comparativa y
+fallaba por eso; aquí no exige ninguno.
+
+La solución es simétrica a la de H18 y, como ella, **una regla fuera del modelo**:
+
+| | H18 (1.16) | H19 (2.1) |
+|---|---|---|
+| Cuelga de | el `NO` del juez | el `SI` del juez |
+| Solo puede | **aprobar** | **rechazar** |
+| Combina los veredictos con | conjunción (todas `SI`) | disyunción (alguna `SI`) |
+| Efecto medido | +3 preguntas | 0 vuelcos, tapa 1 fuga |
+
+**Por qué disyunción y no conjunción, que sería lo natural.** Exigir que las dos
+mitades den `SI` arregla la fuga y **rompe una pregunta legítima del banco**: PREG-019
+—*"¿Qué es el F29 y qué obligaciones tributarias principales se declaran en él?"*— da
+`SI` en la primera mitad y `NO` en la segunda, y hoy se responde bien. El veto solo
+actúa cuando **ninguna** mitad se sostiene, que es cuando la aprobación del compuesto
+no se apoya en nada.
+
+**El costo, verificado por dentro y por fuera.** Por el endpoint: **cero vuelcos en
+las 100 preguntas**, 14/50 de abstención indebida y 0/50 de alucinación, idénticos al
+control. Y la traza del pipeline muestra el mecanismo: el juez aprobó **5** compuestas
+y las 5 tenían al menos una mitad verificable, así que **el veto se disparó 0 veces**.
+Eso es más fuerte que un empate de totales — descarta que una pérdida y una ganancia
+se estén cancelando.
+
+**Dos reservas honestas sobre esta hipótesis:**
+
+1. **La fuga reproduce en 1 de 7 variantes, no en 4.** Una versión anterior del
+   comentario en `api.py` daba como fugas también la forma corta del SII y una variante
+   con `RUT`; al remedirlas con la sonda **no reproducen**. El caso es determinístico
+   pero es **uno**: esto tapa una fuga verificada, no una clase de fugas cuantificada.
+2. **El patrón es léxico.** Divide por `" y "` seguido de interrogativo. Una compuesta
+   unida por coma, punto y coma o *"además"* no se parte. No se midió cuántas hay
+   porque las 13 del banco usan `" y "`.
+
+---
+
 ---
 
 ## 6. Configuración óptima
@@ -651,8 +748,10 @@ MODELO ........ llama3.2 (3,2B) como juez Y como redactor
 CHUNKING ...... 1400 caracteres, solape 200  -> 28 fragmentos
 k ............. 3
 PIPELINE ...... dos pasos: juez binario, y solo si aprueba se llama al redactor
-                + descomposición de comparativas, solo para el juez
+                + descomposición de comparativas (rescata un NO, exige conjunción)
+                + veto de preguntas compuestas (anula un SI, exige disyunción)
 PROMPT JUEZ ... 'estricto' (el orden importa: no reordenar)
+DÓNDE CORRE ... en producción: /chat lo sirve desde la 2.0
 ```
 
 | Métrica | Valor | Contra baseline |
@@ -673,13 +772,33 @@ PROMPT JUEZ ... 'estricto' (el orden importa: no reordenar)
 - **`k=3`** no es una concesión de rendimiento: con e5 recupera mejor que `k=6` con
   MiniLM, y de paso **parte la latencia en dos**.
 - **La descomposición** suma 3 preguntas sin costo de latencia ni de especificidad.
+- **El veto de compuestas** no suma ninguna: tapa una fuga de alucinación verificada
+  y su mérito es **no costar nada** (0 vuelcos en 100).
 - **Los predicados en el corpus** eliminan la inferencia que el prompt del juez veta.
 
-### ⚠️ La advertencia más importante de este informe
+### Y esto es lo que recibe el usuario
 
-**Nada de esto corre en producción.** `api.py` sirve `/chat` de **un paso**, que es el
-que alucina 34%. Todas las métricas de arriba son del **arnés de evaluación**. Ver
-[próximos pasos](#11-próximos-pasos).
+Hasta la 2.0, **nada de esto corría en producción**: `api.py` servía `/chat` de un
+paso, el que alucina 34%, mientras las métricas del proyecto describían el otro
+pipeline. La 2.0 lo portó y lo verificó **hablando HTTP con el endpoint**:
+
+| Métrica | Arnés | Endpoint |
+|---|---|---|
+| Alucinación | 0/50 | **0/50** |
+| Abstención indebida | 13/50 | 14/50 |
+| Errores de transporte | — | 0/100 |
+| Latencia media | 10,3 s | 6,8 s |
+
+**99 de 100 preguntas dan el mismo resultado.** La única que difiere es PREG-117, y
+pasa solo por la descomposición — el mecanismo más nuevo y más marginal. Está dentro
+de la banda de ±6.
+
+⚠️ **Las dos columnas no son la misma métrica y no se restan entre sí.** El arnés ve
+el veredicto del juez; el endpoint solo ve si el usuario recibió respuesta. Desde
+afuera **no se distingue «el juez dijo `NO`» de «el juez dijo `SI` y el redactor
+abstuvo igual»**, que es justo la fuga de PREG-045. Las dos herramientas son
+complementarias, no sustitutas. Y hay lógica que **solo** el endpoint ejecuta: el
+veto de compuestas y el atajo de saludos viven ahí, y el arnés no los corre.
 
 ---
 
@@ -753,7 +872,26 @@ verificar que las citas siguen presentes **antes** de reingestar.
 Con MiniLM el 32% del corpus era invisible para el retrieval. Las comparaciones de
 antes de ese cambio **no se comparan de frente** con las de ahora.
 
-### Dos errores de instrumentación propios, encontrados y corregidos
+### El veredicto del juez depende de la ortografía de la pregunta
+
+Descubierto en la 2.1. Con el **mismo trío de documentos recuperados**, estas dos
+preguntas —que son la misma— reciben veredictos opuestos, y cada una de forma
+determinística (3 de 3):
+
+```
+¿Qué es el servicio de impuestos internos (SII) y cuál es su misión institucional?   SI
+Que es el servicio de impuestos internos (SII) y cual es su mision institucional?     NO
+```
+
+**No es la banda de ±6**, que es sensibilidad a cambios del *contexto*. Esta es
+sensibilidad al *texto de la pregunta*, con el contexto fijo.
+
+**La consecuencia de método es incómoda: un caso que no reproduce no prueba que la
+fuga no exista** — puede que no se haya escrito la variante correcta. La 2.1 lo
+aprendió por el camino caro: un comentario en `api.py` llegó a afirmar que la fuga
+reproducía en cuatro variantes, y al remedirlas con la sonda solo reproducía en una.
+
+### Cinco errores de instrumentación propios, encontrados y corregidos
 
 Van acá porque el instrumento también se equivoca, y ocultarlo sería peor:
 
@@ -767,6 +905,19 @@ Van acá porque el instrumento también se equivoca, y ocultarlo sería peor:
    agrega, así que sus números absolutos no eran comparables con `medir_retrieval.py`.
    Solo servía para comparar variantes entre sí. Se le agregaron los prefijos de E5 y
    una columna con los fragmentos que exceden la ventana.
+4. **Se reinició el endpoint en medio de una corrida del banco**, para cargar la traza.
+   Las consultas que cayeron en esa ventana dieron error de conexión, y
+   `evaluar_endpoint.py` **cuenta un error de transporte como abstención**: los números
+   salen sesgados hacia el lado bueno —menos alucinación, más abstención— sin que nada
+   lo delate en el resumen. La corrida se descartó y se repitió limpia. **Mirar el campo
+   `errores de transporte` antes de creerle a una medición por el endpoint.**
+5. **La traza reportaba un `TIEMPO` que dejaba fuera la redacción.** Se cerraba antes de
+   llamar al redactor, así que una consulta **respondida** —el caso que interesa medir—
+   mostraba solo lo que tardó en decidir: 15 s donde el tiempo real era 31,8 s. Se
+   detectó **comparando la traza contra el tiempo de pared del cliente**, no leyéndola:
+   la traza sola era internamente coherente y no tenía con qué delatarse. Es el patrón
+   que comparten los cinco errores de esta lista: **un instrumento equivocado casi
+   nunca se contradice a sí mismo; hay que cruzarlo con otro.**
 
 ---
 
@@ -857,26 +1008,24 @@ Las dos están en el historial de su rama.
 
 ## 11. Próximos pasos
 
-### 🔴 1. Llevar el pipeline de dos pasos a producción — *no es una hipótesis*
+### ✅ 1. Llevar el pipeline de dos pasos a producción — *hecho en la 2.0*
 
-**Es lo más importante y no hay nada que medir: está medido.** `api.py` sirve `/chat`
-de un paso, que alucina 34%. El bot que usa la gente **no tiene ninguna** de las
-mejoras de 16 iteraciones.
+Era lo más importante y no había nada que medir: estaba medido. `/chat` sirve el
+pipeline de dos pasos desde el 2026-09-30, y la verificación se hizo **a través del
+endpoint** — lo que nunca se había hecho en 16 iteraciones, y la razón por la que la
+deuda pasó desapercibida tanto tiempo.
 
-El argumento que lo frenaba era la latencia, y la 1.14 la bajó de 39 s de pico a 23 s.
+Lo que dejó, además del pipeline:
 
-Qué implica, concretamente:
+- **`scripts/evaluar_endpoint.py`**, la herramienta que faltaba desde el principio.
+- **Dos duplicaciones eliminadas**: `parse_juicio` y el detector `abstuvo` vivían en
+  `api.py` y en el arnés a la vez. Si divergieran, el arnés mediría un criterio
+  distinto del que usa producción para decidir.
+- **El juez falla hacia la abstención** y tiene su propio timeout, más corto.
 
-1. Mover la lógica de dos pasos de `evaluar_banco.py` a `api.py`.
-2. **El camino `NO` no debe llamar al modelo:** devuelve `FRASE_ABSTENCION` directo.
-   Es lo que lo hace más rápido que el de un paso.
-3. **Cuidado con el *streaming*:** `/chat` devuelve SSE y el juez es una llamada
-   bloqueante previa. El primer token va a tardar ~7 s más.
-4. **Verificar con el banco a través del endpoint**, no del arnés. Es lo único que
-   prueba que producción se comporta como lo medido — y es justamente lo que nunca se
-   hizo, razón por la que esta deuda pasó desapercibida 16 iteraciones.
+Y la 2.1 cerró la primera falla llegada del **uso real**: el veto de compuestas (H19).
 
-### 2. Endurecer la garantía de especificidad
+### 🔴 2. Endurecer la garantía de especificidad — *ahora es lo primero*
 
 Medir a propósito si la red de seguridad del redactor es sólida o casual: forzar `SI`
 en las 50 sin respaldo y contar cuántas ataja. Hoy el 0% depende de un comportamiento
@@ -904,7 +1053,24 @@ El generador de predicados está en `main` pero su corpus no: se midió bajo el 
 escaso. Si se decide incorporarlo, hay que **corregir la gramática** de las frases
 generadas (*"La EIRL admite 1 socios"*) y medir ese arreglo aparte: es texto indexado.
 
-### 6. Deuda técnica no experimental
+### 6. Lo que la 2.0 y la 2.1 dejaron abierto en producción
+
+Ya no son hipótesis: son decisiones de producto pendientes.
+
+- **El *fallback* ante fallo de Ollama devuelve el contexto recuperado en crudo al
+  usuario**, no una respuesta redactada, y el bot lo envía tal cual. Deuda anterior a
+  la 2.0.
+- **El historial no llega al juez.** Es deliberado —juzga el contexto contra la
+  pregunta actual— pero no se midió si una pregunta que depende del historial se juzga
+  peor por eso. La conversación de Telegram que originó la 2.1 tenía cuatro turnos
+  previos.
+- **La traza escribe la pregunta del usuario en claro** en `logs/traza.log`. Sirve
+  para desarrollar; con usuarios reales hay que decidir qué se guarda y por cuánto
+  tiempo.
+- **El patrón del veto es léxico** (`" y "` + interrogativo). Una compuesta unida por
+  coma o *"además"* no se parte, y no se midió cuántas hay fuera del banco.
+
+### 7. Deuda técnica no experimental
 
 Código muerto en `src/config/` y `src/graphql/`, dependencias declaradas sin uso,
 sanitización de fragments contra prompt injection (prioridad baja: 0 casos
@@ -929,6 +1095,13 @@ python scripts/evaluar_banco.py v16_full --dos-pasos --descomponer \
 
 # 4. Comparar dos corridas
 python scripts/comparar_corridas.py v14_k3_full v16_full
+
+# 5. Lo que recibe el usuario. Requiere el endpoint corriendo (~11 min)
+cd ai-service && uvicorn api:app --host 0.0.0.0 --port 11400   # en otra terminal
+python scripts/evaluar_endpoint.py prod_2.1
+
+# 6. El mecanismo del veto, caso por caso (~1 min)
+python scripts/sonda_compuestas.py --reps 3
 ```
 
 La primera ejecución descarga el embedder (~470 MB) y queda en caché.
@@ -943,7 +1116,9 @@ La primera ejecución descarga el embedder (~470 MB) y queda en caché.
 | `comparar_corridas.py` | dos corridas pregunta por pregunta | instantáneo |
 | `sonda_descomposicion.py` | aislar la forma de la pregunta del retrieval | ~1 min |
 | `generar_predicados.py` | tablas a predicados, con regla ciega | instantáneo |
-| `evaluar_banco.py` | el pipeline completo | 3-45 min según alcance |
+| `sonda_compuestas.py` | el juez ante una compuesta y sus mitades, N veces | ~1 min |
+| `evaluar_banco.py` | el pipeline completo, replicado (ve el veredicto) | 3-45 min según alcance |
+| `evaluar_endpoint.py` | el banco por HTTP contra `/chat` (ve lo que recibe el usuario) | ~11 min |
 
 ### Trampas al reproducir
 
@@ -953,3 +1128,9 @@ La primera ejecución descarga el embedder (~470 MB) y queda en caché.
   línea de resumen por stderr que `leer_ids` tomaría como IDs.
 - **`k` es el tercer argumento posicional** de `evaluar_banco.py`, después de la
   etiqueta y el modelo.
+- **No reiniciar uvicorn mientras corre `evaluar_endpoint.py`:** las consultas que
+  caen en esa ventana dan error de conexión y **se cuentan como abstención**. Mirar
+  el campo `errores de transporte` del resumen antes de creerle a una corrida.
+- **`sonda_compuestas.py` depende de las tildes de sus casos.** La fuga del SII
+  reproduce con tildes y no sin ellas; si se reescriben los casos sin acentos, el
+  resultado cambia y no se nota.

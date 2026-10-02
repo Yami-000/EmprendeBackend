@@ -26,10 +26,14 @@ Se llegó ahí **sin cambiar de modelo**: `llama3.2` de 3,2B, local, en una GTX 
 Escalar a 7-8B se probó y **empeoró** la alucinación. La síntesis de las 18 hipótesis
 está en [`INFORME_INVESTIGACION.md`](INFORME_INVESTIGACION.md).
 
-> **⚠️ Esos números son del arnés de evaluación, no del bot.** `/chat` sirve todavía un
-> pipeline de **un paso**, que es el que alucina 34%. El pipeline de dos pasos que
-> consigue el 0% está implementado en `scripts/evaluar_banco.py` y **portarlo a
-> producción es el próximo paso del proyecto.** Ver
+> **El pipeline de dos pasos corre en producción desde la 2.0, y está verificado por el
+> endpoint**, no solo por el arnés: `python scripts/evaluar_endpoint.py` mide el banco
+> hablando HTTP con `/chat`. Da **0 de 50 alucinaciones**, 14 de 50 abstenciones
+> indebidas y 0 errores de transporte, con **99 de 100 preguntas idénticas** al arnés.
+>
+> Las dos columnas de arriba son del arnés porque son las únicas que ven el veredicto
+> del juez: **desde afuera no se distingue «el juez dijo `NO`» de «el juez dijo `SI` y el
+> redactor abstuvo igual».** Las dos herramientas son complementarias. Ver
 > [`Diagramas.md`](Diagramas.md), sección 3.
 
 ## Arquitectura
@@ -106,7 +110,10 @@ iniciar.bat
 ```
 
 Levanta los tres procesos en el orden correcto, cada uno en su ventana, y **espera
-a que cada uno responda antes de arrancar el siguiente**.
+a que cada uno responda antes de arrancar el siguiente**. Abre una cuarta ventana,
+**«Ecia - traza»**, que muestra en vivo cómo decide el pipeline: qué documentos
+recuperó, qué contestó el juez, si el veto anuló su aprobación y cuánto tardó cada
+paso. Sirve para entender una respuesta concreta; las métricas se miden aparte.
 
 Esa espera no es cosmética: el servicio RAG tarda ~30 s en aceptar consultas porque
 carga el modelo de embeddings (470 MB) al arrancar. Si el bot arranca antes, los
@@ -140,7 +147,11 @@ npm run dev      # o: npm start
 - Después, una consulta respondida ronda los **10 s**.
 - **Si preguntás algo que el corpus no cubre, el bot se abstiene a propósito.** No es
   un error: es el pipeline de dos pasos evitando inventar. Con el pipeline de un paso
-  esa misma pregunta se respondía mal en 34% de los casos.
+  esa misma pregunta se respondía mal en 34% de los casos. La abstención **lista los
+  temas que sí cubre**, para que la conversación no se corte ahí.
+- **Un saludo se contesta al instante**, sin consultar al modelo: `"hola"` costaba ~7 s
+  para responder con la frase de abstención. Una pregunta que *empieza* con un saludo
+  sí pasa por el pipeline.
 
 ### Indexar / re-indexar el corpus
 

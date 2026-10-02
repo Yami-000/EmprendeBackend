@@ -36,7 +36,7 @@ echo  ==========================================================
 echo.
 
 REM --- 0. Requisitos -------------------------------------------------------
-echo  [0/5] Comprobando requisitos...
+echo  [0/6] Comprobando requisitos...
 echo.
 
 where node >nul 2>&1
@@ -108,7 +108,7 @@ echo  [OK]    node, npm, ollama, curl, .env con token, node_modules y venv.
 
 REM --- 1. Ollama -----------------------------------------------------------
 echo.
-echo  [1/5] Ollama (puerto 11434)...
+echo  [1/6] Ollama (puerto 11434)...
 echo.
 
 curl -s -o nul -m 3 http://localhost:11434/api/tags
@@ -139,7 +139,7 @@ if errorlevel 1 (
 
 REM --- 2. Indice vectorial -------------------------------------------------
 echo.
-echo  [2/5] Indice vectorial (ChromaDB)...
+echo  [2/6] Indice vectorial (ChromaDB)...
 echo.
 
 REM chroma_db\ NO esta versionado, asi que tras clonar o hacer pull no existe.
@@ -183,7 +183,7 @@ if not exist "ai-service\chroma_db\chroma.sqlite3" (
 
 REM --- 3. ai-service -------------------------------------------------------
 echo.
-echo  [3/5] ai-service, pipeline RAG (puerto 11400)...
+echo  [3/6] ai-service, pipeline RAG (puerto 11400)...
 echo.
 
 curl -s -o nul -m 3 http://localhost:11400/docs
@@ -216,10 +216,24 @@ if errorlevel 1 (
   goto :salir_error
 )
 
+REM --- 3b. Ventana de traza ------------------------------------------------
+echo.
+echo  [3b/6] Ventana de traza: como decide el modelo...
+echo.
+
+REM El archivo lo crea traza.py al importarse, pero si el RAG ya estaba
+REM corriendo de antes puede no existir todavia. Se asegura aca, porque
+REM Get-Content -Wait falla si el archivo no existe y la ventana queda inutil.
+if not exist "logs" mkdir "logs"
+if not exist "logs\traza.log" echo traza del pipeline. Se llena cuando llega una consulta.> "logs\traza.log"
+
+start "Ecia - traza (como decide)" powershell -NoProfile -NoExit -Command "Write-Host 'TRAZA DEL PIPELINE - se llena cuando le escribas al bot' -ForegroundColor Cyan; Write-Host ''; Get-Content -Path 'logs\traza.log' -Wait -Tail 40"
+echo  [OK]    Abierta. Muestra retrieval, veredicto del juez, veto y abstencion.
+
 REM --- 4. Backend Node y bot de Telegram -----------------------------------
 :nodo
 echo.
-echo  [4/5] Backend Node y bot de Telegram (puerto 4000)...
+echo  [4/6] Backend Node y bot de Telegram (puerto 4000)...
 echo.
 
 curl -s -o nul -m 3 http://localhost:4000/health
@@ -246,7 +260,7 @@ if not errorlevel 1 (
 
 REM --- 5. Listo ------------------------------------------------------------
 echo.
-echo  [5/5] Todo arriba.
+echo  [5/6] Todo arriba.
 echo.
 echo  ==========================================================
 echo    Ollama ........ http://localhost:11434
@@ -289,6 +303,20 @@ echo  ----------------------------------------------------------
 echo.
 echo    Cerra las ventanas "Ecia - ...". Esta ventana no detiene nada:
 echo    solo orquesto el arranque.
+echo.
+echo  ----------------------------------------------------------
+echo    LA VENTANA "Ecia - traza (como decide)"
+echo  ----------------------------------------------------------
+echo.
+echo    Ahi se ve, por cada mensaje que le escribas al bot:
+echo      - que fragmentos recupero, y de que archivos
+echo      - que respondio el juez, en crudo, y cuanto tardo
+echo      - si la pregunta era compuesta y si se VETO la aprobacion
+echo      - si intento el rescate por descomposicion
+echo      - si abstuvo sin llamar al modelo, o llamo al redactor
+echo.
+echo    Sirve para entender UN caso. Para medir estan los scripts
+echo    de tests\iteraciones.
 echo.
 goto :salir_ok
 
