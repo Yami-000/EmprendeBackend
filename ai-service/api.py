@@ -1,6 +1,9 @@
 import asyncio
+import os
+import time
 import json
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
@@ -15,6 +18,7 @@ from sentence_transformers import SentenceTransformer
 # Contrato unico del embedder. Si esto y ingest.py dejan de coincidir, los
 # vectores del indice y los de la consulta no son comparables.
 from embedding import MODEL_NAME, para_consulta
+import traza
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -320,11 +324,14 @@ async def _juzgar(fragments: List[Dict[str, Any]], pregunta: str) -> bool:
     async with httpx.AsyncClient(timeout=60) as client:
         r = await client.post(OLLAMA_URL, json=body)
         r.raise_for_status()
-        return parse_juicio((r.json().get("message") or {}).get("content", ""))
+        crudo = (r.json().get("message") or {}).get("content", "")
+    # Se devuelve tambien el texto crudo: la traza lo muestra, y es lo que
+    # delata un problema de parseo (un juez que explica en vez de decir SI/NO).
+    return parse_juicio(crudo), crudo
 
 
 async def decidir_si_responder(fragments: List[Dict[str, Any]],
-                               pregunta: str) -> bool:
+                               pregunta: str, t=None) -> bool:
     """El juez, con la descomposicion de comparativas como segunda oportunidad.
 
     Devuelve True si hay que llamar al redactor.
@@ -340,17 +347,59 @@ async def decidir_si_responder(fragments: List[Dict[str, Any]],
     Si el juez falla por red o por error de Ollama, se devuelve False: abstenerse.
     Preferimos callar antes que responder sin haber verificado.
     """
+    def _t(etiqueta, detalle="", seg=None):
+        if t is not None:
+            t.paso(etiqueta, detalle, seg)
+
+    def _sub(detalle):
+        if t is not None:
+            t.sub(detalle)
+
     try:
-        if await _juzgar(fragments, pregunta):
+        t1 = time.time()
+        veredicto, crudo = await _juzgar(fragments, pregunta)
+        _t("JUEZ", "%-3s  respondio: %r" % ("SI" if veredicto else "NO",
+                                            (crudo or "").strip()[:20]),
+           time.time() - t1)
+        if veredicto:
+            # 2.1: veto de compuestas. El juez aprueba una pregunta "X y Y" si
+            # reconoce UNA parte, y eso filtro una alucinacion real desde
+            # Telegram. Si NINGUNA de las dos mitades se sostiene sola, su
+            # aprobacion no se apoya en nada y se rechaza. Solo se veta cuando
+            # las dos dan NO: exigir que las dos den SI rompia PREG-105.
+            mitades = partir_compuesta(pregunta)
+            if not mitades:
+                _t("COMPUESTA", "no aplica, se acepta el SI")
+                return True
+            _t("COMPUESTA", "es compuesta: se comprueba cada mitad")
+            veredictos = []
+            for m in mitades:
+                ok, _ = await _juzgar(fragments, m)
+                veredictos.append(ok)
+                _sub("%-3s %s" % ("SI" if ok else "NO", m[:44]))
+            if not any(veredictos):
+                _t("VETO", "ninguna mitad se verifica -> se ANULA el SI")
+                logger.info("Veto de compuesta: el juez aprobo '%s' pero "
+                            "ninguna mitad se verifica.", pregunta[:60])
+                return False
+            _t("COMPUESTA", "al menos una mitad se verifica -> se mantiene")
             return True
+
         subs = descomponer_comparativa(pregunta)
         if not subs:
+            _t("RESCATE", "no es comparativa: nada que intentar")
             return False
+        _t("RESCATE", "es comparativa: se parte en subpreguntas")
         for sub in subs:
-            if not await _juzgar(fragments, sub):
+            ok, _ = await _juzgar(fragments, sub)
+            _sub("%-3s %s" % ("SI" if ok else "NO", sub[:44]))
+            if not ok:
+                _t("RESCATE", "una subpregunta falla -> se abstiene")
                 return False
+        _t("RESCATE", "todas las subpreguntas dan SI -> se responde")
         return True
     except Exception as exc:
+        _t("ERROR", "el juez fallo (%s). Se abstiene." % str(exc)[:34])
         logger.warning("El juez fallo (%s). Se abstiene por precaucion.", exc)
         return False
 
@@ -365,6 +414,145 @@ def _sse_texto(texto: str) -> str:
     return "data: %s\n\n" % json.dumps(
         {"message": {"role": "assistant", "content": texto}, "done": True},
         ensure_ascii=False)
+
+# Iteración 2.1. Veto de preguntas compuestas, y la ayuda al abstenerse.
+#
+# EL FALLO QUE ORIGINA ESTO, reportado desde Telegram el 2026-09-30:
+#
+#   "Que es el sii?"                              -> abstiene  (correcto)
+#   "Que es el SII y cual es su mision?"          -> RESPONDE, e inventa
+#
+# La segunda respuesta afirmaba que el SII se encarga de "la recaudacion de los
+# ingresos publicos", que no esta en el corpus y ademas es FALSO: el SII gira, la
+# Tesoreria recauda. Es la misma confusion que PREG-045 testea.
+#
+# EL MECANISMO, medido con scripts/sonda_compuestas.py (3 repeticiones cada una,
+# retrieval real con k=3, veredicto deterministico en las 7):
+#
+#   ¿Que es el SII?                                          NO
+#   ¿Cual es su mision institucional?                        NO
+#   ¿Que es el SII y cual es su mision institucional?        NO
+#   ¿Que es el servicio de impuestos internos (SII) y        SI   <- LA FUGA
+#    cual es su mision institucional?
+#   ... la misma, escrita sin tildes                         NO
+#   ¿Que es el RUT y cual es su mision?                      NO
+#   ¿Que es la Tesoreria y cual es su funcion?               NO
+#
+# En una pregunta COMPUESTA el juez puede aprobar reconociendo UNA parte: aca
+# aprueba el conjunto mientras rechaza las DOS mitades por separado. Es el espejo
+# del caso comparativo de la 1.16: alli exigia las dos y fallaba, aca le basta
+# una.
+#
+# HONESTIDAD SOBRE LA EVIDENCIA: de las 7 variantes probadas la fuga reproduce en
+# UNA, y es justo la forma larga que se escribio en Telegram. Las variantes con
+# 'RUT' y la forma corta del SII, que una version anterior de este comentario daba
+# como fugas, NO reproducen. El caso es deterministico (3 de 3) pero es UNO: esto
+# tapa una fuga verificada, no una clase de fugas cuantificada.
+#
+# Y la fuga depende de la ORTOGRAFIA: con el mismo trio de documentos, la forma
+# con tildes da SI y la misma sin tildes da NO. No es inestabilidad del juez
+# —cada una es deterministica— sino sensibilidad al texto de la pregunta.
+#
+# POR QUE UN VETO Y NO UNA CONJUNCION: exigir que las dos mitades den SI arregla
+# la fuga pero ROMPE una pregunta legitima del banco. PREG-019 ("¿Que es el F29 y
+# que obligaciones tributarias principales se declaran en el?") da SI en la
+# primera mitad y NO en la segunda, y hoy se responde bien: la conjuncion la
+# rechazaria. El veto solo actua cuando NINGUNA mitad se verifica, que es cuando
+# la aprobacion del compuesto no se apoya en nada.
+#
+#   caso                      juez   mitades   conjuncion   veto
+#   la fuga del SII            SI     NO, NO      NO         NO   arregla
+#   PREG-019                   SI     SI, NO      NO !       SI   conserva
+#   PREG-062/107/109/115       SI     SI, SI      SI         SI   conserva
+#
+# MEDIDO SOBRE EL BANCO COMPLETO por el endpoint: el veto se disparo 0 veces en
+# 100 preguntas. El juez aprobo 5 compuestas y las 5 tenian al menos una mitad
+# verificable. Cero vuelcos contra el control: no es que el saldo empate, es que
+# ninguna pregunta cambio de resultado.
+#
+# ALCANCE: 13 de las 100 preguntas del banco encajan en el patron (7 respondibles,
+# 6 sin respaldo). El costo son 2 llamadas extra al juez, y solo cuando ya dijo SI
+# a una compuesta.
+
+# Un ' y ' seguido de INTERROGATIVO marca una segunda pregunta. Sin esa exigencia
+# la regla partiria conjunciones de verbos y sustantivos, que no son dos
+# preguntas: PREG-045 dice "recaudar y cobrar" y PREG-069 "declarar y pagar".
+# Partir ahi produce mitades sin sentido y el veto rechazaria preguntas validas.
+_INTERROGATIVO = (r"(?:qu[eé]|cu[aá]l(?:es)?|qui[eé]n(?:es)?|c[oó]mo|cu[aá]ndo|"
+                  r"d[oó]nde|cu[aá]nto?s?|para\s+qu[eé]|ante\s+qui[eé]n(?:es)?|"
+                  r"desde\s+cu[aá]ndo|por\s+qu[eé]|en\s+qu[eé])\b")
+_COMPUESTA = re.compile(r"\s+y\s+(?=" + _INTERROGATIVO + ")", re.IGNORECASE)
+
+
+def partir_compuesta(pregunta: str) -> List[str]:
+    """Las dos mitades de una pregunta compuesta, o [] si no lo es.
+
+    "¿Qué es el SII y cuál es su misión institucional?"
+      -> ["¿Qué es el SII?", "¿cuál es su misión institucional?"]
+
+    Se parte por el PRIMER ' y ' seguido de interrogativo: en una pregunta con
+    tres partes, las dos primeras quedan juntas del lado izquierdo, que es
+    suficiente para el veto. No se intenta una descomposición completa porque el
+    veto solo necesita saber si ALGUNA parte se sostiene.
+    """
+    q = (pregunta or "").strip()
+    m = _COMPUESTA.search(q)
+    if not m:
+        return []
+    izq = q[:m.start()].strip().lstrip("¿").strip(" ,.")
+    der = q[m.end():].strip().strip(" ,.")
+    if len(izq) < 8 or len(der) < 4:
+        return []
+    return ["¿%s?" % izq.rstrip("?"), "¿%s?" % der.rstrip("?")]
+
+
+# Texto que se agrega a la abstención para que el usuario sepa qué SI puede
+# preguntar. Va como sufijo y NO reemplaza a FRASE_ABSTENCION: el detector
+# abstuvo() busca un fragmento de esa frase, y las metricas de alucinacion y
+# abstencion indebida se calculan sobre el. Cambiar la frase romperia la
+# comparabilidad con las 18 iteraciones anteriores.
+#
+# Y va en el ENDPOINT, no en el system prompt: meterlo en el prompt cambiaria lo
+# que el redactor genera, que es una variable medida. Esto es solo presentacion.
+AYUDA_ABSTENCION = (
+    "\n\nPuedo ayudarte con trámites de formalización de empresas en Chile:\n"
+    "• Tipos de empresa: EIRL, SpA, SRL, SA, MEF\n"
+    "• Constitución: Tu Empresa en un Día y régimen tradicional\n"
+    "• Costos y plazos de cada trámite\n"
+    "• Inicio de Actividades y RUT ante el SII\n"
+    "• Patente municipal y permisos sanitarios\n"
+    "• Obligaciones tributarias: F29, F22, libros de contabilidad\n\n"
+    "Probá con algo como: «¿Cuánto cuesta constituir una SpA?» o "
+    "«¿Quién inscribe la empresa en el Registro de Comercio?»"
+)
+
+# Saludos y mensajes que no son preguntas. Se contestan sin consultar el modelo:
+# ademas de la mala experiencia, cada uno costaba ~7 s de juez para nada.
+#
+# La lista es corta y la comparacion es sobre el texto COMPLETO normalizado, no
+# por subcadena: "hola" saluda, pero "hola, cuanto cuesta una SpA?" es una
+# pregunta y tiene que seguir al pipeline. Verificado que ninguna de las 100
+# preguntas del banco cae aca.
+_SALUDOS = {"hola", "hola!", "buenas", "buenos dias", "buenas tardes",
+            "buenas noches", "hey", "holi", "que tal", "como estas",
+            "buen dia", "saludos", "start", "/start", "ayuda", "/ayuda",
+            "help", "/help", "gracias", "chao", "adios"}
+
+BIENVENIDA = (
+    "Hola. Soy un asistente sobre formalización de empresas y trámites del SII "
+    "en Chile." + AYUDA_ABSTENCION.replace("\n\nPuedo ayudarte con trámites de "
+                                           "formalización de empresas en Chile:",
+                                           "")
+)
+
+
+def es_saludo(texto: str) -> bool:
+    """El mensaje es un saludo o un comando, no una pregunta."""
+    t = unicodedata.normalize("NFKD", (texto or "").strip().lower())
+    t = "".join(c for c in t if not unicodedata.combining(c))
+    t = t.strip(" ¿?¡!.,").strip()
+    return t in _SALUDOS
+
 
 async def _query_chroma(query_vec: List[float], k: int = 4) -> List[Dict[str, Any]]:
     if _collection is None:
@@ -386,8 +574,23 @@ async def chat_endpoint(payload: ChatRequest):
     if _collection is None:
         raise HTTPException(status_code=500, detail="ChromaDB collection not available")
 
+    # 2.1: un saludo no es una pregunta. Se contesta sin consultar al modelo:
+    # ademas de la mala experiencia de recibir "no incluye esa informacion" ante
+    # un "hola", cada saludo costaba ~7 s de juez para nada.
+    if es_saludo(payload.query):
+        t = traza.Consulta(payload.query)
+        t.cerrar("SALUDO", "no es pregunta: bienvenida sin consultar al modelo")
+
+        async def solo_bienvenida() -> AsyncGenerator[str, None]:
+            yield _sse_texto(BIENVENIDA)
+        return StreamingResponse(solo_bienvenida(),
+                                 media_type="text/event-stream")
+
+    t = traza.Consulta(payload.query)
+
     # Embed the query
     try:
+        _t0 = time.time()
         query_vec = await _embed_text(payload.query)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Embedding error: {str(e)}")
@@ -408,24 +611,35 @@ async def chat_endpoint(payload: ChatRequest):
         # El 98% del costo del juez es leer contexto, así que k=3 casi lo parte
         # en dos: una consulta respondida baja de 17,5 s a 10,3 s de media.
         fragments = await _query_chroma(query_vec, k=3)
+        t.paso("RETRIEVE", "k=3", time.time() - _t0)
+        for _n, _f in enumerate(fragments, 1):
+            t.sub("%d  %s" % (_n, os.path.basename(
+                _f.get("metadata", {}).get("source", "?"))))
     except Exception as e:
+        t.cerrar("ERROR", "retrieval: %s" % e)
         raise HTTPException(status_code=500, detail=f"Retrieval error: {str(e)}")
 
     # Iteración 2.0: PRIMER PASO. El juez decide si el contexto contiene el dato
     # antes de que nadie redacte nada. Es lo que lleva la alucinación de 34% a 0%,
     # y hasta esta iteración vivía solo en el arnés de evaluación.
-    if not await decidir_si_responder(fragments, payload.query):
+    if not await decidir_si_responder(fragments, payload.query, t):
+        t.cerrar("ABSTIENE", "sin segunda llamada al modelo")
         # El camino NO **no llama al modelo**: devuelve la frase canónica directo.
         # Por eso el pipeline de dos pasos es MAS RAPIDO que el de un paso cuando
         # rechaza — medido sobre el banco, 62 de 100 preguntas se resuelven con una
         # sola llamada.
         async def solo_abstencion() -> AsyncGenerator[str, None]:
-            yield _sse_texto(FRASE_ABSTENCION)
+            yield _sse_texto(FRASE_ABSTENCION + AYUDA_ABSTENCION)
         return StreamingResponse(solo_abstencion(),
                                  media_type="text/event-stream")
 
     # SEGUNDO PASO: el redactor. Recibe la pregunta ORIGINAL, nunca las
     # subpreguntas de la descomposición: esas son un instrumento del juez.
+    # La traza NO se cierra aca: se cierra dentro de event_stream, cuando el
+    # stream termina. Si se cerrara aca, el TIEMPO de una consulta respondida
+    # dejaria fuera toda la redaccion, que es la parte mas lenta, y el numero
+    # seria enganoso justo en el caso que interesa medir.
+    t.paso("REDACTOR", "el juez aprobo: se llama al modelo para redactar")
     system_prompt = _build_system_prompt(fragments)
 
     # Build messages for Ollama
@@ -455,6 +669,12 @@ async def chat_endpoint(payload: ChatRequest):
                 async with client.stream("POST", OLLAMA_URL, json=ollama_body) as resp:
                     if resp.status_code != 200:
                         text = await resp.aread()
+                        # DEUDA CONOCIDA, anterior a la 2.0: este camino manda al
+                        # usuario el contexto recuperado EN CRUDO, no una
+                        # respuesta. La traza lo deja visible en vez de que
+                        # parezca una respuesta normal.
+                        t.cerrar("FALLBACK", "Ollama respondio %s: se envia el "
+                                             "contexto EN CRUDO" % resp.status_code)
                         # If Ollama returns non-200, fallback to context
                         fallback = "Respuesta del servicio de LLM no disponible. Contexto recuperado:\n\n"
                         for i, f in enumerate(fragments, 1):
@@ -476,6 +696,8 @@ async def chat_endpoint(payload: ChatRequest):
                         # Detect common error patterns from Ollama in the stream
                         lowered = text.lower()
                         if "cuda" in lowered or "out of memory" in lowered or 'error' in lowered and 'llama' in lowered:
+                            t.cerrar("FALLBACK", "error en el stream: se envia el "
+                                                 "contexto EN CRUDO")
                             # produce a helpful fallback message using retrieved fragments
                             fallback = "Respuesta del servicio de LLM no disponible (error de ejecución). Contexto recuperado:\n\n"
                             for i, f in enumerate(fragments, 1):
@@ -489,6 +711,11 @@ async def chat_endpoint(payload: ChatRequest):
                         # Normal streaming: forward to client as SSE data events
                         yield f"data: {text}\n\n"
             except httpx.RequestError as e:
+                t.cerrar("ERROR", "el redactor fallo: %s" % str(e)[:40])
                 yield f"event: error\ndata: Ollama request failed: {str(e)}\n\n"
+            finally:
+                # cerrar() es idempotente: si alguno de los caminos de arriba ya
+                # cerro la traza con su propia etiqueta, esto no la duplica.
+                t.cerrar("LISTO", "respuesta enviada")
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")

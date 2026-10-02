@@ -60,6 +60,12 @@ array, no en un campo.
 python scripts/evaluar_banco.py <etiqueta> [modelo] [k] [num_predict]
 python scripts/evaluar_banco.py dospasos_A --dos-pasos --juez llama3.2 --redactor llama3.2
 python scripts/medir_retrieval.py
+
+# lo que recibe el usuario: requiere el endpoint corriendo (~11 min)
+python scripts/evaluar_endpoint.py <etiqueta>
+
+# diagnosticar un caso suelto: el juez ante una compuesta y sus mitades
+python scripts/sonda_compuestas.py --reps 3
 ```
 
 `evaluar_banco.py` importa los prompts desde `ai-service/api.py` en vez de
@@ -173,13 +179,47 @@ copiarlos, para no medir una versión divergente de la que corre en producción.
   fragmentos es el solape por caracteres (`chunk[-150:]`), que hace que el 62%
   empiece a mitad de frase. Ver la sección 5 de `CONTEXTO.md`.
 
+- **El juez aprueba una pregunta compuesta con las DOS mitades en `NO`, y eso filtró
+  una alucinación real.** *«¿Qué es el servicio de impuestos internos (SII) y cuál es
+  su misión institucional?»* recibe `SI` mientras cada mitad por separado recibe `NO`.
+  Es el espejo del caso comparativo de la 1.16: allí exigía las dos y fallaba, aquí no
+  exige ninguna. La 2.1 lo tapó con `partir_compuesta()` + **veto**, a costo cero.
+  **Es un veto y no una conjunción a propósito:** exigir que las dos mitades den `SI`
+  rechazaría PREG-019, que hoy se responde bien. Reproducible con
+  `scripts/sonda_compuestas.py`.
+- **El veredicto del juez depende de la ORTOGRAFÍA de la pregunta.** Con el mismo trío
+  de documentos recuperados, la pregunta de arriba **con tildes** da `SI` y **sin
+  tildes** da `NO`, y cada una es determinística (3 de 3). No es la banda de ~6 de 50,
+  que es sensibilidad al *contexto*. **Consecuencia de método: un caso que no reproduce
+  no prueba que la fuga no exista.** Un comentario en `api.py` llegó a afirmar cuatro
+  fugas reproducibles y al remedirlas solo reproducía **una**.
+- **No bajes la severidad del juez para "arreglar" abstenciones.** La 2.1 midió el caso
+  reportado desde Telegram al revés de lo que parecía: de cinco respuestas, **cuatro
+  abstenciones eran correctas** y la falla era la quinta. Bajar el umbral habría roto
+  cuatro aciertos y dejado la fuga intacta.
+- **`AYUDA_ABSTENCION` va como SUFIJO de `FRASE_ABSTENCION` y vive en el endpoint.**
+  No la reemplaces: `abstuvo()` detecta un fragmento de esa frase y sobre él se calculan
+  la alucinación y la abstención indebida de **19 iteraciones**. Y no la muevas al system
+  prompt: eso cambia lo que el redactor genera, que es una variable medida.
+- **Hay dos arneses y miden cosas distintas.** `evaluar_banco.py` replica el pipeline y
+  es el único que ve el veredicto del juez (sensibilidad, especificidad).
+  `evaluar_endpoint.py` habla HTTP con `/chat` y es el único que prueba lo que recibe el
+  usuario. **Una lógica que vive en el endpoint —el veto, el saludo— el arnés no la
+  ejecuta.** No son sustitutas.
+- **No reinicies uvicorn mientras corre una medición por el endpoint.** Las consultas que
+  caen en esa ventana dan error de conexión y `evaluar_endpoint.py` **cuenta un error de
+  transporte como abstención**: los números salen sesgados hacia el lado bueno sin que se
+  note. Ya invalidó una corrida. Mirar `errores de transporte` antes de creerle a una.
+
 - **No propongas cambiar la métrica de similitud del índice (OP-5).** Es un no-op:
   los vectores son unitarios porque el modelo trae capa `Normalize`, y para vectores
   unitarios el orden por L2 y por coseno es el mismo. Verificado: top-6 idéntico en
   **50 de 50** preguntas.
-- **Solo quedan dos hipótesis abiertas**, y son complementarias: subir `CHUNK_SIZE`
-  —ahora posible, porque con 512 tokens de ventana un fragmento más grande no se
-  vuelve invisible— y **B2**, descomponer la pregunta solo para el juez. Ver
+- **Las hipótesis del pipeline están cerradas.** `CHUNK_SIZE` se midió óptimo en las dos
+  direcciones (1.15) y B2 se confirmó (1.16). Lo que queda es **ingeniería**, y está
+  priorizado en el bloque de arranque de `ESTADO_INVESTIGACION.md`: endurecer la
+  especificidad, el *fallback* que devuelve el contexto en crudo, el historial que no
+  llega al juez y qué guarda la traza. Ver
   `tests/iteraciones/triaje_hipotesis_2026-09-27.md` antes de proponer otra cosa.
 
 ## Idioma
